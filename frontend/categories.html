@@ -92,7 +92,9 @@
         color: var(--text-muted);
         text-decoration: none;
         cursor: pointer;
-        transition: background 0.15s, color 0.15s;
+        transition:
+          background 0.15s,
+          color 0.15s;
         border: none;
         background: none;
         width: 100%;
@@ -184,7 +186,9 @@
         font-weight: 600;
         color: var(--text-muted);
         cursor: pointer;
-        transition: border-color 0.2s, color 0.2s;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
       }
       .btn-logout:hover {
         border-color: #ef4444;
@@ -265,7 +269,9 @@
         font-weight: 600;
         color: var(--text-muted);
         cursor: pointer;
-        transition: border-color 0.2s, color 0.2s;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
         font-family: inherit;
       }
       .btn-secondary:hover {
@@ -299,7 +305,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.15s, border-color 0.15s, color 0.15s;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          color 0.15s;
         flex-shrink: 0;
       }
       .btn-icon svg {
@@ -439,8 +448,13 @@
         opacity: 0;
         transition: opacity 0.15s;
       }
-      .drag-handle svg { width: 14px; height: 14px; }
-      .tree-node:hover .drag-handle { opacity: 1; }
+      .drag-handle svg {
+        width: 14px;
+        height: 14px;
+      }
+      .tree-node:hover .drag-handle {
+        opacity: 1;
+      }
 
       /* ── Income / Expense section headers in tree ─ */
       .type-section-header {
@@ -681,7 +695,22 @@
     </style>
   </head>
   <body>
-    <div id="drag-level-hint" style="display:none;position:fixed;z-index:9999;background:#1a6dff;color:#fff;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.2);"></div>
+    <div
+      id="drag-level-hint"
+      style="
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        background: #1a6dff;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      "
+    ></div>
     <!-- ── Sidebar ──────────────────────────────────────── -->
     <aside class="sidebar">
       <div class="sidebar-logo">
@@ -803,11 +832,15 @@
               </thead>
               <tbody id="activities-tbody">
                 <tr class="sk-row">
-                  <td><span class="skeleton sk" style="width: 160px"></span></td>
+                  <td>
+                    <span class="skeleton sk" style="width: 160px"></span>
+                  </td>
                   <td></td>
                 </tr>
                 <tr class="sk-row">
-                  <td><span class="skeleton sk" style="width: 130px"></span></td>
+                  <td>
+                    <span class="skeleton sk" style="width: 130px"></span>
+                  </td>
                   <td></td>
                 </tr>
               </tbody>
@@ -864,16 +897,60 @@
             <span class="form-error" id="category-err-name"></span>
           </div>
 
-          <div class="form-group" id="category-type-group" style="display: none">
+          <div
+            class="form-group"
+            id="category-type-group"
+            style="display: none"
+          >
             <label>Тип</label>
-            <div style="display: flex; gap: 10px;">
-              <button type="button" class="btn-type-toggle" data-type="income" style="flex: 1; padding: 9px; border: 1.5px solid var(--border); background: none; border-radius: 9px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; color: var(--text-muted);">💚 Доход</button>
-              <button type="button" class="btn-type-toggle" data-type="expense" style="flex: 1; padding: 9px; border: 1.5px solid var(--border); background: none; border-radius: 9px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; color: var(--text-muted);">❌ Расход</button>
+            <div style="display: flex; gap: 10px">
+              <button
+                type="button"
+                class="btn-type-toggle"
+                data-type="income"
+                style="
+                  flex: 1;
+                  padding: 9px;
+                  border: 1.5px solid var(--border);
+                  background: none;
+                  border-radius: 9px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  font-size: 14px;
+                  transition: all 0.2s;
+                  color: var(--text-muted);
+                "
+              >
+                💚 Доход
+              </button>
+              <button
+                type="button"
+                class="btn-type-toggle"
+                data-type="expense"
+                style="
+                  flex: 1;
+                  padding: 9px;
+                  border: 1.5px solid var(--border);
+                  background: none;
+                  border-radius: 9px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  font-size: 14px;
+                  transition: all 0.2s;
+                  color: var(--text-muted);
+                "
+              >
+                ❌ Расход
+              </button>
             </div>
             <input type="hidden" id="category-type" />
           </div>
 
-          <div class="form-group" id="category-parent-group" style="display: none">
+          <div
+            class="form-group"
+            id="category-parent-group"
+            style="display: none"
+          >
             <label for="category-parent">Родительская категория</label>
             <select id="category-parent">
               <option value="">— Выберите —</option>
@@ -926,11 +1003,11 @@
         }
       }
       const jwtPayload = parseJwt(token);
-      const displayName =
-        jwtPayload.name || jwtPayload.email || "Пользователь";
+      const displayName = jwtPayload.name || jwtPayload.email || "Пользователь";
       document.getElementById("user-name").textContent = displayName;
-      document.getElementById("user-avatar").textContent =
-        displayName.charAt(0).toUpperCase();
+      document.getElementById("user-avatar").textContent = displayName
+        .charAt(0)
+        .toUpperCase();
 
       // ── Logout ──────────────────────────────────────────
       function logout() {
@@ -995,57 +1072,104 @@
 
       // ── Save sort order ─────────────────────────────────
       async function saveSortOrder(siblings) {
-        await Promise.all(siblings.map((node, i) =>
-          apiFetch(`/categories/${node.id}`, {
-            method: "PUT",
-            body: JSON.stringify({ name: node.name, type: node.type || null, sort_order: i * 10 }),
-          })
-        ));
+        await Promise.all(
+          siblings.map((node, i) =>
+            apiFetch(`/categories/${node.id}`, {
+              method: "PUT",
+              body: JSON.stringify({
+                name: node.name,
+                type: node.type || null,
+                sort_order: i * 10,
+              }),
+            }),
+          ),
+        );
         siblings.forEach((node, i) => {
-          const cat = allCategories.find(c => c.id === node.id);
+          const cat = allCategories.find((c) => c.id === node.id);
           if (cat) cat.sort_order = i * 10;
         });
       }
 
       // ── Indent (вправо) / Outdent (влево) ───────────────
       async function indentNode(node) {
-        if (node.level <= 2) { alert("Нельзя углубить: уже самый глубокий уровень"); return; }
-        const hasChildren = allCategories.some(c => c.parent_id === node.id);
-        if (hasChildren) { alert("Нельзя углубить категорию с подкатегориями"); return; }
+        if (node.level <= 2) {
+          alert("Нельзя углубить: уже самый глубокий уровень");
+          return;
+        }
+        const hasChildren = allCategories.some((c) => c.parent_id === node.id);
+        if (hasChildren) {
+          alert("Нельзя углубить категорию с подкатегориями");
+          return;
+        }
         const siblings = allCategories
-          .filter(c => (c.parent_id ?? null) === (node.parent_id ?? null) && c.level === node.level)
-          .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
-        const myIdx = siblings.findIndex(c => c.id === node.id);
-        if (myIdx <= 0) { alert("Нет предыдущего элемента: некуда вложить"); return; }
+          .filter(
+            (c) =>
+              (c.parent_id ?? null) === (node.parent_id ?? null) &&
+              c.level === node.level,
+          )
+          .sort(
+            (a, b) =>
+              a.sort_order - b.sort_order || a.name.localeCompare(b.name, "ru"),
+          );
+        const myIdx = siblings.findIndex((c) => c.id === node.id);
+        if (myIdx <= 0) {
+          alert("Нет предыдущего элемента: некуда вложить");
+          return;
+        }
         const newParent = siblings[myIdx - 1];
-        const newChildren = allCategories.filter(c => c.parent_id === newParent.id);
-        const maxSort = newChildren.reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10);
+        const newChildren = allCategories.filter(
+          (c) => c.parent_id === newParent.id,
+        );
+        const maxSort = newChildren.reduce(
+          (m, c) => Math.max(m, c.sort_order ?? 0),
+          -10,
+        );
         try {
           await apiFetch(`/categories/${node.id}/move`, {
             method: "PATCH",
-            body: JSON.stringify({ level: node.level - 1, parent_id: newParent.id, sort_order: maxSort + 10 }),
+            body: JSON.stringify({
+              level: node.level - 1,
+              parent_id: newParent.id,
+              sort_order: maxSort + 10,
+            }),
           });
           expandedNodes.add(newParent.id);
           await reload();
-        } catch (err) { alert("Ошибка: " + err.message); }
+        } catch (err) {
+          alert("Ошибка: " + err.message);
+        }
       }
 
       async function outdentNode(node) {
-        if (node.level >= 4) { alert("Нельзя: уже верхний уровень"); return; }
-        const parent = allCategories.find(c => c.id === node.parent_id);
+        if (node.level >= 4) {
+          alert("Нельзя: уже верхний уровень");
+          return;
+        }
+        const parent = allCategories.find((c) => c.id === node.parent_id);
         const newParentId = parent ? (parent.parent_id ?? null) : null;
         const newLevel = node.level + 1;
-        const newSiblings = allCategories.filter(c =>
-          (c.parent_id ?? null) === (newParentId ?? null) && c.level === newLevel
+        const newSiblings = allCategories.filter(
+          (c) =>
+            (c.parent_id ?? null) === (newParentId ?? null) &&
+            c.level === newLevel,
         );
-        const maxSort = newSiblings.reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10);
+        const maxSort = newSiblings.reduce(
+          (m, c) => Math.max(m, c.sort_order ?? 0),
+          -10,
+        );
         try {
           await apiFetch(`/categories/${node.id}/move`, {
             method: "PATCH",
-            body: JSON.stringify({ level: newLevel, parent_id: newParentId, sort_order: maxSort + 10 }),
+            body: JSON.stringify({
+              level: newLevel,
+              parent_id: newParentId,
+              sort_order: maxSort + 10,
+            }),
           });
           await reload();
-        } catch (err) { alert("Ошибка: " + err.message); }
+        } catch (err) {
+          alert("Ошибка: " + err.message);
+        }
       }
 
       // ── Tree building ────────────────────────────────────
@@ -1062,8 +1186,11 @@
           }
         });
         function sortNodes(arr) {
-          arr.sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
-          arr.forEach(n => sortNodes(n.children));
+          arr.sort(
+            (a, b) =>
+              a.sort_order - b.sort_order || a.name.localeCompare(b.name, "ru"),
+          );
+          arr.forEach((n) => sortNodes(n.children));
         }
         sortNodes(roots);
         return roots;
@@ -1076,8 +1203,7 @@
         container.innerHTML = "";
 
         if (!tree.length) {
-          container.innerHTML =
-            `<div class="state-empty">Нет категорий. Добавьте группу или вид деятельности.</div>`;
+          container.innerHTML = `<div class="state-empty">Нет категорий. Добавьте группу или вид деятельности.</div>`;
           return;
         }
 
@@ -1134,15 +1260,17 @@
           nodeEl.innerHTML = html;
 
           // Attach buttons
-          nodeEl.querySelector(".tree-toggle")?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (expandedNodes.has(node.id)) {
-              expandedNodes.delete(node.id);
-            } else {
-              expandedNodes.add(node.id);
-            }
-            renderMainTree();
-          });
+          nodeEl
+            .querySelector(".tree-toggle")
+            ?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (expandedNodes.has(node.id)) {
+                expandedNodes.delete(node.id);
+              } else {
+                expandedNodes.add(node.id);
+              }
+              renderMainTree();
+            });
 
           nodeEl.querySelector(".tree-edit")?.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -1161,10 +1289,12 @@
             openCopyArticle(node);
           });
 
-          nodeEl.querySelector(".tree-delete")?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openConfirm(node.id, node.name, "category");
-          });
+          nodeEl
+            .querySelector(".tree-delete")
+            ?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openConfirm(node.id, node.name, "category");
+            });
 
           // ── Drag events ──────────────────────────────────
           const hint = document.getElementById("drag-level-hint");
@@ -1179,33 +1309,42 @@
           nodeEl.addEventListener("dragend", () => {
             draggedId = null;
             hint.style.display = "none";
-            document.querySelectorAll(".tree-node").forEach(el =>
-              el.classList.remove("dragging", "drag-over-top", "drag-over-bottom")
-            );
+            document
+              .querySelectorAll(".tree-node")
+              .forEach((el) =>
+                el.classList.remove(
+                  "dragging",
+                  "drag-over-top",
+                  "drag-over-bottom",
+                ),
+              );
           });
 
           nodeEl.addEventListener("dragover", (e) => {
             if (!draggedId) return;
-            const dragged = allCategories.find(c => c.id === draggedId);
+            const dragged = allCategories.find((c) => c.id === draggedId);
             if (!dragged) return;
 
             const deltaX = e.clientX - dragStartX;
 
             if (Math.abs(deltaX) > 30) {
               // Горизонтальное перетаскивание → смена уровня
-              const newLevel = deltaX > 0 ? dragged.level - 1 : dragged.level + 1;
+              const newLevel =
+                deltaX > 0 ? dragged.level - 1 : dragged.level + 1;
               const name = LEVEL_NAMES[newLevel];
               if (name) {
                 hint.textContent = (deltaX > 0 ? "→ " : "← ") + name;
                 hint.style.display = "block";
-                hint.style.left = (e.clientX + 14) + "px";
-                hint.style.top = (e.clientY - 12) + "px";
+                hint.style.left = e.clientX + 14 + "px";
+                hint.style.top = e.clientY - 12 + "px";
               } else {
                 hint.style.display = "none";
               }
-              document.querySelectorAll(".tree-node").forEach(el =>
-                el.classList.remove("drag-over-top", "drag-over-bottom")
-              );
+              document
+                .querySelectorAll(".tree-node")
+                .forEach((el) =>
+                  el.classList.remove("drag-over-top", "drag-over-bottom"),
+                );
               e.preventDefault();
               return;
             }
@@ -1217,10 +1356,16 @@
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
             const rect = nodeEl.getBoundingClientRect();
-            document.querySelectorAll(".tree-node").forEach(el =>
-              el.classList.remove("drag-over-top", "drag-over-bottom")
+            document
+              .querySelectorAll(".tree-node")
+              .forEach((el) =>
+                el.classList.remove("drag-over-top", "drag-over-bottom"),
+              );
+            nodeEl.classList.add(
+              e.clientY < rect.top + rect.height / 2
+                ? "drag-over-top"
+                : "drag-over-bottom",
             );
-            nodeEl.classList.add(e.clientY < rect.top + rect.height / 2 ? "drag-over-top" : "drag-over-bottom");
           });
 
           nodeEl.addEventListener("dragleave", () => {
@@ -1232,7 +1377,7 @@
             nodeEl.classList.remove("drag-over-top", "drag-over-bottom");
             hint.style.display = "none";
             if (!draggedId) return;
-            const dragged = allCategories.find(c => c.id === draggedId);
+            const dragged = allCategories.find((c) => c.id === draggedId);
             if (!dragged) return;
 
             const deltaX = e.clientX - dragStartX;
@@ -1256,11 +1401,19 @@
             if (fromParentId === toParentId) {
               // Тот же родитель — только переупорядочиваем
               const siblings = allCategories
-                .filter(c => (c.parent_id ?? null) === toParentId && c.level === node.level)
-                .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
-              const fromIdx = siblings.findIndex(c => c.id === draggedId);
+                .filter(
+                  (c) =>
+                    (c.parent_id ?? null) === toParentId &&
+                    c.level === node.level,
+                )
+                .sort(
+                  (a, b) =>
+                    a.sort_order - b.sort_order ||
+                    a.name.localeCompare(b.name, "ru"),
+                );
+              const fromIdx = siblings.findIndex((c) => c.id === draggedId);
               siblings.splice(fromIdx, 1);
-              let toIdx = siblings.findIndex(c => c.id === node.id);
+              let toIdx = siblings.findIndex((c) => c.id === node.id);
               if (insertAfter) toIdx += 1;
               siblings.splice(toIdx, 0, dragged);
               try {
@@ -1273,15 +1426,28 @@
             } else {
               // Другой родитель — меняем parent_id через /move
               const newSiblings = allCategories
-                .filter(c => (c.parent_id ?? null) === toParentId && c.level === node.level && c.id !== dragged.id)
-                .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
-              let toIdx = newSiblings.findIndex(c => c.id === node.id);
+                .filter(
+                  (c) =>
+                    (c.parent_id ?? null) === toParentId &&
+                    c.level === node.level &&
+                    c.id !== dragged.id,
+                )
+                .sort(
+                  (a, b) =>
+                    a.sort_order - b.sort_order ||
+                    a.name.localeCompare(b.name, "ru"),
+                );
+              let toIdx = newSiblings.findIndex((c) => c.id === node.id);
               if (insertAfter) toIdx += 1;
               newSiblings.splice(toIdx, 0, dragged);
               try {
                 await apiFetch(`/categories/${dragged.id}/move`, {
                   method: "PATCH",
-                  body: JSON.stringify({ level: dragged.level, parent_id: toParentId, sort_order: toIdx * 10 }),
+                  body: JSON.stringify({
+                    level: dragged.level,
+                    parent_id: toParentId,
+                    sort_order: toIdx * 10,
+                  }),
                 });
                 dragged.parent_id = toParentId;
                 dragged.sort_order = toIdx * 10;
@@ -1299,9 +1465,13 @@
           if (hasChildren && isExpanded) {
             if (node.level === 4) {
               // Group level-3 children by type: Доходы first, then Расходы
-              const incomeKids = node.children.filter(c => c.type === "income");
-              const expenseKids = node.children.filter(c => c.type === "expense");
-              const otherKids = node.children.filter(c => !c.type);
+              const incomeKids = node.children.filter(
+                (c) => c.type === "income",
+              );
+              const expenseKids = node.children.filter(
+                (c) => c.type === "expense",
+              );
+              const otherKids = node.children.filter((c) => !c.type);
 
               const renderTypeHeader = (label, cls) => {
                 const hdr = document.createElement("div");
@@ -1313,13 +1483,13 @@
 
               if (incomeKids.length) {
                 renderTypeHeader("Доходы", "income");
-                incomeKids.forEach(c => renderNode(c, level + 1));
+                incomeKids.forEach((c) => renderNode(c, level + 1));
               }
               if (expenseKids.length) {
                 renderTypeHeader("Расходы", "expense");
-                expenseKids.forEach(c => renderNode(c, level + 1));
+                expenseKids.forEach((c) => renderNode(c, level + 1));
               }
-              otherKids.forEach(c => renderNode(c, level + 1));
+              otherKids.forEach((c) => renderNode(c, level + 1));
             } else {
               node.children.forEach((child) => renderNode(child, level + 1));
             }
@@ -1336,8 +1506,7 @@
         tbody.innerHTML = "";
 
         if (!activities.length) {
-          tbody.innerHTML =
-            `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
           return;
         }
 
@@ -1396,15 +1565,18 @@
 
       // Type toggle buttons
       document.querySelectorAll(".btn-type-toggle").forEach((btn) => {
-        btn.addEventListener("click", function(e) {
+        btn.addEventListener("click", function (e) {
           e.preventDefault();
           document.querySelectorAll(".btn-type-toggle").forEach((b) => {
             b.style.background = "none";
             b.style.color = "var(--text-muted)";
           });
-          this.style.background = this.dataset.type === "income" ? "#f0fdf4" : "#fef2f2";
-          this.style.color = this.dataset.type === "income" ? "#16a34a" : "#dc2626";
-          this.style.borderColor = this.dataset.type === "income" ? "#86efac" : "#fca5a5";
+          this.style.background =
+            this.dataset.type === "income" ? "#f0fdf4" : "#fef2f2";
+          this.style.color =
+            this.dataset.type === "income" ? "#16a34a" : "#dc2626";
+          this.style.borderColor =
+            this.dataset.type === "income" ? "#86efac" : "#fca5a5";
           document.getElementById("category-type").value = this.dataset.type;
         });
       });
@@ -1451,7 +1623,8 @@
         document.getElementById("category-err-global").textContent = "";
 
         if (node.level >= 3) {
-          document.getElementById("category-type-group").style.display = "block";
+          document.getElementById("category-type-group").style.display =
+            "block";
           document.getElementById("category-type").value = node.type || "";
           // Reset button styles and set the correct one
           document.querySelectorAll(".btn-type-toggle").forEach((b) => {
@@ -1459,9 +1632,11 @@
             b.style.color = "var(--text-muted)";
             b.style.borderColor = "var(--border)";
             if (b.dataset.type === (node.type || "")) {
-              b.style.background = node.type === "income" ? "#f0fdf4" : "#fef2f2";
+              b.style.background =
+                node.type === "income" ? "#f0fdf4" : "#fef2f2";
               b.style.color = node.type === "income" ? "#16a34a" : "#dc2626";
-              b.style.borderColor = node.type === "income" ? "#86efac" : "#fca5a5";
+              b.style.borderColor =
+                node.type === "income" ? "#86efac" : "#fca5a5";
             }
           });
         } else {
@@ -1478,12 +1653,14 @@
         editingNodeParent = article.parent_id;
         document.getElementById("category-modal-title").textContent =
           "Копировать статью";
-        document.getElementById("category-name").value = "Копия — " + article.name;
+        document.getElementById("category-name").value =
+          "Копия — " + article.name;
         document.getElementById("category-err-name").textContent = "";
         document.getElementById("category-err-global").textContent = "";
         document.getElementById("category-type-group").style.display = "none";
         document.getElementById("category-parent-group").style.display = "none";
-        document.getElementById("category-submit").textContent = "Создать копию";
+        document.getElementById("category-submit").textContent =
+          "Создать копию";
         openOverlay("category-modal");
         document.getElementById("category-name").focus();
       }
@@ -1494,7 +1671,10 @@
         const nextLevel = parentNode.level - 1;
         const levelLabels = { 3: "группу", 2: "статью" };
         document.getElementById("category-modal-title").textContent =
-          "Добавить " + levelLabels[nextLevel] + " к " + escHtml(parentNode.name);
+          "Добавить " +
+          levelLabels[nextLevel] +
+          " к " +
+          escHtml(parentNode.name);
         document.getElementById("category-name").value = "";
         document.getElementById("category-name").placeholder =
           nextLevel === 3 ? "Например: Выручка" : "Например: Продажи товаров";
@@ -1503,7 +1683,8 @@
 
         if (nextLevel === 3) {
           // Adding group
-          document.getElementById("category-type-group").style.display = "block";
+          document.getElementById("category-type-group").style.display =
+            "block";
           document.getElementById("category-type").value = "";
           // Reset button styles
           document.querySelectorAll(".btn-type-toggle").forEach((b) => {
@@ -1511,17 +1692,23 @@
             b.style.color = "var(--text-muted)";
             b.style.borderColor = "var(--border)";
           });
-          document.getElementById("category-parent-group").style.display = "none";
+          document.getElementById("category-parent-group").style.display =
+            "none";
         } else if (nextLevel === 2) {
           // Adding article
           document.getElementById("category-type-group").style.display = "none";
-          document.getElementById("category-parent-group").style.display = "block";
+          document.getElementById("category-parent-group").style.display =
+            "block";
           const groups = allCategories.filter((c) => c.level === 3);
           populateSelect(
             document.getElementById("category-parent"),
             groups,
             (g) => g.id,
-            (g) => g.name + (g.type ? ` (${g.type === "income" ? "Доходы" : "Расходы"})` : ""),
+            (g) =>
+              g.name +
+              (g.type
+                ? ` (${g.type === "income" ? "Доходы" : "Расходы"})`
+                : ""),
           );
           document.getElementById("category-parent").value = "";
         }
@@ -1546,7 +1733,8 @@
             "Например: Выручка";
           document.getElementById("category-err-name").textContent = "";
           document.getElementById("category-err-global").textContent = "";
-          document.getElementById("category-type-group").style.display = "block";
+          document.getElementById("category-type-group").style.display =
+            "block";
           // Reset button styles
           document.querySelectorAll(".btn-type-toggle").forEach((b) => {
             b.style.background = "none";
@@ -1554,7 +1742,8 @@
             b.style.borderColor = "var(--border)";
           });
           document.getElementById("category-type").value = "";
-          document.getElementById("category-parent-group").style.display = "block";
+          document.getElementById("category-parent-group").style.display =
+            "block";
           const activities = allCategories.filter((c) => c.level === 4);
           populateSelect(
             document.getElementById("category-parent"),
@@ -1619,9 +1808,15 @@
                   level,
                   type: level < 4 ? type : null,
                   parent_id: editingNodeParent,
-                  sort_order: allCategories
-                    .filter(c => (c.parent_id ?? null) === (editingNodeParent ?? null) && c.level === level)
-                    .reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10) + 10,
+                  sort_order:
+                    allCategories
+                      .filter(
+                        (c) =>
+                          (c.parent_id ?? null) ===
+                            (editingNodeParent ?? null) && c.level === level,
+                      )
+                      .reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10) +
+                    10,
                 }),
               });
             }
