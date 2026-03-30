@@ -1,1118 +1,1697 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Личные финансы — Справочники</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        :root {
-            --blue:       #1a6dff;
-            --blue-dark:  #1558d6;
-            --blue-light: #eff4ff;
-            --sidebar-w:  240px;
-            --header-h:   64px;
-            --text:       #111827;
-            --text-muted: #6b7280;
-            --border:     #e5e7eb;
-            --bg:         #f5f7fb;
-            --white:      #ffffff;
-        }
+      :root {
+        --blue: #1a6dff;
+        --blue-dark: #1558d6;
+        --blue-light: #eff4ff;
+        --sidebar-w: 240px;
+        --header-h: 64px;
+        --text: #111827;
+        --text-muted: #6b7280;
+        --border: #e5e7eb;
+        --bg: #f5f7fb;
+        --white: #ffffff;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
 
-        /* ── Sidebar ─────────────────────────────────── */
-        .sidebar {
-            position: fixed; top: 0; left: 0;
-            width: var(--sidebar-w); height: 100vh;
-            background: var(--white); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; z-index: 50;
-        }
-        .sidebar-logo {
-            height: var(--header-h); display: flex; align-items: center;
-            gap: 10px; padding: 0 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-        }
-        .sidebar-logo-icon {
-            width: 34px; height: 34px; background: var(--blue); border-radius: 9px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-        .sidebar-logo span { font-size: 15px; font-weight: 700; color: var(--text); }
-        .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
-        .nav-item {
-            display: flex; align-items: center; gap: 11px; padding: 10px 12px;
-            border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--text-muted);
-            text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s;
-            border: none; background: none; width: 100%; text-align: left;
-        }
-        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
-        .nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
-        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .nav-section {
-            font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
-            color: #9ca3af; text-transform: uppercase; padding: 16px 12px 6px;
-        }
-        .sidebar-bottom { padding: 10px; border-top: 1px solid var(--border); }
+      /* ── Sidebar ─────────────────────────────────── */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        background: var(--white);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        z-index: 50;
+      }
+      .sidebar-logo {
+        height: var(--header-h);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .sidebar-logo-icon {
+        width: 34px;
+        height: 34px;
+        background: var(--blue);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .sidebar-logo-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: #fff;
+      }
+      .sidebar-logo span {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 12px 10px;
+        overflow-y: auto;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 10px 12px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+      .nav-item:hover {
+        background: var(--blue-light);
+        color: var(--blue);
+      }
+      .nav-item.active {
+        background: var(--blue-light);
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .nav-item svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .nav-section {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        color: #9ca3af;
+        text-transform: uppercase;
+        padding: 16px 12px 6px;
+      }
+      .sidebar-bottom {
+        padding: 10px;
+        border-top: 1px solid var(--border);
+      }
 
-        /* ── Header ──────────────────────────────────── */
-        .header {
-            position: fixed; top: 0; left: var(--sidebar-w); right: 0;
-            height: var(--header-h); background: var(--white);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 40;
-        }
-        .header-title { font-size: 17px; font-weight: 700; color: var(--text); }
-        .header-spacer { flex: 1; }
-        .header-user { display: flex; align-items: center; gap: 10px; }
-        .user-avatar {
-            width: 34px; height: 34px; background: var(--blue-light);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 700; color: var(--blue); flex-shrink: 0;
-        }
-        .user-name {
-            font-size: 14px; font-weight: 600; color: var(--text);
-            text-decoration: none;
-        }
-        .user-name:hover { color: var(--blue); }
-        .btn-logout {
-            padding: 7px 16px; border: 1.5px solid var(--border); border-radius: 8px;
-            background: none; font-size: 13px; font-weight: 600; color: var(--text-muted);
-            cursor: pointer; transition: border-color 0.2s, color 0.2s;
-        }
-        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+      /* ── Header ──────────────────────────────────── */
+      .header {
+        position: fixed;
+        top: 0;
+        left: var(--sidebar-w);
+        right: 0;
+        height: var(--header-h);
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+        gap: 14px;
+        z-index: 40;
+      }
+      .header-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .header-spacer {
+        flex: 1;
+      }
+      .header-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        background: var(--blue-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--blue);
+        flex-shrink: 0;
+      }
+      .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .user-name:hover {
+        color: var(--blue);
+      }
+      .btn-logout {
+        padding: 7px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        background: none;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+      }
+      .btn-logout:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+      }
 
-        /* ── Content ──────────────────────────────────── */
-        .content { margin-left: var(--sidebar-w); padding-top: var(--header-h); min-height: 100vh; }
-        .page { padding: 28px 28px 40px; max-width: 1000px; }
+      /* ── Content ──────────────────────────────────── */
+      .content {
+        margin-left: var(--sidebar-w);
+        padding-top: var(--header-h);
+        min-height: 100vh;
+      }
+      .page {
+        padding: 28px 28px 40px;
+        max-width: 1200px;
+      }
 
-        .page-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px;
-        }
-        .page-header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+      .page-header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+      }
 
-        /* ── Tabs ─────────────────────────────────────── */
-        .tabs-nav {
-            display: flex; gap: 0; margin-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-        }
-        .tab-btn {
-            padding: 10px 22px; font-size: 14px; font-weight: 600;
-            color: var(--text-muted); background: none; border: none;
-            border-bottom: 2px solid transparent; margin-bottom: -2px;
-            cursor: pointer; transition: color 0.15s, border-color 0.15s;
-            font-family: inherit;
-        }
-        .tab-btn:hover { color: var(--blue); }
-        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+      /* ── Section header ───────────────────────────── */
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
 
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+      /* ── Buttons ──────────────────────────────────── */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        background: var(--blue);
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-family: inherit;
+      }
+      .btn-primary:hover {
+        background: var(--blue-dark);
+      }
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn-primary svg {
+        width: 15px;
+        height: 15px;
+        fill: #fff;
+      }
 
-        /* ── Section header ───────────────────────────── */
-        .section-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
+      .btn-secondary {
+        padding: 9px 18px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        background: none;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+        font-family: inherit;
+      }
+      .btn-secondary:hover {
+        border-color: #9ca3af;
+        color: var(--text);
+      }
 
-        /* ── Buttons ──────────────────────────────────── */
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 8px 16px; background: var(--blue); color: #fff;
-            border: none; border-radius: 9px; font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: background 0.2s; font-family: inherit;
-        }
-        .btn-primary:hover { background: var(--blue-dark); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-primary svg { width: 15px; height: 15px; fill: #fff; }
+      .btn-danger {
+        padding: 9px 18px;
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-family: inherit;
+      }
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
 
-        .btn-secondary {
-            padding: 9px 18px; border: 1.5px solid var(--border); border-radius: 9px;
-            background: none; font-size: 14px; font-weight: 600; color: var(--text-muted);
-            cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit;
-        }
-        .btn-secondary:hover { border-color: #9ca3af; color: var(--text); }
+      .btn-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        border: 1.5px solid var(--border);
+        background: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+        flex-shrink: 0;
+      }
+      .btn-icon svg {
+        width: 14px;
+        height: 14px;
+        fill: currentColor;
+      }
+      .btn-icon:hover {
+        background: var(--blue-light);
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .btn-icon:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
 
-        .btn-danger {
-            padding: 9px 18px; background: #dc2626; color: #fff; border: none;
-            border-radius: 9px; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: background 0.2s; font-family: inherit;
-        }
-        .btn-danger:hover { background: #b91c1c; }
+      .btn-icon-del:hover {
+        background: #fef2f2;
+        border-color: #fca5a5;
+        color: #dc2626;
+      }
 
-        .btn-icon {
-            width: 30px; height: 30px; border-radius: 7px;
-            border: 1.5px solid var(--border); background: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.15s, border-color 0.15s, color 0.15s; flex-shrink: 0;
-        }
-        .btn-icon svg { width: 14px; height: 14px; fill: currentColor; }
-        .btn-icon-edit { color: var(--text-muted); }
-        .btn-icon-edit:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
-        .btn-icon-del { color: var(--text-muted); }
-        .btn-icon-del:hover { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+      /* ── Table ────────────────────────────────────── */
+      .table-wrap {
+        background: var(--white);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      thead th {
+        background: #f9fafb;
+        padding: 11px 16px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.12s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: #fafbff;
+      }
+      tbody td {
+        padding: 12px 16px;
+        color: var(--text);
+        vertical-align: middle;
+      }
+      .td-name {
+        font-weight: 500;
+      }
+      .td-actions {
+        white-space: nowrap;
+      }
+      .td-actions-inner {
+        display: flex;
+        gap: 6px;
+      }
 
-        .btn-icon-copy { color: var(--text-muted); }
-        .btn-icon-copy:hover { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
+      /* ── Badges ───────────────────────────────────── */
+      .badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 9px;
+        border-radius: 20px;
+      }
+      .badge-income {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
+      .badge-expense {
+        background: #fef2f2;
+        color: #dc2626;
+      }
+      .badge-neutral {
+        background: #f3f4f6;
+        color: #6b7280;
+      }
 
-        /* ── Table ────────────────────────────────────── */
-        .table-wrap {
-            background: var(--white); border-radius: 14px;
-            border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            overflow: hidden;
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        thead th {
-            background: #f9fafb; padding: 11px 16px; text-align: left;
-            font-size: 12px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.05em; color: var(--text-muted);
-            border-bottom: 1px solid var(--border); white-space: nowrap;
-        }
-        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: #fafbff; }
-        tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
-        .td-name { font-weight: 500; }
-        .td-actions { white-space: nowrap; }
-        .td-actions-inner { display: flex; gap: 6px; }
+      /* ── Tree view ────────────────────────────────── */
+      .tree-wrap {
+        background: var(--white);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        padding: 8px;
+      }
 
-        /* ── Badges ───────────────────────────────────── */
-        .badge {
-            display: inline-block; font-size: 11px; font-weight: 600;
-            padding: 2px 9px; border-radius: 20px;
-        }
-        .badge-income  { background: #f0fdf4; color: #16a34a; }
-        .badge-expense { background: #fef2f2; color: #dc2626; }
-        .badge-neutral { background: #f3f4f6; color: #6b7280; }
+      .tree-node {
+        display: flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: background 0.1s;
+      }
 
-        /* ── Tree view ────────────────────────────────── */
-        .tree-wrap {
-            background: var(--white); border-radius: 14px;
-            border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            overflow: hidden;
-        }
-        .tree-node {
-            display: flex; align-items: center; min-height: 42px;
-            border-bottom: 1px solid var(--border); gap: 10px;
-        }
-        .tree-node:last-child { border-bottom: none; }
-        .tree-node-name { flex: 1; }
-        .tree-node-actions { display: flex; gap: 6px; flex-shrink: 0; }
+      .tree-node:hover {
+        background: #fafbff;
+      }
+      .tree-node.dragging {
+        opacity: 0.4;
+      }
+      .tree-node.drag-over-top {
+        border-top: 2px solid var(--blue);
+      }
+      .tree-node.drag-over-bottom {
+        border-bottom: 2px solid var(--blue);
+      }
+      .drag-handle {
+        cursor: grab;
+        color: var(--text-muted);
+        padding: 0 4px;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .drag-handle svg { width: 14px; height: 14px; }
+      .tree-node:hover .drag-handle { opacity: 1; }
 
-        .tree-node-activity {
-            padding: 11px 16px;
-            background: #f9fafb;
-            font-size: 14px; font-weight: 700; color: var(--text);
-        }
-        .tree-node-type {
-            padding: 7px 16px 7px 32px;
-            background: #fafbff; min-height: 36px;
-        }
-        .tree-node-group {
-            padding: 10px 16px 10px 48px;
-            font-size: 14px;
-        }
-        .tree-node-group-header {
-            padding: 8px 16px 8px 48px;
-            background: var(--bg);
-            font-size: 13px; font-weight: 600; color: var(--text-muted);
-        }
-        .tree-node-article {
-            padding: 10px 16px 10px 64px;
-            font-size: 14px;
-        }
+      /* ── Income / Expense section headers in tree ─ */
+      .type-section-header {
+        display: flex;
+        align-items: center;
+        padding: 4px 12px;
+        margin: 4px 0 2px;
+      }
+      .type-section-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 2px 10px;
+        border-radius: 20px;
+      }
+      .type-section-header.type-section-income .type-section-label {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
+      .type-section-header.type-section-expense .type-section-label {
+        background: #fef2f2;
+        color: #dc2626;
+      }
 
-        /* ── States ───────────────────────────────────── */
-        .state-empty { padding: 50px 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
-        .state-error { padding: 50px 20px; text-align: center; color: #dc2626; font-size: 14px; }
+      .tree-toggle {
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        color: var(--text-muted);
+      }
 
-        /* ── Skeleton ─────────────────────────────────── */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%; animation: shimmer 1.4s infinite;
-            border-radius: 4px; display: inline-block;
-        }
-        @keyframes shimmer { to { background-position: -200% 0; } }
-        .sk-row td { padding: 13px 16px; }
-        .sk { display: block; height: 14px; border-radius: 4px; }
+      .tree-toggle:hover {
+        color: var(--blue);
+      }
 
-        /* ── Modal ────────────────────────────────────── */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.35);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-        }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal {
-            background: var(--white); border-radius: 16px; padding: 28px;
-            width: 100%; max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-            transform: translateY(12px); transition: transform 0.2s;
-        }
-        .modal-overlay.open .modal { transform: translateY(0); }
-        .modal-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .modal-title { font-size: 17px; font-weight: 700; color: var(--text); }
-        .modal-close {
-            width: 30px; height: 30px; border: none; background: none; cursor: pointer;
-            border-radius: 7px; display: flex; align-items: center; justify-content: center;
-            color: var(--text-muted); transition: background 0.15s;
-        }
-        .modal-close:hover { background: #f3f4f6; }
-        .modal-close svg { width: 16px; height: 16px; fill: currentColor; }
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text); }
-        .form-group input, .form-group select {
-            padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 9px;
-            font-size: 14px; color: var(--text); background: var(--white);
-            outline: none; transition: border-color 0.2s; font-family: inherit;
-        }
-        .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
-        .form-group input.invalid, .form-group select.invalid { border-color: #dc2626; }
-        .form-error { font-size: 12px; color: #dc2626; min-height: 16px; }
-        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+      /* ── States ───────────────────────────────────── */
+      .state-empty {
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
 
-        /* ── Confirm ──────────────────────────────────── */
-        .confirm-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.35);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      .state-error {
+        padding: 50px 20px;
+        text-align: center;
+        color: #dc2626;
+        font-size: 14px;
+      }
+
+      /* ── Skeleton ─────────────────────────────────── */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      @keyframes shimmer {
+        to {
+          background-position: -200% 0;
         }
-        .confirm-overlay.open { opacity: 1; pointer-events: all; }
-        .confirm-box {
-            background: var(--white); border-radius: 16px; padding: 28px;
-            width: 100%; max-width: 360px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-            transform: translateY(12px); transition: transform 0.2s;
-        }
-        .confirm-overlay.open .confirm-box { transform: translateY(0); }
-        .confirm-box h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-        .confirm-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
-        .confirm-footer { display: flex; gap: 10px; justify-content: flex-end; }
+      }
+      .sk-row td {
+        padding: 13px 16px;
+      }
+      .sk {
+        display: block;
+        height: 14px;
+        border-radius: 4px;
+      }
+
+      /* ── Modal ────────────────────────────────────── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 28px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+        transform: translateY(12px);
+        transition: transform 0.2s;
+      }
+      .modal-overlay.open .modal {
+        transform: translateY(0);
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .modal-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .modal-close {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: background 0.15s;
+      }
+      .modal-close:hover {
+        background: #f3f4f6;
+      }
+      .modal-close svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .form-group input,
+      .form-group select {
+        padding: 10px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        font-size: 14px;
+        color: var(--text);
+        background: var(--white);
+        outline: none;
+        transition: border-color 0.2s;
+        font-family: inherit;
+      }
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: var(--blue);
+      }
+      .form-group input.invalid,
+      .form-group select.invalid {
+        border-color: #dc2626;
+      }
+      .form-error {
+        font-size: 12px;
+        color: #dc2626;
+        min-height: 16px;
+      }
+      .modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      /* ── Confirm ──────────────────────────────────── */
+      .confirm-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 300;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .confirm-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .confirm-box {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 28px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+        transform: translateY(12px);
+        transition: transform 0.2s;
+      }
+      .confirm-overlay.open .confirm-box {
+        transform: translateY(0);
+      }
+      .confirm-box h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .confirm-box p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 22px;
+        line-height: 1.5;
+      }
+      .confirm-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
     </style>
-</head>
-<body>
-
-<!-- ── Sidebar ──────────────────────────────────────── -->
-<aside class="sidebar">
-    <div class="sidebar-logo">
+  </head>
+  <body>
+    <div id="drag-level-hint" style="display:none;position:fixed;z-index:9999;background:#1a6dff;color:#fff;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.2);"></div>
+    <!-- ── Sidebar ──────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
         <div class="sidebar-logo-icon">
-            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+            />
+          </svg>
         </div>
         <span>Личные финансы</span>
-    </div>
-    <nav class="sidebar-nav">
+      </div>
+      <nav class="sidebar-nav">
         <div class="nav-section">Меню</div>
         <a class="nav-item" href="dashboard.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Главная
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+          Главная
         </a>
         <a class="nav-item" href="operations.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
-            Операции
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2H6z"
+            />
+          </svg>
+          Операции
         </a>
         <a class="nav-item" href="funds.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-            Фонды
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+            />
+          </svg>
+          Фонды
         </a>
         <a class="nav-item" href="accounts.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-            Счета
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"
+            />
+          </svg>
+          Счета
         </a>
         <div class="nav-section">Прочее</div>
         <a class="nav-item active" href="categories.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
-            Справочники
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"
+            />
+          </svg>
+          Справочники
         </a>
         <a class="nav-item" href="settings.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-            Настройки
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+          Настройки
         </a>
         <a class="nav-item" href="profile.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Профиль
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+          Профиль
         </a>
-    </nav>
-    <div class="sidebar-bottom">
+      </nav>
+      <div class="sidebar-bottom">
         <button class="nav-item" id="logout-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-            Выйти
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+            />
+          </svg>
+          Выйти
         </button>
-    </div>
-</aside>
+      </div>
+    </aside>
 
-<!-- ── Header ────────────────────────────────────────── -->
-<header class="header">
-    <span class="header-title">Справочники</span>
-    <div class="header-spacer"></div>
-    <div class="header-user">
+    <!-- ── Header ────────────────────────────────────────── -->
+    <header class="header">
+      <span class="header-title">Справочники</span>
+      <div class="header-spacer"></div>
+      <div class="header-user">
         <div class="user-avatar" id="user-avatar">?</div>
         <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
-    </div>
-    <button class="btn-logout" id="header-logout-btn">Выйти</button>
-</header>
+      </div>
+      <button class="btn-logout" id="header-logout-btn">Выйти</button>
+    </header>
 
-<!-- ── Content ───────────────────────────────────────── -->
-<main class="content">
-    <div class="page">
-
+    <!-- ── Content ───────────────────────────────────────── -->
+    <main class="content">
+      <div class="page">
         <div class="page-header">
-            <h1>Справочники</h1>
+          <h1>Справочники</h1>
         </div>
 
-        <!-- Tab navigation -->
-        <div class="tabs-nav">
-            <button class="tab-btn active" data-tab="activities">Виды деятельности</button>
-            <button class="tab-btn" data-tab="groups">Группы</button>
-            <button class="tab-btn" data-tab="articles">Статьи</button>
-        </div>
-
-        <!-- Tab 1: Виды деятельности (level=4) -->
-        <div class="tab-panel active" id="panel-activities">
-            <div class="section-header">
-                <span class="section-title">Виды деятельности</span>
-                <button class="btn-primary" id="add-activity-btn">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Добавить
-                </button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Название</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="activities-tbody">
-                        <tr class="sk-row"><td><span class="skeleton sk" style="width:160px"></span></td><td></td></tr>
-                        <tr class="sk-row"><td><span class="skeleton sk" style="width:130px"></span></td><td></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Tab 2: Группы (level=3) -->
-        <div class="tab-panel" id="panel-groups">
-            <div class="section-header">
-                <span class="section-title">Группы</span>
-                <button class="btn-primary" id="add-group-btn">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Добавить
-                </button>
-            </div>
-            <div class="tree-wrap" id="groups-tree">
-                <div class="tree-node tree-node-activity"><span class="tree-node-name"><span class="skeleton sk" style="width:160px"></span></span></div>
-                <div class="tree-node tree-node-type"><span class="skeleton sk" style="width:60px"></span></div>
-                <div class="tree-node tree-node-group"><span class="tree-node-name"><span class="skeleton sk" style="width:130px"></span></span></div>
-                <div class="tree-node tree-node-group"><span class="tree-node-name"><span class="skeleton sk" style="width:110px"></span></span></div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Статьи (level=2) -->
-        <div class="tab-panel" id="panel-articles">
-            <div class="section-header">
-                <span class="section-title">Статьи</span>
-                <button class="btn-primary" id="add-article-btn">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Добавить
-                </button>
-            </div>
-            <div class="tree-wrap" id="articles-tree">
-                <div class="tree-node tree-node-activity"><span class="tree-node-name"><span class="skeleton sk" style="width:150px"></span></span></div>
-                <div class="tree-node tree-node-type"><span class="skeleton sk" style="width:60px"></span></div>
-                <div class="tree-node tree-node-group-header"><span class="skeleton sk" style="width:120px"></span></div>
-                <div class="tree-node tree-node-article"><span class="tree-node-name"><span class="skeleton sk" style="width:140px"></span></span></div>
-                <div class="tree-node tree-node-article"><span class="tree-node-name"><span class="skeleton sk" style="width:110px"></span></span></div>
-            </div>
-        </div>
-
-    </div>
-</main>
-
-<!-- ── Modal: Вид деятельности ────────────────────────── -->
-<div class="modal-overlay" id="activity-modal">
-    <div class="modal" role="dialog" aria-modal="true">
-        <div class="modal-header">
-            <span class="modal-title" id="activity-modal-title">Добавить вид деятельности</span>
-            <button class="modal-close js-close-activity" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        <!-- Section 1: Activities Reference -->
+        <div id="activities-section">
+          <div class="section-header">
+            <span class="section-title">Виды деятельности</span>
+            <button class="btn-primary" id="add-activity-btn">
+              <svg viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+              </svg>
+              Добавить
             </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Название</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="activities-tbody">
+                <tr class="sk-row">
+                  <td><span class="skeleton sk" style="width: 160px"></span></td>
+                  <td></td>
+                </tr>
+                <tr class="sk-row">
+                  <td><span class="skeleton sk" style="width: 130px"></span></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <form id="activity-form" novalidate>
-            <div class="form-group">
-                <label for="activity-name">Название</label>
-                <input type="text" id="activity-name" placeholder="Например: Операционная" maxlength="100" autocomplete="off">
-                <span class="form-error" id="activity-err-name"></span>
-            </div>
-            <span class="form-error" id="activity-err-global"></span>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary js-close-activity">Отмена</button>
-                <button type="submit" class="btn-primary" id="activity-submit">Добавить</button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<!-- ── Modal: Группа ──────────────────────────────────── -->
-<div class="modal-overlay" id="group-modal">
-    <div class="modal" role="dialog" aria-modal="true">
-        <div class="modal-header">
-            <span class="modal-title" id="group-modal-title">Добавить группу</span>
-            <button class="modal-close js-close-group" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        <!-- Section 2: Main Hierarchy Tree -->
+        <div id="hierarchy-section" style="margin-top: 32px">
+          <div class="section-header">
+            <span class="section-title">Структура категорий</span>
+            <button class="btn-primary" id="add-group-root-btn">
+              <svg viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+              </svg>
+              Добавить группу
             </button>
+          </div>
+          <div class="tree-wrap" id="main-tree">
+            <div class="tree-node">
+              <span class="skeleton sk" style="width: 200px"></span>
+            </div>
+            <div style="padding-left: 24px" class="tree-node">
+              <span class="skeleton sk" style="width: 160px"></span>
+            </div>
+          </div>
         </div>
-        <form id="group-form" novalidate>
-            <div class="form-group">
-                <label for="group-name">Название</label>
-                <input type="text" id="group-name" placeholder="Например: Выручка" maxlength="100" autocomplete="off">
-                <span class="form-error" id="group-err-name"></span>
-            </div>
-            <div class="form-group">
-                <label for="group-type">Тип</label>
-                <select id="group-type">
-                    <option value="">— Не указан —</option>
-                    <option value="income">Доходы</option>
-                    <option value="expense">Расходы</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="group-activity">Вид деятельности</label>
-                <select id="group-activity">
-                    <option value="">— Не указан —</option>
-                </select>
-            </div>
-            <span class="form-error" id="group-err-global"></span>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary js-close-group">Отмена</button>
-                <button type="submit" class="btn-primary" id="group-submit">Добавить</button>
-            </div>
-        </form>
-    </div>
-</div>
+      </div>
+    </main>
 
-<!-- ── Modal: Статья ──────────────────────────────────── -->
-<div class="modal-overlay" id="article-modal">
-    <div class="modal" role="dialog" aria-modal="true">
+    <!-- ── Modal: Category (Universal) ────────────────────────── -->
+    <div class="modal-overlay" id="category-modal">
+      <div class="modal" role="dialog" aria-modal="true">
         <div class="modal-header">
-            <span class="modal-title" id="article-modal-title">Добавить статью</span>
-            <button class="modal-close js-close-article" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
+          <span class="modal-title" id="category-modal-title">Добавить</span>
+          <button class="modal-close js-close-category" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
         </div>
-        <form id="article-form" novalidate>
-            <div class="form-group">
-                <label for="article-name">Название</label>
-                <input type="text" id="article-name" placeholder="Например: Продажи товаров" maxlength="100" autocomplete="off">
-                <span class="form-error" id="article-err-name"></span>
-            </div>
-            <div class="form-group">
-                <label for="article-group">Группа</label>
-                <select id="article-group">
-                    <option value="">— Выберите группу —</option>
-                </select>
-                <span class="form-error" id="article-err-group"></span>
-            </div>
-            <span class="form-error" id="article-err-global"></span>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary js-close-article">Отмена</button>
-                <button type="submit" class="btn-primary" id="article-submit">Добавить</button>
-            </div>
-        </form>
-    </div>
-</div>
+        <form id="category-form" novalidate>
+          <div class="form-group">
+            <label for="category-name">Название</label>
+            <input
+              type="text"
+              id="category-name"
+              placeholder="Введите название"
+              maxlength="100"
+              autocomplete="off"
+            />
+            <span class="form-error" id="category-err-name"></span>
+          </div>
 
-<!-- ── Confirm dialog ─────────────────────────────────── -->
-<div class="confirm-overlay" id="confirm-overlay">
-    <div class="confirm-box" role="dialog" aria-modal="true">
+          <div class="form-group" id="category-type-group" style="display: none">
+            <label>Тип</label>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn-type-toggle" data-type="income" style="flex: 1; padding: 9px; border: 1.5px solid var(--border); background: none; border-radius: 9px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; color: var(--text-muted);">💚 Доход</button>
+              <button type="button" class="btn-type-toggle" data-type="expense" style="flex: 1; padding: 9px; border: 1.5px solid var(--border); background: none; border-radius: 9px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; color: var(--text-muted);">❌ Расход</button>
+            </div>
+            <input type="hidden" id="category-type" />
+          </div>
+
+          <div class="form-group" id="category-parent-group" style="display: none">
+            <label for="category-parent">Родительская категория</label>
+            <select id="category-parent">
+              <option value="">— Выберите —</option>
+            </select>
+            <span class="form-error" id="category-err-parent"></span>
+          </div>
+
+          <span class="form-error" id="category-err-global"></span>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary js-close-category">
+              Отмена
+            </button>
+            <button type="submit" class="btn-primary" id="category-submit">
+              Добавить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Confirm dialog ─────────────────────────────────── -->
+    <div class="confirm-overlay" id="confirm-overlay">
+      <div class="confirm-box" role="dialog" aria-modal="true">
         <h3 id="confirm-title">Удалить?</h3>
         <p id="confirm-text">Это действие нельзя отменить.</p>
         <div class="confirm-footer">
-            <button class="btn-secondary" id="confirm-cancel">Отмена</button>
-            <button class="btn-danger" id="confirm-ok">Удалить</button>
+          <button class="btn-secondary" id="confirm-cancel">Отмена</button>
+          <button class="btn-danger" id="confirm-ok">Удалить</button>
         </div>
+      </div>
     </div>
-</div>
 
-<script>
-const API = 'http://127.0.0.1:8000';
+    <script>
+      const API = "http://127.0.0.1:8000";
 
-// ── Auth guard ──────────────────────────────────────
-const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-if (!token) { window.location.href = 'index.html'; }
+      // ── Auth guard ──────────────────────────────────────
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) {
+        window.location.href = "index.html";
+      }
 
-function parseJwt(t) {
-    try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
-    catch { return {}; }
-}
-const jwtPayload = parseJwt(token);
-const displayName = jwtPayload.name || jwtPayload.email || 'Пользователь';
-document.getElementById('user-name').textContent = displayName;
-document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
+      function parseJwt(t) {
+        try {
+          return JSON.parse(
+            atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+          );
+        } catch {
+          return {};
+        }
+      }
+      const jwtPayload = parseJwt(token);
+      const displayName =
+        jwtPayload.name || jwtPayload.email || "Пользователь";
+      document.getElementById("user-name").textContent = displayName;
+      document.getElementById("user-avatar").textContent =
+        displayName.charAt(0).toUpperCase();
 
-// ── Logout ──────────────────────────────────────────
-function logout() {
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('token');
-    window.location.href = 'index.html';
-}
-document.getElementById('logout-btn').addEventListener('click', logout);
-document.getElementById('header-logout-btn').addEventListener('click', logout);
+      // ── Logout ──────────────────────────────────────────
+      function logout() {
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
+        window.location.href = "index.html";
+      }
+      document.getElementById("logout-btn").addEventListener("click", logout);
+      document
+        .getElementById("header-logout-btn")
+        .addEventListener("click", logout);
 
-// ── API helper ──────────────────────────────────────
-async function apiFetch(path, options = {}) {
-    const res = await fetch(API + path, {
-        ...options,
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(options.headers || {}) },
-    });
-    if (res.status === 401) logout();
-    if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || 'HTTP ' + res.status);
-    }
-    if (res.status === 204) return null;
-    return res.json();
-}
+      // ── API helper ──────────────────────────────────────
+      async function apiFetch(path, options = {}) {
+        const res = await fetch(API + path, {
+          ...options,
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+        });
+        if (res.status === 401) logout();
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.detail || "HTTP " + res.status);
+        }
+        if (res.status === 204) return null;
+        return res.json();
+      }
 
-function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
 
-// ── State ───────────────────────────────────────────
-let activities = []; // level 4
-let groups     = []; // level 3
-let articles   = []; // level 2
+      function typeBadge(type) {
+        if (type === "income")
+          return `<span class="badge badge-income">Доходы</span>`;
+        if (type === "expense")
+          return `<span class="badge badge-expense">Расходы</span>`;
+        return `<span class="badge badge-neutral">—</span>`;
+      }
 
-// ── Load all ────────────────────────────────────────
-async function loadAll() {
-    const cats = await apiFetch('/categories');
-    activities = cats.filter(c => c.level === 4).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    groups     = cats.filter(c => c.level === 3).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    articles   = cats.filter(c => c.level === 2).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-}
+      // ── State ───────────────────────────────────────────
+      let allCategories = [];
+      let expandedNodes = new Set();
+      let editingNodeId = null;
+      let editingNodeParent = null;
+      let draggedId = null;
+      let dragStartX = 0;
 
-function activityName(id) {
-    const a = activities.find(a => a.id === id);
-    return a ? a.name : '—';
-}
-function groupById(id) {
-    return groups.find(g => g.id === id) || null;
-}
+      const LEVEL_NAMES = { 4: "Вид деятельности", 3: "Группа", 2: "Статья" };
 
-function typeBadge(type) {
-    if (type === 'income')  return `<span class="badge badge-income">Доходы</span>`;
-    if (type === 'expense') return `<span class="badge badge-expense">Расходы</span>`;
-    return `<span class="badge badge-neutral">—</span>`;
-}
+      // ── Load all ────────────────────────────────────────
+      async function loadAll() {
+        allCategories = await apiFetch("/categories");
+      }
 
-function actionsBtns(id, name) {
-    return `<div class="td-actions-inner">
-        <button class="btn-icon btn-icon-copy js-copy" data-id="${id}" title="Копировать">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-        </button>
-        <button class="btn-icon btn-icon-edit js-edit" data-id="${id}" title="Редактировать">
-            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-        </button>
-        <button class="btn-icon btn-icon-del js-del" data-id="${id}" data-name="${escHtml(name)}" title="Удалить">
-            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-    </div>`;
-}
+      // ── Save sort order ─────────────────────────────────
+      async function saveSortOrder(siblings) {
+        await Promise.all(siblings.map((node, i) =>
+          apiFetch(`/categories/${node.id}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: node.name, type: node.type || null, sort_order: i * 10 }),
+          })
+        ));
+        siblings.forEach((node, i) => {
+          const cat = allCategories.find(c => c.id === node.id);
+          if (cat) cat.sort_order = i * 10;
+        });
+      }
 
-// ── Render: Виды деятельности ───────────────────────
-function renderActivities() {
-    const tbody = document.getElementById('activities-tbody');
-    tbody.innerHTML = '';
-    if (!activities.length) {
-        tbody.innerHTML = `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
-        return;
-    }
-    activities.forEach(a => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+      // ── Indent (вправо) / Outdent (влево) ───────────────
+      async function indentNode(node) {
+        if (node.level <= 2) { alert("Нельзя углубить: уже самый глубокий уровень"); return; }
+        const hasChildren = allCategories.some(c => c.parent_id === node.id);
+        if (hasChildren) { alert("Нельзя углубить категорию с подкатегориями"); return; }
+        const siblings = allCategories
+          .filter(c => (c.parent_id ?? null) === (node.parent_id ?? null) && c.level === node.level)
+          .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
+        const myIdx = siblings.findIndex(c => c.id === node.id);
+        if (myIdx <= 0) { alert("Нет предыдущего элемента: некуда вложить"); return; }
+        const newParent = siblings[myIdx - 1];
+        const newChildren = allCategories.filter(c => c.parent_id === newParent.id);
+        const maxSort = newChildren.reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10);
+        try {
+          await apiFetch(`/categories/${node.id}/move`, {
+            method: "PATCH",
+            body: JSON.stringify({ level: node.level - 1, parent_id: newParent.id, sort_order: maxSort + 10 }),
+          });
+          expandedNodes.add(newParent.id);
+          await reload();
+        } catch (err) { alert("Ошибка: " + err.message); }
+      }
+
+      async function outdentNode(node) {
+        if (node.level >= 4) { alert("Нельзя: уже верхний уровень"); return; }
+        const parent = allCategories.find(c => c.id === node.parent_id);
+        const newParentId = parent ? (parent.parent_id ?? null) : null;
+        const newLevel = node.level + 1;
+        const newSiblings = allCategories.filter(c =>
+          (c.parent_id ?? null) === (newParentId ?? null) && c.level === newLevel
+        );
+        const maxSort = newSiblings.reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10);
+        try {
+          await apiFetch(`/categories/${node.id}/move`, {
+            method: "PATCH",
+            body: JSON.stringify({ level: newLevel, parent_id: newParentId, sort_order: maxSort + 10 }),
+          });
+          await reload();
+        } catch (err) { alert("Ошибка: " + err.message); }
+      }
+
+      // ── Tree building ────────────────────────────────────
+      function buildTree(categories) {
+        const byId = new Map(
+          categories.map((c) => [c.id, { ...c, children: [] }]),
+        );
+        const roots = [];
+        byId.forEach((node) => {
+          if (node.parent_id && byId.has(node.parent_id)) {
+            byId.get(node.parent_id).children.push(node);
+          } else if (!node.parent_id && node.level === 4) {
+            roots.push(node);
+          }
+        });
+        function sortNodes(arr) {
+          arr.sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
+          arr.forEach(n => sortNodes(n.children));
+        }
+        sortNodes(roots);
+        return roots;
+      }
+
+      // ── Render main tree ─────────────────────────────────
+      function renderMainTree() {
+        const container = document.getElementById("main-tree");
+        const tree = buildTree(allCategories);
+        container.innerHTML = "";
+
+        if (!tree.length) {
+          container.innerHTML =
+            `<div class="state-empty">Нет категорий. Добавьте группу или вид деятельности.</div>`;
+          return;
+        }
+
+        function renderNode(node, level = 0) {
+          const nodeEl = document.createElement("div");
+          nodeEl.className = "tree-node";
+          nodeEl.style.paddingLeft = level * 24 + "px";
+          nodeEl.dataset.id = node.id;
+          nodeEl.dataset.level = node.level;
+          nodeEl.draggable = true;
+          const isExpanded = expandedNodes.has(node.id);
+          const hasChildren =
+            node.children && node.children.length > 0 && level < 3;
+
+          let html = `<div style="display: flex; align-items: center; gap: 8px; flex: 1;">`;
+          html += `<button class="drag-handle" draggable="false" title="Перетащить"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>`;
+
+          // Collapse/expand button
+          if (hasChildren) {
+            html += `<button class="tree-toggle" data-id="${node.id}" style="width: 24px; height: 24px; padding: 0; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: transform 0.15s;">
+              <svg style="width: 16px; height: 16px; transform: rotate(${isExpanded ? 90 : 0}deg); transition: transform 0.15s;" viewBox="0 0 24 24"><path fill="currentColor" d="M8.59 16.58L10 18l6-6-6-6-1.41 1.41L12.17 12z"/></svg>
+            </button>`;
+          } else {
+            html += `<div style="width: 24px;"></div>`;
+          }
+
+          // Level icon & name
+          const levelLabel =
+            node.level === 4
+              ? "📊"
+              : node.level === 3
+                ? "📁"
+                : node.level === 2
+                  ? "📄"
+                  : "•";
+          html += `<span style="font-weight: ${node.level === 4 ? "600" : "500"}; flex-wrap: wrap;">${levelLabel} ${escHtml(node.name)}</span>`;
+
+          html += `<div style="flex: 1;"></div>`;
+
+          // Actions menu
+          html += `<div style="display: flex; gap: 6px;">
+            <button class="btn-icon tree-edit" data-id="${node.id}" title="Редактировать">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+            <button class="btn-icon tree-add-child" data-id="${node.id}" data-level="${node.level}" ${node.level === 2 ? "disabled" : ""} title="Добавить подкатегорию">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </button>
+            ${node.level === 2 ? `<button class="btn-icon tree-copy" data-id="${node.id}" title="Копировать"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></button>` : ""}
+            <button class="btn-icon tree-delete" data-id="${node.id}" title="Удалить">
+              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>`;
+          html += `</div>`;
+          nodeEl.innerHTML = html;
+
+          // Attach buttons
+          nodeEl.querySelector(".tree-toggle")?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (expandedNodes.has(node.id)) {
+              expandedNodes.delete(node.id);
+            } else {
+              expandedNodes.add(node.id);
+            }
+            renderMainTree();
+          });
+
+          nodeEl.querySelector(".tree-edit")?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEditNode(node);
+          });
+
+          nodeEl
+            .querySelector(".tree-add-child")
+            ?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openAddChild(node);
+            });
+
+          nodeEl.querySelector(".tree-copy")?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openCopyArticle(node);
+          });
+
+          nodeEl.querySelector(".tree-delete")?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openConfirm(node.id, node.name, "category");
+          });
+
+          // ── Drag events ──────────────────────────────────
+          const hint = document.getElementById("drag-level-hint");
+
+          nodeEl.addEventListener("dragstart", (e) => {
+            draggedId = node.id;
+            dragStartX = e.clientX;
+            e.dataTransfer.effectAllowed = "move";
+            requestAnimationFrame(() => nodeEl.classList.add("dragging"));
+          });
+
+          nodeEl.addEventListener("dragend", () => {
+            draggedId = null;
+            hint.style.display = "none";
+            document.querySelectorAll(".tree-node").forEach(el =>
+              el.classList.remove("dragging", "drag-over-top", "drag-over-bottom")
+            );
+          });
+
+          nodeEl.addEventListener("dragover", (e) => {
+            if (!draggedId) return;
+            const dragged = allCategories.find(c => c.id === draggedId);
+            if (!dragged) return;
+
+            const deltaX = e.clientX - dragStartX;
+
+            if (Math.abs(deltaX) > 30) {
+              // Горизонтальное перетаскивание → смена уровня
+              const newLevel = deltaX > 0 ? dragged.level - 1 : dragged.level + 1;
+              const name = LEVEL_NAMES[newLevel];
+              if (name) {
+                hint.textContent = (deltaX > 0 ? "→ " : "← ") + name;
+                hint.style.display = "block";
+                hint.style.left = (e.clientX + 14) + "px";
+                hint.style.top = (e.clientY - 12) + "px";
+              } else {
+                hint.style.display = "none";
+              }
+              document.querySelectorAll(".tree-node").forEach(el =>
+                el.classList.remove("drag-over-top", "drag-over-bottom")
+              );
+              e.preventDefault();
+              return;
+            }
+
+            hint.style.display = "none";
+            // Вертикальное перетаскивание — разрешаем любой узел того же уровня
+            if (draggedId === node.id) return;
+            if (dragged.level !== node.level) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            const rect = nodeEl.getBoundingClientRect();
+            document.querySelectorAll(".tree-node").forEach(el =>
+              el.classList.remove("drag-over-top", "drag-over-bottom")
+            );
+            nodeEl.classList.add(e.clientY < rect.top + rect.height / 2 ? "drag-over-top" : "drag-over-bottom");
+          });
+
+          nodeEl.addEventListener("dragleave", () => {
+            nodeEl.classList.remove("drag-over-top", "drag-over-bottom");
+          });
+
+          nodeEl.addEventListener("drop", async (e) => {
+            e.preventDefault();
+            nodeEl.classList.remove("drag-over-top", "drag-over-bottom");
+            hint.style.display = "none";
+            if (!draggedId) return;
+            const dragged = allCategories.find(c => c.id === draggedId);
+            if (!dragged) return;
+
+            const deltaX = e.clientX - dragStartX;
+
+            // Горизонтальное перетаскивание → indent / outdent
+            if (Math.abs(deltaX) > 30) {
+              if (deltaX > 0) await indentNode(dragged);
+              else await outdentNode(dragged);
+              return;
+            }
+
+            // Вертикальное — требуется одинаковый уровень
+            if (draggedId === node.id) return;
+            if (dragged.level !== node.level) return;
+
+            const fromParentId = dragged.parent_id ?? null;
+            const toParentId = node.parent_id ?? null;
+            const rect = nodeEl.getBoundingClientRect();
+            const insertAfter = e.clientY >= rect.top + rect.height / 2;
+
+            if (fromParentId === toParentId) {
+              // Тот же родитель — только переупорядочиваем
+              const siblings = allCategories
+                .filter(c => (c.parent_id ?? null) === toParentId && c.level === node.level)
+                .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
+              const fromIdx = siblings.findIndex(c => c.id === draggedId);
+              siblings.splice(fromIdx, 1);
+              let toIdx = siblings.findIndex(c => c.id === node.id);
+              if (insertAfter) toIdx += 1;
+              siblings.splice(toIdx, 0, dragged);
+              try {
+                await saveSortOrder(siblings);
+              } catch (err) {
+                alert("Ошибка сохранения порядка: " + err.message);
+              }
+              renderActivitiesReference();
+              renderMainTree();
+            } else {
+              // Другой родитель — меняем parent_id через /move
+              const newSiblings = allCategories
+                .filter(c => (c.parent_id ?? null) === toParentId && c.level === node.level && c.id !== dragged.id)
+                .sort((a, b) => (a.sort_order - b.sort_order) || a.name.localeCompare(b.name, "ru"));
+              let toIdx = newSiblings.findIndex(c => c.id === node.id);
+              if (insertAfter) toIdx += 1;
+              newSiblings.splice(toIdx, 0, dragged);
+              try {
+                await apiFetch(`/categories/${dragged.id}/move`, {
+                  method: "PATCH",
+                  body: JSON.stringify({ level: dragged.level, parent_id: toParentId, sort_order: toIdx * 10 }),
+                });
+                dragged.parent_id = toParentId;
+                dragged.sort_order = toIdx * 10;
+                await saveSortOrder(newSiblings);
+              } catch (err) {
+                alert("Ошибка перемещения: " + err.message);
+              }
+              await reload();
+            }
+          });
+
+          container.appendChild(nodeEl);
+
+          // Render children if expanded
+          if (hasChildren && isExpanded) {
+            if (node.level === 4) {
+              // Group level-3 children by type: Доходы first, then Расходы
+              const incomeKids = node.children.filter(c => c.type === "income");
+              const expenseKids = node.children.filter(c => c.type === "expense");
+              const otherKids = node.children.filter(c => !c.type);
+
+              const renderTypeHeader = (label, cls) => {
+                const hdr = document.createElement("div");
+                hdr.className = `type-section-header type-section-${cls}`;
+                hdr.style.paddingLeft = (level + 1) * 24 + 12 + "px";
+                hdr.innerHTML = `<span class="type-section-label">${label}</span>`;
+                container.appendChild(hdr);
+              };
+
+              if (incomeKids.length) {
+                renderTypeHeader("Доходы", "income");
+                incomeKids.forEach(c => renderNode(c, level + 1));
+              }
+              if (expenseKids.length) {
+                renderTypeHeader("Расходы", "expense");
+                expenseKids.forEach(c => renderNode(c, level + 1));
+              }
+              otherKids.forEach(c => renderNode(c, level + 1));
+            } else {
+              node.children.forEach((child) => renderNode(child, level + 1));
+            }
+          }
+        }
+
+        tree.forEach((node) => renderNode(node));
+      }
+
+      // ── Render activities reference (справочник) ────────
+      function renderActivitiesReference() {
+        const tbody = document.getElementById("activities-tbody");
+        const activities = allCategories.filter((c) => c.level === 4);
+        tbody.innerHTML = "";
+
+        if (!activities.length) {
+          tbody.innerHTML =
+            `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
+          return;
+        }
+
+        activities.forEach((a) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
             <td class="td-name">${escHtml(a.name)}</td>
-            <td class="td-actions">${actionsBtns(a.id, a.name)}</td>
-        `;
-        tr.querySelector('.js-copy').addEventListener('click', () => openCopyActivity(a));
-        tr.querySelector('.js-edit').addEventListener('click', () => openEditActivity(a));
-        tr.querySelector('.js-del').addEventListener('click', () => openConfirm(a.id, a.name, 'activity'));
-        tbody.appendChild(tr);
-    });
-}
+            <td class="td-actions">
+              <div class="td-actions-inner">
+                <button class="btn-icon btn-icon-edit act-edit" data-id="${a.id}" title="Редактировать">
+                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </button>
+                <button class="btn-icon btn-icon-del act-delete" data-id="${a.id}" title="Удалить">
+                  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+              </div>
+            </td>
+          `;
+          tr.querySelector(".act-edit").addEventListener("click", () => {
+            openEditNode(a);
+          });
+          tr.querySelector(".act-delete").addEventListener("click", () => {
+            openConfirm(a.id, a.name, "category");
+          });
+          tbody.appendChild(tr);
+        });
+      }
 
-// ── Render: Группы (дерево) ─────────────────────────
-function renderGroups() {
-    const container = document.getElementById('groups-tree');
-    container.innerHTML = '';
-    if (!groups.length) {
-        container.innerHTML = `<div class="state-empty">Групп пока нет</div>`;
-        return;
-    }
-
-    const TYPE_ORDER = ['income', 'expense', null];
-
-    function appendGroupNode(g) {
-        const node = document.createElement('div');
-        node.className = 'tree-node tree-node-group';
-        node.innerHTML = `<span class="tree-node-name">${escHtml(g.name)}</span><div class="tree-node-actions">${actionsBtns(g.id, g.name)}</div>`;
-        node.querySelector('.js-copy').addEventListener('click', () => openCopyGroup(g));
-        node.querySelector('.js-edit').addEventListener('click', () => openEditGroup(g));
-        node.querySelector('.js-del').addEventListener('click', () => openConfirm(g.id, g.name, 'group'));
-        container.appendChild(node);
-    }
-
-    function appendTypeSection(label, badgeCls, actGroups) {
-        const byType = actGroups.filter(g => (g.type || null) === (label === 'income' ? 'income' : label === 'expense' ? 'expense' : null));
-        if (!byType.length) return;
-        const typeNode = document.createElement('div');
-        typeNode.className = 'tree-node tree-node-type';
-        typeNode.innerHTML = typeBadge(label === 'none' ? null : label);
-        container.appendChild(typeNode);
-        byType.forEach(appendGroupNode);
-    }
-
-    function appendActivitySection(actName, actGroups) {
-        const actNode = document.createElement('div');
-        actNode.className = 'tree-node tree-node-activity';
-        actNode.innerHTML = `<span class="tree-node-name">${escHtml(actName)}</span>`;
-        container.appendChild(actNode);
-        appendTypeSection('income',  'badge-income',  actGroups);
-        appendTypeSection('expense', 'badge-expense', actGroups);
-        appendTypeSection('none',    'badge-neutral', actGroups);
-    }
-
-    // Группы с видом деятельности
-    activities.forEach(act => {
-        const actGroups = groups.filter(g => g.parent_id === act.id);
-        if (actGroups.length) appendActivitySection(act.name, actGroups);
-    });
-    // Группы без вида деятельности
-    const orphans = groups.filter(g => g.parent_id === null);
-    if (orphans.length) appendActivitySection('Без вида деятельности', orphans);
-}
-
-// ── Render: Статьи (дерево 4 уровня) ───────────────
-function renderArticles() {
-    const container = document.getElementById('articles-tree');
-    container.innerHTML = '';
-    if (!articles.length) {
-        container.innerHTML = `<div class="state-empty">Статей пока нет</div>`;
-        return;
-    }
-
-    function appendArticleNode(a) {
-        const node = document.createElement('div');
-        node.className = 'tree-node tree-node-article';
-        node.innerHTML = `<span class="tree-node-name">${escHtml(a.name)}</span><div class="tree-node-actions">${actionsBtns(a.id, a.name)}</div>`;
-        node.querySelector('.js-copy').addEventListener('click', () => openCopyArticle(a));
-        node.querySelector('.js-edit').addEventListener('click', () => openEditArticle(a));
-        node.querySelector('.js-del').addEventListener('click', () => openConfirm(a.id, a.name, 'article'));
-        container.appendChild(node);
-    }
-
-    function appendGroupSection(grp) {
-        const grpNode = document.createElement('div');
-        grpNode.className = 'tree-node tree-node-group-header';
-        grpNode.innerHTML = `<span class="tree-node-name">${escHtml(grp.name)}</span>`;
-        container.appendChild(grpNode);
-        articles.filter(a => a.parent_id === grp.id).forEach(appendArticleNode);
-    }
-
-    function appendTypeSection(typeVal, actGroups) {
-        const typeGroups = actGroups.filter(g => (g.type || null) === typeVal);
-        if (!typeGroups.length) return;
-        const typeNode = document.createElement('div');
-        typeNode.className = 'tree-node tree-node-type';
-        typeNode.innerHTML = typeBadge(typeVal);
-        container.appendChild(typeNode);
-        typeGroups.forEach(appendGroupSection);
-    }
-
-    function appendActivitySection(actName, actGroups) {
-        const actNode = document.createElement('div');
-        actNode.className = 'tree-node tree-node-activity';
-        actNode.innerHTML = `<span class="tree-node-name">${escHtml(actName)}</span>`;
-        container.appendChild(actNode);
-        appendTypeSection('income',  actGroups);
-        appendTypeSection('expense', actGroups);
-        appendTypeSection(null,      actGroups);
-    }
-
-    // Собираем группы, у которых есть статьи
-    const groupsWithArticles = groups.filter(g => articles.some(a => a.parent_id === g.id));
-
-    activities.forEach(act => {
-        const actGroups = groupsWithArticles.filter(g => g.parent_id === act.id);
-        if (actGroups.length) appendActivitySection(act.name, actGroups);
-    });
-    // Группы без вида деятельности
-    const orphanGroups = groupsWithArticles.filter(g => g.parent_id === null);
-    if (orphanGroups.length) appendActivitySection('Без вида деятельности', orphanGroups);
-    // Статьи без группы (parent_id не найден в groups)
-    const ungrouped = articles.filter(a => !groups.some(g => g.id === a.parent_id));
-    if (ungrouped.length) {
-        const node = document.createElement('div');
-        node.className = 'tree-node tree-node-activity';
-        node.innerHTML = `<span class="tree-node-name">Без группы</span>`;
-        container.appendChild(node);
-        ungrouped.forEach(appendArticleNode);
-    }
-}
-
-async function reload() {
-    try {
-        await loadAll();
-        renderActivities();
-        renderGroups();
-        renderArticles();
-        // refresh selects if modals are open (they're closed before reload, so no-op)
-    } catch (err) {
-        alert('Ошибка загрузки: ' + err.message);
-    }
-}
-
-// ── Tab switching ───────────────────────────────────
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-    });
-});
-
-// ── Modal helpers ───────────────────────────────────
-function openOverlay(id)  { document.getElementById(id).classList.add('open'); }
-function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
-
-function populateSelect(selectEl, items, valueFn, labelFn, placeholder = '— Не указан —') {
-    while (selectEl.options.length > 1) selectEl.remove(1);
-    items.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = valueFn(item);
-        opt.textContent = labelFn(item);
-        selectEl.appendChild(opt);
-    });
-}
-
-// close buttons (multiple elements share class)
-document.querySelectorAll('.js-close-activity').forEach(el =>
-    el.addEventListener('click', () => closeOverlay('activity-modal')));
-document.querySelectorAll('.js-close-group').forEach(el =>
-    el.addEventListener('click', () => closeOverlay('group-modal')));
-document.querySelectorAll('.js-close-article').forEach(el =>
-    el.addEventListener('click', () => closeOverlay('article-modal')));
-
-['activity-modal','group-modal','article-modal'].forEach(id => {
-    document.getElementById(id).addEventListener('click', e => {
-        if (e.target === e.currentTarget) closeOverlay(id);
-    });
-});
-
-// ── Виды деятельности modal ─────────────────────────
-let editActivityId = null;
-
-function openAddActivity() {
-    editActivityId = null;
-    document.getElementById('activity-modal-title').textContent = 'Добавить вид деятельности';
-    document.getElementById('activity-submit').textContent = 'Добавить';
-    document.getElementById('activity-name').value = '';
-    document.getElementById('activity-err-name').textContent = '';
-    document.getElementById('activity-err-global').textContent = '';
-    openOverlay('activity-modal');
-    document.getElementById('activity-name').focus();
-}
-
-function openEditActivity(item) {
-    editActivityId = item.id;
-    document.getElementById('activity-modal-title').textContent = 'Редактировать вид деятельности';
-    document.getElementById('activity-submit').textContent = 'Сохранить';
-    document.getElementById('activity-name').value = item.name;
-    document.getElementById('activity-err-name').textContent = '';
-    document.getElementById('activity-err-global').textContent = '';
-    openOverlay('activity-modal');
-    document.getElementById('activity-name').focus();
-}
-
-function openCopyActivity(item) {
-    editActivityId = null;
-    document.getElementById('activity-modal-title').textContent = 'Копировать вид деятельности';
-    document.getElementById('activity-submit').textContent = 'Создать копию';
-    document.getElementById('activity-name').value = 'Копия — ' + item.name;
-    document.getElementById('activity-err-name').textContent = '';
-    document.getElementById('activity-err-global').textContent = '';
-    openOverlay('activity-modal');
-    document.getElementById('activity-name').focus();
-}
-
-document.getElementById('add-activity-btn').addEventListener('click', openAddActivity);
-
-document.getElementById('activity-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const name = document.getElementById('activity-name').value.trim();
-    const errName = document.getElementById('activity-err-name');
-    const errGlobal = document.getElementById('activity-err-global');
-    const btn = document.getElementById('activity-submit');
-    errName.textContent = '';
-    errGlobal.textContent = '';
-
-    if (!name) { errName.textContent = 'Введите название'; return; }
-
-    btn.disabled = true; btn.textContent = 'Сохранение…';
-    try {
-        if (editActivityId !== null) {
-            await apiFetch(`/categories/${editActivityId}`, { method: 'PUT', body: JSON.stringify({ name }) });
-        } else {
-            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, level: 4, parent_id: null, sort_order: 0 }) });
+      async function reload() {
+        try {
+          await loadAll();
+          renderActivitiesReference();
+          renderMainTree();
+        } catch (err) {
+          alert("Ошибка загрузки: " + err.message);
         }
-        closeOverlay('activity-modal');
-        await reload();
-    } catch (err) {
-        errGlobal.textContent = err.message;
-    } finally {
-        btn.disabled = false;
-        btn.textContent = editActivityId !== null ? 'Сохранить' : 'Добавить';
-    }
-});
+      }
 
-// ── Группы modal ────────────────────────────────────
-let editGroupId = null;
+      // ── Modal helpers ───────────────────────────────────
+      function openOverlay(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeOverlay(id) {
+        document.getElementById(id).classList.remove("open");
+      }
 
-function openAddGroup() {
-    editGroupId = null;
-    document.getElementById('group-modal-title').textContent = 'Добавить группу';
-    document.getElementById('group-submit').textContent = 'Добавить';
-    document.getElementById('group-name').value = '';
-    document.getElementById('group-type').value = '';
-    document.getElementById('group-err-name').textContent = '';
-    document.getElementById('group-err-global').textContent = '';
-    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
-    document.getElementById('group-activity').value = '';
-    openOverlay('group-modal');
-    document.getElementById('group-name').focus();
-}
+      function populateSelect(selectEl, items, valueFn, labelFn) {
+        while (selectEl.options.length > 1) selectEl.remove(1);
+        items.forEach((item) => {
+          const opt = document.createElement("option");
+          opt.value = valueFn(item);
+          opt.textContent = labelFn(item);
+          selectEl.appendChild(opt);
+        });
+      }
 
-function openEditGroup(item) {
-    editGroupId = item.id;
-    document.getElementById('group-modal-title').textContent = 'Редактировать группу';
-    document.getElementById('group-submit').textContent = 'Сохранить';
-    document.getElementById('group-name').value = item.name;
-    document.getElementById('group-type').value = item.type || '';
-    document.getElementById('group-err-name').textContent = '';
-    document.getElementById('group-err-global').textContent = '';
-    // parent_id can't change via PUT — disable activity select
-    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
-    document.getElementById('group-activity').value = item.parent_id || '';
-    document.getElementById('group-activity').disabled = true;
-    openOverlay('group-modal');
-    document.getElementById('group-name').focus();
-}
+      // Type toggle buttons
+      document.querySelectorAll(".btn-type-toggle").forEach((btn) => {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
+            b.style.background = "none";
+            b.style.color = "var(--text-muted)";
+          });
+          this.style.background = this.dataset.type === "income" ? "#f0fdf4" : "#fef2f2";
+          this.style.color = this.dataset.type === "income" ? "#16a34a" : "#dc2626";
+          this.style.borderColor = this.dataset.type === "income" ? "#86efac" : "#fca5a5";
+          document.getElementById("category-type").value = this.dataset.type;
+        });
+      });
 
-function openCopyGroup(item) {
-    editGroupId = null;
-    document.getElementById('group-modal-title').textContent = 'Копировать группу';
-    document.getElementById('group-submit').textContent = 'Создать копию';
-    document.getElementById('group-name').value = 'Копия — ' + item.name;
-    document.getElementById('group-type').value = item.type || '';
-    document.getElementById('group-err-name').textContent = '';
-    document.getElementById('group-err-global').textContent = '';
-    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
-    document.getElementById('group-activity').value = item.parent_id || '';
-    document.getElementById('group-activity').disabled = false;
-    openOverlay('group-modal');
-    document.getElementById('group-name').focus();
-}
+      // Close buttons
+      document
+        .querySelectorAll(".js-close-category")
+        .forEach((el) =>
+          el.addEventListener("click", () => closeOverlay("category-modal")),
+        );
 
-document.getElementById('add-group-btn').addEventListener('click', () => {
-    document.getElementById('group-activity').disabled = false;
-    openAddGroup();
-});
+      // Закрытие category-modal по клику вне окна намеренно отключено
 
-document.getElementById('group-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const name = document.getElementById('group-name').value.trim();
-    const type = document.getElementById('group-type').value || null;
-    const activityVal = document.getElementById('group-activity').value;
-    const parent_id = activityVal ? Number(activityVal) : null;
-    const errName = document.getElementById('group-err-name');
-    const errGlobal = document.getElementById('group-err-global');
-    const btn = document.getElementById('group-submit');
-    errName.textContent = '';
-    errGlobal.textContent = '';
+      // ── Category modal ──────────────────────────────────
+      function openAddActivity() {
+        editingNodeId = null;
+        editingNodeParent = null;
+        document.getElementById("category-modal-title").textContent =
+          "Добавить вид деятельности";
+        document.getElementById("category-name").value = "";
+        document.getElementById("category-name").placeholder =
+          "Например: Операционная";
+        document.getElementById("category-type-group").style.display = "none";
+        document.getElementById("category-parent-group").style.display = "none";
+        document.getElementById("category-err-name").textContent = "";
+        document.getElementById("category-err-global").textContent = "";
+        document.getElementById("category-submit").textContent = "Добавить";
+        openOverlay("category-modal");
+        document.getElementById("category-name").focus();
+      }
 
-    if (!name) { errName.textContent = 'Введите название'; return; }
+      function openEditNode(node) {
+        editingNodeId = node.id;
+        editingNodeParent = node.parent_id;
+        const levelLabels = {
+          4: "вид деятельности",
+          3: "группу",
+          2: "статью",
+        };
+        document.getElementById("category-modal-title").textContent =
+          "Редактировать " + levelLabels[node.level];
+        document.getElementById("category-name").value = node.name;
+        document.getElementById("category-err-name").textContent = "";
+        document.getElementById("category-err-global").textContent = "";
 
-    btn.disabled = true; btn.textContent = 'Сохранение…';
-    try {
-        if (editGroupId !== null) {
-            await apiFetch(`/categories/${editGroupId}`, { method: 'PUT', body: JSON.stringify({ name, type }) });
+        if (node.level >= 3) {
+          document.getElementById("category-type-group").style.display = "block";
+          document.getElementById("category-type").value = node.type || "";
+          // Reset button styles and set the correct one
+          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
+            b.style.background = "none";
+            b.style.color = "var(--text-muted)";
+            b.style.borderColor = "var(--border)";
+            if (b.dataset.type === (node.type || "")) {
+              b.style.background = node.type === "income" ? "#f0fdf4" : "#fef2f2";
+              b.style.color = node.type === "income" ? "#16a34a" : "#dc2626";
+              b.style.borderColor = node.type === "income" ? "#86efac" : "#fca5a5";
+            }
+          });
         } else {
-            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, type, level: 3, parent_id, sort_order: 0 }) });
+          document.getElementById("category-type-group").style.display = "none";
         }
-        document.getElementById('group-activity').disabled = false;
-        closeOverlay('group-modal');
-        await reload();
-    } catch (err) {
-        errGlobal.textContent = err.message;
-    } finally {
-        btn.disabled = false;
-        btn.textContent = editGroupId !== null ? 'Сохранить' : 'Добавить';
-    }
-});
+        document.getElementById("category-parent-group").style.display = "none";
+        document.getElementById("category-submit").textContent = "Сохранить";
+        openOverlay("category-modal");
+        document.getElementById("category-name").focus();
+      }
 
-// ── Статьи modal ────────────────────────────────────
-let editArticleId = null;
+      function openCopyArticle(article) {
+        editingNodeId = null;
+        editingNodeParent = article.parent_id;
+        document.getElementById("category-modal-title").textContent =
+          "Копировать статью";
+        document.getElementById("category-name").value = "Копия — " + article.name;
+        document.getElementById("category-err-name").textContent = "";
+        document.getElementById("category-err-global").textContent = "";
+        document.getElementById("category-type-group").style.display = "none";
+        document.getElementById("category-parent-group").style.display = "none";
+        document.getElementById("category-submit").textContent = "Создать копию";
+        openOverlay("category-modal");
+        document.getElementById("category-name").focus();
+      }
 
-function openAddArticle() {
-    editArticleId = null;
-    document.getElementById('article-modal-title').textContent = 'Добавить статью';
-    document.getElementById('article-submit').textContent = 'Добавить';
-    document.getElementById('article-name').value = '';
-    document.getElementById('article-err-name').textContent = '';
-    document.getElementById('article-err-group').textContent = '';
-    document.getElementById('article-err-global').textContent = '';
-    populateSelect(document.getElementById('article-group'), groups, g => g.id,
-        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
-    document.getElementById('article-group').value = '';
-    document.getElementById('article-group').disabled = false;
-    openOverlay('article-modal');
-    document.getElementById('article-name').focus();
-}
+      function openAddChild(parentNode) {
+        editingNodeId = null;
+        editingNodeParent = parentNode.id;
+        const nextLevel = parentNode.level - 1;
+        const levelLabels = { 3: "группу", 2: "статью" };
+        document.getElementById("category-modal-title").textContent =
+          "Добавить " + levelLabels[nextLevel] + " к " + escHtml(parentNode.name);
+        document.getElementById("category-name").value = "";
+        document.getElementById("category-name").placeholder =
+          nextLevel === 3 ? "Например: Выручка" : "Например: Продажи товаров";
+        document.getElementById("category-err-name").textContent = "";
+        document.getElementById("category-err-global").textContent = "";
 
-function openEditArticle(item) {
-    editArticleId = item.id;
-    document.getElementById('article-modal-title').textContent = 'Редактировать статью';
-    document.getElementById('article-submit').textContent = 'Сохранить';
-    document.getElementById('article-name').value = item.name;
-    document.getElementById('article-err-name').textContent = '';
-    document.getElementById('article-err-group').textContent = '';
-    document.getElementById('article-err-global').textContent = '';
-    populateSelect(document.getElementById('article-group'), groups, g => g.id,
-        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
-    document.getElementById('article-group').value = item.parent_id || '';
-    document.getElementById('article-group').disabled = true; // parent can't change
-    openOverlay('article-modal');
-    document.getElementById('article-name').focus();
-}
-
-function openCopyArticle(item) {
-    editArticleId = null;
-    document.getElementById('article-modal-title').textContent = 'Копировать статью';
-    document.getElementById('article-submit').textContent = 'Создать копию';
-    document.getElementById('article-name').value = 'Копия — ' + item.name;
-    document.getElementById('article-err-name').textContent = '';
-    document.getElementById('article-err-group').textContent = '';
-    document.getElementById('article-err-global').textContent = '';
-    populateSelect(document.getElementById('article-group'), groups, g => g.id,
-        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
-    document.getElementById('article-group').value = item.parent_id || '';
-    document.getElementById('article-group').disabled = false;
-    openOverlay('article-modal');
-    document.getElementById('article-name').focus();
-}
-
-document.getElementById('add-article-btn').addEventListener('click', openAddArticle);
-
-document.getElementById('article-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const name = document.getElementById('article-name').value.trim();
-    const groupVal = document.getElementById('article-group').value;
-    const parent_id = groupVal ? Number(groupVal) : null;
-    const errName = document.getElementById('article-err-name');
-    const errGroup = document.getElementById('article-err-group');
-    const errGlobal = document.getElementById('article-err-global');
-    const btn = document.getElementById('article-submit');
-    errName.textContent = '';
-    errGroup.textContent = '';
-    errGlobal.textContent = '';
-
-    let valid = true;
-    if (!name) { errName.textContent = 'Введите название'; valid = false; }
-    if (!parent_id && editArticleId === null) { errGroup.textContent = 'Выберите группу'; valid = false; }
-    if (!valid) return;
-
-    btn.disabled = true; btn.textContent = 'Сохранение…';
-    try {
-        if (editArticleId !== null) {
-            await apiFetch(`/categories/${editArticleId}`, { method: 'PUT', body: JSON.stringify({ name }) });
-        } else {
-            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, level: 2, parent_id, sort_order: 0 }) });
+        if (nextLevel === 3) {
+          // Adding group
+          document.getElementById("category-type-group").style.display = "block";
+          document.getElementById("category-type").value = "";
+          // Reset button styles
+          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
+            b.style.background = "none";
+            b.style.color = "var(--text-muted)";
+            b.style.borderColor = "var(--border)";
+          });
+          document.getElementById("category-parent-group").style.display = "none";
+        } else if (nextLevel === 2) {
+          // Adding article
+          document.getElementById("category-type-group").style.display = "none";
+          document.getElementById("category-parent-group").style.display = "block";
+          const groups = allCategories.filter((c) => c.level === 3);
+          populateSelect(
+            document.getElementById("category-parent"),
+            groups,
+            (g) => g.id,
+            (g) => g.name + (g.type ? ` (${g.type === "income" ? "Доходы" : "Расходы"})` : ""),
+          );
+          document.getElementById("category-parent").value = "";
         }
-        document.getElementById('article-group').disabled = false;
-        closeOverlay('article-modal');
-        await reload();
-    } catch (err) {
-        errGlobal.textContent = err.message;
-    } finally {
-        btn.disabled = false;
-        btn.textContent = editArticleId !== null ? 'Сохранить' : 'Добавить';
-    }
-});
+        document.getElementById("category-submit").textContent = "Добавить";
+        openOverlay("category-modal");
+        document.getElementById("category-name").focus();
+      }
 
-// ── Confirm delete ──────────────────────────────────
-let pendingDeleteId = null;
+      document
+        .getElementById("add-activity-btn")
+        .addEventListener("click", openAddActivity);
 
-function openConfirm(id, name, kind) {
-    pendingDeleteId = id;
-    const kindLabels = { activity: 'Вид деятельности', group: 'Группа', article: 'Статья' };
-    document.getElementById('confirm-title').textContent = `Удалить запись?`;
-    document.getElementById('confirm-text').textContent =
-        `«${name}» будет удалён${kind === 'group' || kind === 'article' ? 'а' : ''}. Если есть дочерние записи — удалите их сначала.`;
-    openOverlay('confirm-overlay');
-}
+      document
+        .getElementById("add-group-root-btn")
+        .addEventListener("click", () => {
+          editingNodeId = null;
+          editingNodeParent = null;
+          document.getElementById("category-modal-title").textContent =
+            "Добавить группу";
+          document.getElementById("category-name").value = "";
+          document.getElementById("category-name").placeholder =
+            "Например: Выручка";
+          document.getElementById("category-err-name").textContent = "";
+          document.getElementById("category-err-global").textContent = "";
+          document.getElementById("category-type-group").style.display = "block";
+          // Reset button styles
+          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
+            b.style.background = "none";
+            b.style.color = "var(--text-muted)";
+            b.style.borderColor = "var(--border)";
+          });
+          document.getElementById("category-type").value = "";
+          document.getElementById("category-parent-group").style.display = "block";
+          const activities = allCategories.filter((c) => c.level === 4);
+          populateSelect(
+            document.getElementById("category-parent"),
+            activities,
+            (a) => a.id,
+            (a) => a.name,
+          );
+          document.getElementById("category-parent").value = "";
+          document.getElementById("category-submit").textContent = "Добавить";
+          openOverlay("category-modal");
+          document.getElementById("category-name").focus();
+        });
 
-document.getElementById('confirm-cancel').addEventListener('click', () => closeOverlay('confirm-overlay'));
-document.getElementById('confirm-overlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeOverlay('confirm-overlay');
-});
+      document
+        .getElementById("category-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("category-name").value.trim();
+          const type = document.getElementById("category-type").value || null;
+          const parentVal = document.getElementById("category-parent").value;
+          const parentId = parentVal ? Number(parentVal) : editingNodeParent;
+          const errName = document.getElementById("category-err-name");
+          const errParent = document.getElementById("category-err-parent");
+          const errGlobal = document.getElementById("category-err-global");
+          const btn = document.getElementById("category-submit");
 
-document.getElementById('confirm-ok').addEventListener('click', async () => {
-    if (!pendingDeleteId) return;
-    const id = pendingDeleteId;
-    closeOverlay('confirm-overlay');
-    try {
-        await apiFetch(`/categories/${id}`, { method: 'DELETE' });
-        await reload();
-    } catch (err) {
-        alert('Ошибка удаления: ' + err.message);
-    }
-    pendingDeleteId = null;
-});
+          errName.textContent = "";
+          errParent.textContent = "";
+          errGlobal.textContent = "";
 
-// ── Keyboard ────────────────────────────────────────
-document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    ['confirm-overlay','activity-modal','group-modal','article-modal'].forEach(id => {
-        if (document.getElementById(id).classList.contains('open')) closeOverlay(id);
-    });
-});
+          if (!name) {
+            errName.textContent = "Введите название";
+            return;
+          }
 
-// ── Init ─────────────────────────────────────────────
-(async () => {
-    try {
-        await loadAll();
-        renderActivities();
-        renderGroups();
-        renderArticles();
-    } catch (err) {
-        document.getElementById('activities-tbody').innerHTML =
+          btn.disabled = true;
+          btn.textContent = "Сохранение…";
+          try {
+            if (editingNodeId !== null) {
+              // Edit
+              await apiFetch(`/categories/${editingNodeId}`, {
+                method: "PUT",
+                body: JSON.stringify({ name, type }),
+              });
+            } else {
+              // Create
+              let level;
+              if (editingNodeParent === null) {
+                // New activity
+                level = 4;
+              } else {
+                // Find parent and determine level
+                const parent = allCategories.find(
+                  (c) => c.id === editingNodeParent,
+                );
+                level = parent ? parent.level - 1 : 3;
+              }
+              await apiFetch("/categories", {
+                method: "POST",
+                body: JSON.stringify({
+                  name,
+                  level,
+                  type: level < 4 ? type : null,
+                  parent_id: editingNodeParent,
+                  sort_order: allCategories
+                    .filter(c => (c.parent_id ?? null) === (editingNodeParent ?? null) && c.level === level)
+                    .reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10) + 10,
+                }),
+              });
+            }
+            closeOverlay("category-modal");
+            await reload();
+          } catch (err) {
+            errGlobal.textContent = err.message;
+          } finally {
+            btn.disabled = false;
+            btn.textContent = editingNodeId ? "Сохранить" : "Добавить";
+          }
+        });
+
+      // ── Confirm delete ──────────────────────────────────
+      let pendingDeleteId = null;
+
+      function openConfirm(id, name) {
+        pendingDeleteId = id;
+        document.getElementById("confirm-title").textContent = "Удалить?";
+        document.getElementById("confirm-text").textContent =
+          `«${escHtml(name)}» будет удалён. Если есть подкатегории — удалите их сначала.`;
+        openOverlay("confirm-overlay");
+      }
+
+      document
+        .getElementById("confirm-cancel")
+        .addEventListener("click", () => closeOverlay("confirm-overlay"));
+      document
+        .getElementById("confirm-overlay")
+        .addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) closeOverlay("confirm-overlay");
+        });
+
+      document
+        .getElementById("confirm-ok")
+        .addEventListener("click", async () => {
+          if (!pendingDeleteId) return;
+          const id = pendingDeleteId;
+          closeOverlay("confirm-overlay");
+          try {
+            await apiFetch(`/categories/${id}`, { method: "DELETE" });
+            await reload();
+          } catch (err) {
+            alert("Ошибка удаления: " + err.message);
+          }
+          pendingDeleteId = null;
+        });
+
+      // ── Keyboard ────────────────────────────────────────
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        ["confirm-overlay", "category-modal"].forEach((id) => {
+          if (document.getElementById(id).classList.contains("open"))
+            closeOverlay(id);
+        });
+      });
+
+      // ── Init ─────────────────────────────────────────────
+      (async () => {
+        try {
+          await loadAll();
+          renderActivitiesReference();
+          renderMainTree();
+        } catch (err) {
+          document.getElementById("activities-tbody").innerHTML =
             `<tr><td colspan="2" class="state-error">Ошибка загрузки: ${escHtml(err.message)}</td></tr>`;
-        document.getElementById('groups-tree').innerHTML =
+          document.getElementById("main-tree").innerHTML =
             `<div class="state-error">Ошибка загрузки: ${escHtml(err.message)}</div>`;
-        document.getElementById('articles-tree').innerHTML =
-            `<div class="state-error">Ошибка загрузки: ${escHtml(err.message)}</div>`;
-    }
-})();
-</script>
-</body>
+        }
+      })();
+    </script>
+  </body>
 </html>

@@ -30,3 +30,6 @@ Thumbs.db
 
 # Node (если будет)
 node_modules/
+
+# Task files
+task.md

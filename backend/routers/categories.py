@@ -70,6 +70,20 @@ class CategoryUpdate(BaseModel):
         return v
 
 
+class CategoryMove(BaseModel):
+    """Тело запроса для перемещения категории по иерархии"""
+    level: int
+    parent_id: Optional[int] = None
+    sort_order: Optional[int] = None
+
+    @field_validator("level")
+    @classmethod
+    def level_in_range(cls, v: int) -> int:
+        if not (1 <= v <= 4):
+            raise ValueError("Уровень категории должен быть от 1 до 4")
+        return v
+
+
 class CategoryResponse(BaseModel):
     """Ответ с данными категории"""
     id: int
@@ -186,6 +200,46 @@ def update_category(
     updates = data.model_dump(exclude_none=True)
     for field, value in updates.items():
         setattr(category, field, value)
+
+    db.commit()
+    db.refresh(category)
+    return category
+
+
+@router.patch("/{category_id}/move", response_model=CategoryResponse, summary="Переместить категорию по иерархии")
+def move_category(
+    category_id: int,
+    data: CategoryMove,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> models.Category:
+    category = _get_category_or_404(category_id, current_user.id, db)
+
+    if data.level == 4 and data.parent_id is not None:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail="Вид деятельности (уровень 4) не может иметь родителя")
+    if data.level == 2 and data.parent_id is None:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail="Статья (уровень 2) должна иметь родительскую группу")
+    if data.parent_id is not None:
+        _verify_parent(data.parent_id, current_user.id, data.level, db)
+
+    level_delta = data.level - category.level
+    category.level = data.level
+    category.parent_id = data.parent_id
+    if data.sort_order is not None:
+        category.sort_order = data.sort_order
+
+    if level_delta != 0:
+        def update_children(parent_id: int, delta: int) -> None:
+            children = db.query(models.Category).filter(
+                models.Category.parent_id == parent_id,
+                models.Category.user_id == current_user.id,
+            ).all()
+            for child in children:
+                child.level += delta
+                update_children(child.id, delta)
+        update_children(category_id, level_delta)
 
     db.commit()
     db.refresh(category)
