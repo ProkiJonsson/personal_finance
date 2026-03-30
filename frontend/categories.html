@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Справочники</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue:       #1a6dff;
+            --blue-dark:  #1558d6;
+            --blue-light: #eff4ff;
+            --sidebar-w:  240px;
+            --header-h:   64px;
+            --text:       #111827;
+            --text-muted: #6b7280;
+            --border:     #e5e7eb;
+            --bg:         #f5f7fb;
+            --white:      #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ─────────────────────────────────── */
+        .sidebar {
+            position: fixed; top: 0; left: 0;
+            width: var(--sidebar-w); height: 100vh;
+            background: var(--white); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; z-index: 50;
+        }
+        .sidebar-logo {
+            height: var(--header-h); display: flex; align-items: center;
+            gap: 10px; padding: 0 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .sidebar-logo-icon {
+            width: 34px; height: 34px; background: var(--blue); border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+        .sidebar-logo span { font-size: 15px; font-weight: 700; color: var(--text); }
+        .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+        .nav-item {
+            display: flex; align-items: center; gap: 11px; padding: 10px 12px;
+            border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--text-muted);
+            text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s;
+            border: none; background: none; width: 100%; text-align: left;
+        }
+        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+        .nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-section {
+            font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+            color: #9ca3af; text-transform: uppercase; padding: 16px 12px 6px;
+        }
+        .sidebar-bottom { padding: 10px; border-top: 1px solid var(--border); }
+
+        /* ── Header ──────────────────────────────────── */
+        .header {
+            position: fixed; top: 0; left: var(--sidebar-w); right: 0;
+            height: var(--header-h); background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 40;
+        }
+        .header-title { font-size: 17px; font-weight: 700; color: var(--text); }
+        .header-spacer { flex: 1; }
+        .header-user { display: flex; align-items: center; gap: 10px; }
+        .user-avatar {
+            width: 34px; height: 34px; background: var(--blue-light);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: var(--blue); flex-shrink: 0;
+        }
+        .user-name {
+            font-size: 14px; font-weight: 600; color: var(--text);
+            text-decoration: none;
+        }
+        .user-name:hover { color: var(--blue); }
+        .btn-logout {
+            padding: 7px 16px; border: 1.5px solid var(--border); border-radius: 8px;
+            background: none; font-size: 13px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+        /* ── Content ──────────────────────────────────── */
+        .content { margin-left: var(--sidebar-w); padding-top: var(--header-h); min-height: 100vh; }
+        .page { padding: 28px 28px 40px; max-width: 1000px; }
+
+        .page-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .page-header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+
+        /* ── Tabs ─────────────────────────────────────── */
+        .tabs-nav {
+            display: flex; gap: 0; margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab-btn {
+            padding: 10px 22px; font-size: 14px; font-weight: 600;
+            color: var(--text-muted); background: none; border: none;
+            border-bottom: 2px solid transparent; margin-bottom: -2px;
+            cursor: pointer; transition: color 0.15s, border-color 0.15s;
+            font-family: inherit;
+        }
+        .tab-btn:hover { color: var(--blue); }
+        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Section header ───────────────────────────── */
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
+
+        /* ── Buttons ──────────────────────────────────── */
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 8px 16px; background: var(--blue); color: #fff;
+            border: none; border-radius: 9px; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s; font-family: inherit;
+        }
+        .btn-primary:hover { background: var(--blue-dark); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary svg { width: 15px; height: 15px; fill: #fff; }
+
+        .btn-secondary {
+            padding: 9px 18px; border: 1.5px solid var(--border); border-radius: 9px;
+            background: none; font-size: 14px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit;
+        }
+        .btn-secondary:hover { border-color: #9ca3af; color: var(--text); }
+
+        .btn-danger {
+            padding: 9px 18px; background: #dc2626; color: #fff; border: none;
+            border-radius: 9px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s; font-family: inherit;
+        }
+        .btn-danger:hover { background: #b91c1c; }
+
+        .btn-icon {
+            width: 30px; height: 30px; border-radius: 7px;
+            border: 1.5px solid var(--border); background: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, border-color 0.15s, color 0.15s; flex-shrink: 0;
+        }
+        .btn-icon svg { width: 14px; height: 14px; fill: currentColor; }
+        .btn-icon-edit { color: var(--text-muted); }
+        .btn-icon-edit:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+        .btn-icon-del { color: var(--text-muted); }
+        .btn-icon-del:hover { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+
+        .btn-icon-copy { color: var(--text-muted); }
+        .btn-icon-copy:hover { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
+
+        /* ── Table ────────────────────────────────────── */
+        .table-wrap {
+            background: var(--white); border-radius: 14px;
+            border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th {
+            background: #f9fafb; padding: 11px 16px; text-align: left;
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--text-muted);
+            border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #fafbff; }
+        tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
+        .td-name { font-weight: 500; }
+        .td-actions { white-space: nowrap; }
+        .td-actions-inner { display: flex; gap: 6px; }
+
+        /* ── Badges ───────────────────────────────────── */
+        .badge {
+            display: inline-block; font-size: 11px; font-weight: 600;
+            padding: 2px 9px; border-radius: 20px;
+        }
+        .badge-income  { background: #f0fdf4; color: #16a34a; }
+        .badge-expense { background: #fef2f2; color: #dc2626; }
+        .badge-neutral { background: #f3f4f6; color: #6b7280; }
+
+        /* ── Tree view ────────────────────────────────── */
+        .tree-wrap {
+            background: var(--white); border-radius: 14px;
+            border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        .tree-node {
+            display: flex; align-items: center; min-height: 42px;
+            border-bottom: 1px solid var(--border); gap: 10px;
+        }
+        .tree-node:last-child { border-bottom: none; }
+        .tree-node-name { flex: 1; }
+        .tree-node-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .tree-node-activity {
+            padding: 11px 16px;
+            background: #f9fafb;
+            font-size: 14px; font-weight: 700; color: var(--text);
+        }
+        .tree-node-type {
+            padding: 7px 16px 7px 32px;
+            background: #fafbff; min-height: 36px;
+        }
+        .tree-node-group {
+            padding: 10px 16px 10px 48px;
+            font-size: 14px;
+        }
+        .tree-node-group-header {
+            padding: 8px 16px 8px 48px;
+            background: var(--bg);
+            font-size: 13px; font-weight: 600; color: var(--text-muted);
+        }
+        .tree-node-article {
+            padding: 10px 16px 10px 64px;
+            font-size: 14px;
+        }
+
+        /* ── States ───────────────────────────────────── */
+        .state-empty { padding: 50px 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+        .state-error { padding: 50px 20px; text-align: center; color: #dc2626; font-size: 14px; }
+
+        /* ── Skeleton ─────────────────────────────────── */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%; animation: shimmer 1.4s infinite;
+            border-radius: 4px; display: inline-block;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+        .sk-row td { padding: 13px 16px; }
+        .sk { display: block; height: 14px; border-radius: 4px; }
+
+        /* ── Modal ────────────────────────────────────── */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal {
+            background: var(--white); border-radius: 16px; padding: 28px;
+            width: 100%; max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+            transform: translateY(12px); transition: transform 0.2s;
+        }
+        .modal-overlay.open .modal { transform: translateY(0); }
+        .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .modal-title { font-size: 17px; font-weight: 700; color: var(--text); }
+        .modal-close {
+            width: 30px; height: 30px; border: none; background: none; cursor: pointer;
+            border-radius: 7px; display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); transition: background 0.15s;
+        }
+        .modal-close:hover { background: #f3f4f6; }
+        .modal-close svg { width: 16px; height: 16px; fill: currentColor; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text); }
+        .form-group input, .form-group select {
+            padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 9px;
+            font-size: 14px; color: var(--text); background: var(--white);
+            outline: none; transition: border-color 0.2s; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+        .form-group input.invalid, .form-group select.invalid { border-color: #dc2626; }
+        .form-error { font-size: 12px; color: #dc2626; min-height: 16px; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+        /* ── Confirm ──────────────────────────────────── */
+        .confirm-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .confirm-overlay.open { opacity: 1; pointer-events: all; }
+        .confirm-box {
+            background: var(--white); border-radius: 16px; padding: 28px;
+            width: 100%; max-width: 360px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+            transform: translateY(12px); transition: transform 0.2s;
+        }
+        .confirm-overlay.open .confirm-box { transform: translateY(0); }
+        .confirm-box h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+        .confirm-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+        .confirm-footer { display: flex; gap: 10px; justify-content: flex-end; }
+    </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────── -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
+        <span>Личные финансы</span>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section">Меню</div>
+        <a class="nav-item" href="dashboard.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Главная
+        </a>
+        <a class="nav-item" href="operations.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
+            Операции
+        </a>
+        <a class="nav-item" href="funds.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            Фонды
+        </a>
+        <a class="nav-item" href="accounts.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            Счета
+        </a>
+        <div class="nav-section">Прочее</div>
+        <a class="nav-item active" href="categories.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
+            Справочники
+        </a>
+        <a class="nav-item" href="settings.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            Настройки
+        </a>
+        <a class="nav-item" href="profile.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Профиль
+        </a>
+    </nav>
+    <div class="sidebar-bottom">
+        <button class="nav-item" id="logout-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Выйти
+        </button>
+    </div>
+</aside>
+
+<!-- ── Header ────────────────────────────────────────── -->
+<header class="header">
+    <span class="header-title">Справочники</span>
+    <div class="header-spacer"></div>
+    <div class="header-user">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
+    </div>
+    <button class="btn-logout" id="header-logout-btn">Выйти</button>
+</header>
+
+<!-- ── Content ───────────────────────────────────────── -->
+<main class="content">
+    <div class="page">
+
+        <div class="page-header">
+            <h1>Справочники</h1>
+        </div>
+
+        <!-- Tab navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="activities">Виды деятельности</button>
+            <button class="tab-btn" data-tab="groups">Группы</button>
+            <button class="tab-btn" data-tab="articles">Статьи</button>
+        </div>
+
+        <!-- Tab 1: Виды деятельности (level=4) -->
+        <div class="tab-panel active" id="panel-activities">
+            <div class="section-header">
+                <span class="section-title">Виды деятельности</span>
+                <button class="btn-primary" id="add-activity-btn">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Добавить
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="activities-tbody">
+                        <tr class="sk-row"><td><span class="skeleton sk" style="width:160px"></span></td><td></td></tr>
+                        <tr class="sk-row"><td><span class="skeleton sk" style="width:130px"></span></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Группы (level=3) -->
+        <div class="tab-panel" id="panel-groups">
+            <div class="section-header">
+                <span class="section-title">Группы</span>
+                <button class="btn-primary" id="add-group-btn">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Добавить
+                </button>
+            </div>
+            <div class="tree-wrap" id="groups-tree">
+                <div class="tree-node tree-node-activity"><span class="tree-node-name"><span class="skeleton sk" style="width:160px"></span></span></div>
+                <div class="tree-node tree-node-type"><span class="skeleton sk" style="width:60px"></span></div>
+                <div class="tree-node tree-node-group"><span class="tree-node-name"><span class="skeleton sk" style="width:130px"></span></span></div>
+                <div class="tree-node tree-node-group"><span class="tree-node-name"><span class="skeleton sk" style="width:110px"></span></span></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Статьи (level=2) -->
+        <div class="tab-panel" id="panel-articles">
+            <div class="section-header">
+                <span class="section-title">Статьи</span>
+                <button class="btn-primary" id="add-article-btn">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Добавить
+                </button>
+            </div>
+            <div class="tree-wrap" id="articles-tree">
+                <div class="tree-node tree-node-activity"><span class="tree-node-name"><span class="skeleton sk" style="width:150px"></span></span></div>
+                <div class="tree-node tree-node-type"><span class="skeleton sk" style="width:60px"></span></div>
+                <div class="tree-node tree-node-group-header"><span class="skeleton sk" style="width:120px"></span></div>
+                <div class="tree-node tree-node-article"><span class="tree-node-name"><span class="skeleton sk" style="width:140px"></span></span></div>
+                <div class="tree-node tree-node-article"><span class="tree-node-name"><span class="skeleton sk" style="width:110px"></span></span></div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- ── Modal: Вид деятельности ────────────────────────── -->
+<div class="modal-overlay" id="activity-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+            <span class="modal-title" id="activity-modal-title">Добавить вид деятельности</span>
+            <button class="modal-close js-close-activity" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <form id="activity-form" novalidate>
+            <div class="form-group">
+                <label for="activity-name">Название</label>
+                <input type="text" id="activity-name" placeholder="Например: Операционная" maxlength="100" autocomplete="off">
+                <span class="form-error" id="activity-err-name"></span>
+            </div>
+            <span class="form-error" id="activity-err-global"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary js-close-activity">Отмена</button>
+                <button type="submit" class="btn-primary" id="activity-submit">Добавить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Modal: Группа ──────────────────────────────────── -->
+<div class="modal-overlay" id="group-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+            <span class="modal-title" id="group-modal-title">Добавить группу</span>
+            <button class="modal-close js-close-group" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <form id="group-form" novalidate>
+            <div class="form-group">
+                <label for="group-name">Название</label>
+                <input type="text" id="group-name" placeholder="Например: Выручка" maxlength="100" autocomplete="off">
+                <span class="form-error" id="group-err-name"></span>
+            </div>
+            <div class="form-group">
+                <label for="group-type">Тип</label>
+                <select id="group-type">
+                    <option value="">— Не указан —</option>
+                    <option value="income">Доходы</option>
+                    <option value="expense">Расходы</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="group-activity">Вид деятельности</label>
+                <select id="group-activity">
+                    <option value="">— Не указан —</option>
+                </select>
+            </div>
+            <span class="form-error" id="group-err-global"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary js-close-group">Отмена</button>
+                <button type="submit" class="btn-primary" id="group-submit">Добавить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Modal: Статья ──────────────────────────────────── -->
+<div class="modal-overlay" id="article-modal">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+            <span class="modal-title" id="article-modal-title">Добавить статью</span>
+            <button class="modal-close js-close-article" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <form id="article-form" novalidate>
+            <div class="form-group">
+                <label for="article-name">Название</label>
+                <input type="text" id="article-name" placeholder="Например: Продажи товаров" maxlength="100" autocomplete="off">
+                <span class="form-error" id="article-err-name"></span>
+            </div>
+            <div class="form-group">
+                <label for="article-group">Группа</label>
+                <select id="article-group">
+                    <option value="">— Выберите группу —</option>
+                </select>
+                <span class="form-error" id="article-err-group"></span>
+            </div>
+            <span class="form-error" id="article-err-global"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary js-close-article">Отмена</button>
+                <button type="submit" class="btn-primary" id="article-submit">Добавить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Confirm dialog ─────────────────────────────────── -->
+<div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box" role="dialog" aria-modal="true">
+        <h3 id="confirm-title">Удалить?</h3>
+        <p id="confirm-text">Это действие нельзя отменить.</p>
+        <div class="confirm-footer">
+            <button class="btn-secondary" id="confirm-cancel">Отмена</button>
+            <button class="btn-danger" id="confirm-ok">Удалить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+
+// ── Auth guard ──────────────────────────────────────
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) { window.location.href = 'index.html'; }
+
+function parseJwt(t) {
+    try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
+    catch { return {}; }
+}
+const jwtPayload = parseJwt(token);
+const displayName = jwtPayload.name || jwtPayload.email || 'Пользователь';
+document.getElementById('user-name').textContent = displayName;
+document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
+
+// ── Logout ──────────────────────────────────────────
+function logout() {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    window.location.href = 'index.html';
+}
+document.getElementById('logout-btn').addEventListener('click', logout);
+document.getElementById('header-logout-btn').addEventListener('click', logout);
+
+// ── API helper ──────────────────────────────────────
+async function apiFetch(path, options = {}) {
+    const res = await fetch(API + path, {
+        ...options,
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(options.headers || {}) },
+    });
+    if (res.status === 401) logout();
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || 'HTTP ' + res.status);
+    }
+    if (res.status === 204) return null;
+    return res.json();
+}
+
+function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── State ───────────────────────────────────────────
+let activities = []; // level 4
+let groups     = []; // level 3
+let articles   = []; // level 2
+
+// ── Load all ────────────────────────────────────────
+async function loadAll() {
+    const cats = await apiFetch('/categories');
+    activities = cats.filter(c => c.level === 4).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    groups     = cats.filter(c => c.level === 3).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    articles   = cats.filter(c => c.level === 2).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+}
+
+function activityName(id) {
+    const a = activities.find(a => a.id === id);
+    return a ? a.name : '—';
+}
+function groupById(id) {
+    return groups.find(g => g.id === id) || null;
+}
+
+function typeBadge(type) {
+    if (type === 'income')  return `<span class="badge badge-income">Доходы</span>`;
+    if (type === 'expense') return `<span class="badge badge-expense">Расходы</span>`;
+    return `<span class="badge badge-neutral">—</span>`;
+}
+
+function actionsBtns(id, name) {
+    return `<div class="td-actions-inner">
+        <button class="btn-icon btn-icon-copy js-copy" data-id="${id}" title="Копировать">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+        <button class="btn-icon btn-icon-edit js-edit" data-id="${id}" title="Редактировать">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+        <button class="btn-icon btn-icon-del js-del" data-id="${id}" data-name="${escHtml(name)}" title="Удалить">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </button>
+    </div>`;
+}
+
+// ── Render: Виды деятельности ───────────────────────
+function renderActivities() {
+    const tbody = document.getElementById('activities-tbody');
+    tbody.innerHTML = '';
+    if (!activities.length) {
+        tbody.innerHTML = `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
+        return;
+    }
+    activities.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="td-name">${escHtml(a.name)}</td>
+            <td class="td-actions">${actionsBtns(a.id, a.name)}</td>
+        `;
+        tr.querySelector('.js-copy').addEventListener('click', () => openCopyActivity(a));
+        tr.querySelector('.js-edit').addEventListener('click', () => openEditActivity(a));
+        tr.querySelector('.js-del').addEventListener('click', () => openConfirm(a.id, a.name, 'activity'));
+        tbody.appendChild(tr);
+    });
+}
+
+// ── Render: Группы (дерево) ─────────────────────────
+function renderGroups() {
+    const container = document.getElementById('groups-tree');
+    container.innerHTML = '';
+    if (!groups.length) {
+        container.innerHTML = `<div class="state-empty">Групп пока нет</div>`;
+        return;
+    }
+
+    const TYPE_ORDER = ['income', 'expense', null];
+
+    function appendGroupNode(g) {
+        const node = document.createElement('div');
+        node.className = 'tree-node tree-node-group';
+        node.innerHTML = `<span class="tree-node-name">${escHtml(g.name)}</span><div class="tree-node-actions">${actionsBtns(g.id, g.name)}</div>`;
+        node.querySelector('.js-copy').addEventListener('click', () => openCopyGroup(g));
+        node.querySelector('.js-edit').addEventListener('click', () => openEditGroup(g));
+        node.querySelector('.js-del').addEventListener('click', () => openConfirm(g.id, g.name, 'group'));
+        container.appendChild(node);
+    }
+
+    function appendTypeSection(label, badgeCls, actGroups) {
+        const byType = actGroups.filter(g => (g.type || null) === (label === 'income' ? 'income' : label === 'expense' ? 'expense' : null));
+        if (!byType.length) return;
+        const typeNode = document.createElement('div');
+        typeNode.className = 'tree-node tree-node-type';
+        typeNode.innerHTML = typeBadge(label === 'none' ? null : label);
+        container.appendChild(typeNode);
+        byType.forEach(appendGroupNode);
+    }
+
+    function appendActivitySection(actName, actGroups) {
+        const actNode = document.createElement('div');
+        actNode.className = 'tree-node tree-node-activity';
+        actNode.innerHTML = `<span class="tree-node-name">${escHtml(actName)}</span>`;
+        container.appendChild(actNode);
+        appendTypeSection('income',  'badge-income',  actGroups);
+        appendTypeSection('expense', 'badge-expense', actGroups);
+        appendTypeSection('none',    'badge-neutral', actGroups);
+    }
+
+    // Группы с видом деятельности
+    activities.forEach(act => {
+        const actGroups = groups.filter(g => g.parent_id === act.id);
+        if (actGroups.length) appendActivitySection(act.name, actGroups);
+    });
+    // Группы без вида деятельности
+    const orphans = groups.filter(g => g.parent_id === null);
+    if (orphans.length) appendActivitySection('Без вида деятельности', orphans);
+}
+
+// ── Render: Статьи (дерево 4 уровня) ───────────────
+function renderArticles() {
+    const container = document.getElementById('articles-tree');
+    container.innerHTML = '';
+    if (!articles.length) {
+        container.innerHTML = `<div class="state-empty">Статей пока нет</div>`;
+        return;
+    }
+
+    function appendArticleNode(a) {
+        const node = document.createElement('div');
+        node.className = 'tree-node tree-node-article';
+        node.innerHTML = `<span class="tree-node-name">${escHtml(a.name)}</span><div class="tree-node-actions">${actionsBtns(a.id, a.name)}</div>`;
+        node.querySelector('.js-copy').addEventListener('click', () => openCopyArticle(a));
+        node.querySelector('.js-edit').addEventListener('click', () => openEditArticle(a));
+        node.querySelector('.js-del').addEventListener('click', () => openConfirm(a.id, a.name, 'article'));
+        container.appendChild(node);
+    }
+
+    function appendGroupSection(grp) {
+        const grpNode = document.createElement('div');
+        grpNode.className = 'tree-node tree-node-group-header';
+        grpNode.innerHTML = `<span class="tree-node-name">${escHtml(grp.name)}</span>`;
+        container.appendChild(grpNode);
+        articles.filter(a => a.parent_id === grp.id).forEach(appendArticleNode);
+    }
+
+    function appendTypeSection(typeVal, actGroups) {
+        const typeGroups = actGroups.filter(g => (g.type || null) === typeVal);
+        if (!typeGroups.length) return;
+        const typeNode = document.createElement('div');
+        typeNode.className = 'tree-node tree-node-type';
+        typeNode.innerHTML = typeBadge(typeVal);
+        container.appendChild(typeNode);
+        typeGroups.forEach(appendGroupSection);
+    }
+
+    function appendActivitySection(actName, actGroups) {
+        const actNode = document.createElement('div');
+        actNode.className = 'tree-node tree-node-activity';
+        actNode.innerHTML = `<span class="tree-node-name">${escHtml(actName)}</span>`;
+        container.appendChild(actNode);
+        appendTypeSection('income',  actGroups);
+        appendTypeSection('expense', actGroups);
+        appendTypeSection(null,      actGroups);
+    }
+
+    // Собираем группы, у которых есть статьи
+    const groupsWithArticles = groups.filter(g => articles.some(a => a.parent_id === g.id));
+
+    activities.forEach(act => {
+        const actGroups = groupsWithArticles.filter(g => g.parent_id === act.id);
+        if (actGroups.length) appendActivitySection(act.name, actGroups);
+    });
+    // Группы без вида деятельности
+    const orphanGroups = groupsWithArticles.filter(g => g.parent_id === null);
+    if (orphanGroups.length) appendActivitySection('Без вида деятельности', orphanGroups);
+    // Статьи без группы (parent_id не найден в groups)
+    const ungrouped = articles.filter(a => !groups.some(g => g.id === a.parent_id));
+    if (ungrouped.length) {
+        const node = document.createElement('div');
+        node.className = 'tree-node tree-node-activity';
+        node.innerHTML = `<span class="tree-node-name">Без группы</span>`;
+        container.appendChild(node);
+        ungrouped.forEach(appendArticleNode);
+    }
+}
+
+async function reload() {
+    try {
+        await loadAll();
+        renderActivities();
+        renderGroups();
+        renderArticles();
+        // refresh selects if modals are open (they're closed before reload, so no-op)
+    } catch (err) {
+        alert('Ошибка загрузки: ' + err.message);
+    }
+}
+
+// ── Tab switching ───────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+});
+
+// ── Modal helpers ───────────────────────────────────
+function openOverlay(id)  { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+
+function populateSelect(selectEl, items, valueFn, labelFn, placeholder = '— Не указан —') {
+    while (selectEl.options.length > 1) selectEl.remove(1);
+    items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = valueFn(item);
+        opt.textContent = labelFn(item);
+        selectEl.appendChild(opt);
+    });
+}
+
+// close buttons (multiple elements share class)
+document.querySelectorAll('.js-close-activity').forEach(el =>
+    el.addEventListener('click', () => closeOverlay('activity-modal')));
+document.querySelectorAll('.js-close-group').forEach(el =>
+    el.addEventListener('click', () => closeOverlay('group-modal')));
+document.querySelectorAll('.js-close-article').forEach(el =>
+    el.addEventListener('click', () => closeOverlay('article-modal')));
+
+['activity-modal','group-modal','article-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeOverlay(id);
+    });
+});
+
+// ── Виды деятельности modal ─────────────────────────
+let editActivityId = null;
+
+function openAddActivity() {
+    editActivityId = null;
+    document.getElementById('activity-modal-title').textContent = 'Добавить вид деятельности';
+    document.getElementById('activity-submit').textContent = 'Добавить';
+    document.getElementById('activity-name').value = '';
+    document.getElementById('activity-err-name').textContent = '';
+    document.getElementById('activity-err-global').textContent = '';
+    openOverlay('activity-modal');
+    document.getElementById('activity-name').focus();
+}
+
+function openEditActivity(item) {
+    editActivityId = item.id;
+    document.getElementById('activity-modal-title').textContent = 'Редактировать вид деятельности';
+    document.getElementById('activity-submit').textContent = 'Сохранить';
+    document.getElementById('activity-name').value = item.name;
+    document.getElementById('activity-err-name').textContent = '';
+    document.getElementById('activity-err-global').textContent = '';
+    openOverlay('activity-modal');
+    document.getElementById('activity-name').focus();
+}
+
+function openCopyActivity(item) {
+    editActivityId = null;
+    document.getElementById('activity-modal-title').textContent = 'Копировать вид деятельности';
+    document.getElementById('activity-submit').textContent = 'Создать копию';
+    document.getElementById('activity-name').value = 'Копия — ' + item.name;
+    document.getElementById('activity-err-name').textContent = '';
+    document.getElementById('activity-err-global').textContent = '';
+    openOverlay('activity-modal');
+    document.getElementById('activity-name').focus();
+}
+
+document.getElementById('add-activity-btn').addEventListener('click', openAddActivity);
+
+document.getElementById('activity-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('activity-name').value.trim();
+    const errName = document.getElementById('activity-err-name');
+    const errGlobal = document.getElementById('activity-err-global');
+    const btn = document.getElementById('activity-submit');
+    errName.textContent = '';
+    errGlobal.textContent = '';
+
+    if (!name) { errName.textContent = 'Введите название'; return; }
+
+    btn.disabled = true; btn.textContent = 'Сохранение…';
+    try {
+        if (editActivityId !== null) {
+            await apiFetch(`/categories/${editActivityId}`, { method: 'PUT', body: JSON.stringify({ name }) });
+        } else {
+            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, level: 4, parent_id: null, sort_order: 0 }) });
+        }
+        closeOverlay('activity-modal');
+        await reload();
+    } catch (err) {
+        errGlobal.textContent = err.message;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = editActivityId !== null ? 'Сохранить' : 'Добавить';
+    }
+});
+
+// ── Группы modal ────────────────────────────────────
+let editGroupId = null;
+
+function openAddGroup() {
+    editGroupId = null;
+    document.getElementById('group-modal-title').textContent = 'Добавить группу';
+    document.getElementById('group-submit').textContent = 'Добавить';
+    document.getElementById('group-name').value = '';
+    document.getElementById('group-type').value = '';
+    document.getElementById('group-err-name').textContent = '';
+    document.getElementById('group-err-global').textContent = '';
+    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
+    document.getElementById('group-activity').value = '';
+    openOverlay('group-modal');
+    document.getElementById('group-name').focus();
+}
+
+function openEditGroup(item) {
+    editGroupId = item.id;
+    document.getElementById('group-modal-title').textContent = 'Редактировать группу';
+    document.getElementById('group-submit').textContent = 'Сохранить';
+    document.getElementById('group-name').value = item.name;
+    document.getElementById('group-type').value = item.type || '';
+    document.getElementById('group-err-name').textContent = '';
+    document.getElementById('group-err-global').textContent = '';
+    // parent_id can't change via PUT — disable activity select
+    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
+    document.getElementById('group-activity').value = item.parent_id || '';
+    document.getElementById('group-activity').disabled = true;
+    openOverlay('group-modal');
+    document.getElementById('group-name').focus();
+}
+
+function openCopyGroup(item) {
+    editGroupId = null;
+    document.getElementById('group-modal-title').textContent = 'Копировать группу';
+    document.getElementById('group-submit').textContent = 'Создать копию';
+    document.getElementById('group-name').value = 'Копия — ' + item.name;
+    document.getElementById('group-type').value = item.type || '';
+    document.getElementById('group-err-name').textContent = '';
+    document.getElementById('group-err-global').textContent = '';
+    populateSelect(document.getElementById('group-activity'), activities, a => a.id, a => a.name);
+    document.getElementById('group-activity').value = item.parent_id || '';
+    document.getElementById('group-activity').disabled = false;
+    openOverlay('group-modal');
+    document.getElementById('group-name').focus();
+}
+
+document.getElementById('add-group-btn').addEventListener('click', () => {
+    document.getElementById('group-activity').disabled = false;
+    openAddGroup();
+});
+
+document.getElementById('group-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('group-name').value.trim();
+    const type = document.getElementById('group-type').value || null;
+    const activityVal = document.getElementById('group-activity').value;
+    const parent_id = activityVal ? Number(activityVal) : null;
+    const errName = document.getElementById('group-err-name');
+    const errGlobal = document.getElementById('group-err-global');
+    const btn = document.getElementById('group-submit');
+    errName.textContent = '';
+    errGlobal.textContent = '';
+
+    if (!name) { errName.textContent = 'Введите название'; return; }
+
+    btn.disabled = true; btn.textContent = 'Сохранение…';
+    try {
+        if (editGroupId !== null) {
+            await apiFetch(`/categories/${editGroupId}`, { method: 'PUT', body: JSON.stringify({ name, type }) });
+        } else {
+            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, type, level: 3, parent_id, sort_order: 0 }) });
+        }
+        document.getElementById('group-activity').disabled = false;
+        closeOverlay('group-modal');
+        await reload();
+    } catch (err) {
+        errGlobal.textContent = err.message;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = editGroupId !== null ? 'Сохранить' : 'Добавить';
+    }
+});
+
+// ── Статьи modal ────────────────────────────────────
+let editArticleId = null;
+
+function openAddArticle() {
+    editArticleId = null;
+    document.getElementById('article-modal-title').textContent = 'Добавить статью';
+    document.getElementById('article-submit').textContent = 'Добавить';
+    document.getElementById('article-name').value = '';
+    document.getElementById('article-err-name').textContent = '';
+    document.getElementById('article-err-group').textContent = '';
+    document.getElementById('article-err-global').textContent = '';
+    populateSelect(document.getElementById('article-group'), groups, g => g.id,
+        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
+    document.getElementById('article-group').value = '';
+    document.getElementById('article-group').disabled = false;
+    openOverlay('article-modal');
+    document.getElementById('article-name').focus();
+}
+
+function openEditArticle(item) {
+    editArticleId = item.id;
+    document.getElementById('article-modal-title').textContent = 'Редактировать статью';
+    document.getElementById('article-submit').textContent = 'Сохранить';
+    document.getElementById('article-name').value = item.name;
+    document.getElementById('article-err-name').textContent = '';
+    document.getElementById('article-err-group').textContent = '';
+    document.getElementById('article-err-global').textContent = '';
+    populateSelect(document.getElementById('article-group'), groups, g => g.id,
+        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
+    document.getElementById('article-group').value = item.parent_id || '';
+    document.getElementById('article-group').disabled = true; // parent can't change
+    openOverlay('article-modal');
+    document.getElementById('article-name').focus();
+}
+
+function openCopyArticle(item) {
+    editArticleId = null;
+    document.getElementById('article-modal-title').textContent = 'Копировать статью';
+    document.getElementById('article-submit').textContent = 'Создать копию';
+    document.getElementById('article-name').value = 'Копия — ' + item.name;
+    document.getElementById('article-err-name').textContent = '';
+    document.getElementById('article-err-group').textContent = '';
+    document.getElementById('article-err-global').textContent = '';
+    populateSelect(document.getElementById('article-group'), groups, g => g.id,
+        g => g.name + (g.type ? ` (${g.type === 'income' ? 'Доходы' : 'Расходы'})` : ''));
+    document.getElementById('article-group').value = item.parent_id || '';
+    document.getElementById('article-group').disabled = false;
+    openOverlay('article-modal');
+    document.getElementById('article-name').focus();
+}
+
+document.getElementById('add-article-btn').addEventListener('click', openAddArticle);
+
+document.getElementById('article-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('article-name').value.trim();
+    const groupVal = document.getElementById('article-group').value;
+    const parent_id = groupVal ? Number(groupVal) : null;
+    const errName = document.getElementById('article-err-name');
+    const errGroup = document.getElementById('article-err-group');
+    const errGlobal = document.getElementById('article-err-global');
+    const btn = document.getElementById('article-submit');
+    errName.textContent = '';
+    errGroup.textContent = '';
+    errGlobal.textContent = '';
+
+    let valid = true;
+    if (!name) { errName.textContent = 'Введите название'; valid = false; }
+    if (!parent_id && editArticleId === null) { errGroup.textContent = 'Выберите группу'; valid = false; }
+    if (!valid) return;
+
+    btn.disabled = true; btn.textContent = 'Сохранение…';
+    try {
+        if (editArticleId !== null) {
+            await apiFetch(`/categories/${editArticleId}`, { method: 'PUT', body: JSON.stringify({ name }) });
+        } else {
+            await apiFetch('/categories', { method: 'POST', body: JSON.stringify({ name, level: 2, parent_id, sort_order: 0 }) });
+        }
+        document.getElementById('article-group').disabled = false;
+        closeOverlay('article-modal');
+        await reload();
+    } catch (err) {
+        errGlobal.textContent = err.message;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = editArticleId !== null ? 'Сохранить' : 'Добавить';
+    }
+});
+
+// ── Confirm delete ──────────────────────────────────
+let pendingDeleteId = null;
+
+function openConfirm(id, name, kind) {
+    pendingDeleteId = id;
+    const kindLabels = { activity: 'Вид деятельности', group: 'Группа', article: 'Статья' };
+    document.getElementById('confirm-title').textContent = `Удалить запись?`;
+    document.getElementById('confirm-text').textContent =
+        `«${name}» будет удалён${kind === 'group' || kind === 'article' ? 'а' : ''}. Если есть дочерние записи — удалите их сначала.`;
+    openOverlay('confirm-overlay');
+}
+
+document.getElementById('confirm-cancel').addEventListener('click', () => closeOverlay('confirm-overlay'));
+document.getElementById('confirm-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeOverlay('confirm-overlay');
+});
+
+document.getElementById('confirm-ok').addEventListener('click', async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    closeOverlay('confirm-overlay');
+    try {
+        await apiFetch(`/categories/${id}`, { method: 'DELETE' });
+        await reload();
+    } catch (err) {
+        alert('Ошибка удаления: ' + err.message);
+    }
+    pendingDeleteId = null;
+});
+
+// ── Keyboard ────────────────────────────────────────
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    ['confirm-overlay','activity-modal','group-modal','article-modal'].forEach(id => {
+        if (document.getElementById(id).classList.contains('open')) closeOverlay(id);
+    });
+});
+
+// ── Init ─────────────────────────────────────────────
+(async () => {
+    try {
+        await loadAll();
+        renderActivities();
+        renderGroups();
+        renderArticles();
+    } catch (err) {
+        document.getElementById('activities-tbody').innerHTML =
+            `<tr><td colspan="2" class="state-error">Ошибка загрузки: ${escHtml(err.message)}</td></tr>`;
+        document.getElementById('groups-tree').innerHTML =
+            `<div class="state-error">Ошибка загрузки: ${escHtml(err.message)}</div>`;
+        document.getElementById('articles-tree').innerHTML =
+            `<div class="state-error">Ошибка загрузки: ${escHtml(err.message)}</div>`;
+    }
+})();
+</script>
+</body>
+</html>

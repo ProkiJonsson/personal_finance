@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Главная</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue:       #1a6dff;
+            --blue-dark:  #1558d6;
+            --blue-light: #eff4ff;
+            --sidebar-w:  240px;
+            --header-h:   64px;
+            --text:       #111827;
+            --text-muted: #6b7280;
+            --border:     #e5e7eb;
+            --bg:         #f5f7fb;
+            --white:      #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ─────────────────────────────────── */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+        }
+
+        .sidebar-logo {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo-icon {
+            width: 34px; height: 34px;
+            background: var(--blue);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+
+        .sidebar-logo span {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 12px 10px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+
+        .nav-item.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        .nav-section {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            color: #9ca3af;
+            text-transform: uppercase;
+            padding: 16px 12px 6px;
+        }
+
+        .sidebar-bottom {
+            padding: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── Header ──────────────────────────────────── */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-w);
+            right: 0;
+            height: var(--header-h);
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 14px;
+            z-index: 40;
+        }
+
+        .header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .header-spacer { flex: 1; }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 34px; height: 34px;
+            background: var(--blue-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--blue);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .user-name:hover { color: var(--blue); }
+
+        .btn-logout {
+            padding: 7px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+        /* ── Main content ─────────────────────────────── */
+        .content {
+            margin-left: var(--sidebar-w);
+            padding-top: var(--header-h);
+            min-height: 100vh;
+        }
+
+        .page {
+            padding: 28px 28px 40px;
+            max-width: 1100px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ── Section ──────────────────────────────────── */
+        .section { margin-bottom: 32px; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .section-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .section-link:hover { color: var(--blue-dark); }
+
+        /* ── Fund cards ───────────────────────────────── */
+        .funds-row {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .funds-row::-webkit-scrollbar { height: 4px; }
+        .funds-row::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+
+        .fund-card {
+            flex-shrink: 0;
+            width: 210px;
+            background: var(--white);
+            border-radius: 14px;
+            padding: 20px 20px 18px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: box-shadow 0.2s;
+        }
+
+        .fund-card:hover { box-shadow: 0 4px 16px rgba(26,109,255,0.10); }
+
+        .fund-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fund-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .fund-icon svg { width: 18px; height: 18px; }
+
+        .fund-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .fund-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .fund-balance {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .fund-currency {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: -6px;
+        }
+
+        .fund-card-empty {
+            flex-shrink: 0;
+            width: 210px;
+            background: #fafafa;
+            border-radius: 14px;
+            padding: 20px;
+            border: 1.5px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+            min-height: 140px;
+        }
+
+        .fund-card-empty:hover { border-color: var(--blue); color: var(--blue); }
+
+        /* ── Transactions table ───────────────────────── */
+        .table-wrap {
+            background: var(--white);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            background: #f9fafb;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.12s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #fafbff; }
+
+        tbody td {
+            padding: 13px 16px;
+            color: var(--text);
+        }
+
+        .td-date { color: var(--text-muted); font-size: 13px; white-space: nowrap; }
+
+        .td-desc { font-weight: 500; }
+
+        .td-category span {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .td-type span {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+        .type-income  { background: #f0fdf4; color: #16a34a; }
+        .type-expense { background: #fef2f2; color: #dc2626; }
+
+        .td-amount {
+            font-weight: 700;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .amount-income  { color: #16a34a; }
+        .amount-expense { color: #dc2626; }
+
+        /* ── States ───────────────────────────────────── */
+        .state-empty, .state-error {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .state-error { color: #dc2626; }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        .skeleton-card {
+            flex-shrink: 0;
+            width: 210px;
+            height: 140px;
+            border-radius: 14px;
+        }
+
+        .skeleton-row td { padding: 14px 16px; }
+        .skeleton-row .sk { display: block; height: 14px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────── -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
+        <span>Личные финансы</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section">Меню</div>
+
+        <a class="nav-item active" href="dashboard.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Главная
+        </a>
+        <a class="nav-item" href="operations.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
+            Операции
+        </a>
+        <a class="nav-item" href="funds.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            Фонды
+        </a>
+        <a class="nav-item" href="accounts.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            Счета
+        </a>
+
+        <div class="nav-section">Прочее</div>
+
+        <a class="nav-item" href="categories.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
+            Справочники
+        </a>
+        <a class="nav-item" href="settings.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            Настройки
+        </a>
+        <a class="nav-item" href="profile.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Профиль
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <button class="nav-item" id="logout-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Выйти
+        </button>
+    </div>
+</aside>
+
+<!-- ── Header ────────────────────────────────────────── -->
+<header class="header">
+    <span class="header-title">Главная</span>
+    <div class="header-spacer"></div>
+    <div class="header-user">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
+    </div>
+    <button class="btn-logout" id="header-logout-btn">Выйти</button>
+</header>
+
+<!-- ── Content ───────────────────────────────────────── -->
+<main class="content">
+    <div class="page">
+
+        <div class="page-header">
+            <h1>Обзор</h1>
+            <p id="today-date"></p>
+        </div>
+
+        <!-- Funds -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-title">Мои фонды</span>
+                <a class="section-link" href="funds.html">Все фонды →</a>
+            </div>
+            <div class="funds-row" id="funds-container">
+                <!-- skeleton -->
+                <div class="skeleton skeleton-card"></div>
+                <div class="skeleton skeleton-card"></div>
+                <div class="skeleton skeleton-card"></div>
+            </div>
+        </section>
+
+        <!-- Transactions -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-title">Последние операции</span>
+                <a class="section-link" href="operations.html">Все операции →</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Описание</th>
+                            <th>Категория</th>
+                            <th>Тип</th>
+                            <th style="text-align:right">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-tbody">
+                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:160px"></span></td><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
+                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:130px"></span></td><td><span class="skeleton sk" style="width:70px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
+                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:150px"></span></td><td><span class="skeleton sk" style="width:90px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+
+// ── Auth guard ──────────────────────────────────────
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) { window.location.href = 'index.html'; }
+
+// ── Decode JWT payload (no verification — display only) ──
+function parseJwt(t) {
+    try {
+        const payload = t.split('.')[1];
+        const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+        return JSON.parse(json);
+    } catch { return {}; }
+}
+
+const jwt = parseJwt(token);
+const displayName = jwt.name || jwt.email || 'Пользователь';
+document.getElementById('user-name').textContent = displayName;
+document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
+
+// ── Date ────────────────────────────────────────────
+document.getElementById('today-date').textContent =
+    new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+// ── Logout ──────────────────────────────────────────
+function logout() {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    window.location.href = 'index.html';
+}
+document.getElementById('logout-btn').addEventListener('click', logout);
+document.getElementById('header-logout-btn').addEventListener('click', logout);
+
+// ── Auth fetch helper ───────────────────────────────
+async function apiFetch(path) {
+    const res = await fetch(API + path, {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) { logout(); }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+}
+
+// ── Formatters ──────────────────────────────────────
+const CATEGORY_LABELS = {
+    food: 'Еда', transport: 'Транспорт', salary: 'Зарплата',
+    entertainment: 'Развлечения', other: 'Другое',
+};
+
+function fmt(amount, currency = 'RUB') {
+    return new Intl.NumberFormat('ru-RU', {
+        style: 'currency', currency,
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+    }).format(amount);
+}
+
+function fmtDate(iso) {
+    return new Date(iso).toLocaleString('ru-RU', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+}
+
+// ── Fund color palette ──────────────────────────────
+const FUND_COLORS = [
+    { bg: '#eff4ff', color: '#1a6dff' },
+    { bg: '#f0fdf4', color: '#16a34a' },
+    { bg: '#fff7ed', color: '#ea580c' },
+    { bg: '#fdf4ff', color: '#9333ea' },
+    { bg: '#fef2f2', color: '#dc2626' },
+];
+
+// ── Load funds ──────────────────────────────────────
+async function loadFunds() {
+    const container = document.getElementById('funds-container');
+    try {
+        const funds = await apiFetch('/funds');
+        container.innerHTML = '';
+
+        if (!funds.length) {
+            container.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:4px 0">Фонды не найдены</p>';
+            return;
+        }
+
+        funds.forEach((fund, i) => {
+            const c = FUND_COLORS[i % FUND_COLORS.length];
+            const card = document.createElement('div');
+            card.className = 'fund-card';
+            card.innerHTML = `
+                <div class="fund-card-top">
+                    <div class="fund-icon" style="background:${c.bg}">
+                        <svg viewBox="0 0 24 24" fill="${c.color}"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    </div>
+                    <span class="fund-badge" style="background:${c.bg};color:${c.color}">${fund.currency || 'RUB'}</span>
+                </div>
+                <div class="fund-name">${escHtml(fund.name)}</div>
+                <div class="fund-balance">${fmt(fund.balance ?? 0, fund.currency || 'RUB')}</div>
+            `;
+            container.appendChild(card);
+        });
+
+        // "Add fund" placeholder
+        const add = document.createElement('div');
+        add.className = 'fund-card-empty';
+        add.innerHTML = `
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Добавить фонд</span>
+        `;
+        container.appendChild(add);
+
+    } catch (err) {
+        container.innerHTML = `<p class="state-error">Ошибка загрузки фондов</p>`;
+    }
+}
+
+// ── Load transactions ───────────────────────────────
+async function loadTransactions() {
+    const tbody = document.getElementById('tx-tbody');
+    try {
+        const all = await apiFetch('/transactions');
+        const txs = all.slice(0, 10);
+        tbody.innerHTML = '';
+
+        if (!txs.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="state-empty">Операций пока нет</td></tr>`;
+            return;
+        }
+
+        txs.forEach(tx => {
+            const isIncome = tx.type === 'income';
+            const sign = isIncome ? '+' : '−';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="td-date">${fmtDate(tx.created_at)}</td>
+                <td class="td-desc">${escHtml(tx.description)}</td>
+                <td class="td-category"><span>${escHtml(CATEGORY_LABELS[tx.category] ?? tx.category)}</span></td>
+                <td class="td-type"><span class="${isIncome ? 'type-income' : 'type-expense'}">${isIncome ? 'Доход' : 'Расход'}</span></td>
+                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${sign}${fmt(tx.amount)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="state-error">Ошибка загрузки операций</td></tr>`;
+    }
+}
+
+// ── XSS guard ───────────────────────────────────────
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// ── Init ─────────────────────────────────────────────
+loadFunds();
+loadTransactions();
+</script>
+</body>
+</html>

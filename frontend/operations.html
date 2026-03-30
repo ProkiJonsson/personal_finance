@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Операции</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue:       #1a6dff;
+            --blue-dark:  #1558d6;
+            --blue-light: #eff4ff;
+            --sidebar-w:  240px;
+            --header-h:   64px;
+            --text:       #111827;
+            --text-muted: #6b7280;
+            --border:     #e5e7eb;
+            --bg:         #f5f7fb;
+            --white:      #ffffff;
+            --green:      #16a34a;
+            --red:        #dc2626;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        /* ── Sidebar ─────────────────────────────────── */
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 50; }
+        .sidebar-logo { height: var(--header-h); display: flex; align-items: center; gap: 10px; padding: 0 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .sidebar-logo-icon { width: 34px; height: 34px; background: var(--blue); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+        .sidebar-logo span { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+        .nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-section { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; color: #9ca3af; text-transform: uppercase; padding: 16px 12px 6px; }
+        .sidebar-bottom { padding: 10px; border-top: 1px solid var(--border); }
+
+        /* ── Header ──────────────────────────────────── */
+        .header { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 40; }
+        .header-title { font-size: 17px; font-weight: 700; color: var(--text); }
+        .header-spacer { flex: 1; }
+        .header-user { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 34px; height: 34px; background: var(--blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--blue); flex-shrink: 0; }
+        .user-name { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; }
+        .user-name:hover { color: var(--blue); }
+        .btn-logout { padding: 7px 16px; border: 1.5px solid var(--border); border-radius: 8px; background: none; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+        /* ── Content ──────────────────────────────────── */
+        .content { margin-left: var(--sidebar-w); padding-top: var(--header-h); min-height: 100vh; }
+        .page { padding: 24px 28px 40px; max-width: 1280px; }
+
+        /* ── Buttons ──────────────────────────────────── */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-primary:hover { background: var(--blue-dark); }
+        .btn-secondary { background: var(--white); color: var(--text); border: 1.5px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        .btn-icon { padding: 6px; border-radius: 7px; background: none; border: none; cursor: pointer; color: var(--text-muted); transition: background 0.15s, color 0.15s; display: inline-flex; align-items: center; }
+        .btn-icon:hover { background: var(--bg); color: var(--text); }
+        .btn-icon svg { width: 15px; height: 15px; }
+
+        /* ── Account cards ──────────────────────────────── */
+        .accounts-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 20px; }
+        .accounts-row::-webkit-scrollbar { height: 4px; }
+        .accounts-row::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+        .acc-card { flex-shrink: 0; min-width: 160px; background: var(--white); border-radius: 12px; padding: 16px 18px; border: 2px solid transparent; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: 0 1px 4px rgba(0,0,0,0.07); user-select: none; }
+        .acc-card:hover { box-shadow: 0 4px 14px rgba(26,109,255,0.12); }
+        .acc-card.selected { border-color: var(--blue); }
+        .acc-card.all { background: #111827; color: #fff; }
+        .acc-card.all .acc-name { color: #d1d5db; }
+        .acc-card.all .acc-balance { color: #fff; }
+        .acc-card.add { background: #fafafa; border: 2px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); gap: 4px; font-size: 13px; }
+        .acc-card.add:hover { border-color: var(--blue); color: var(--blue); }
+        .acc-name { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .acc-balance { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+
+        /* ── Control panel ──────────────────────────────── */
+        .control-panel { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .type-toggle { display: flex; background: var(--bg); border-radius: 8px; padding: 2px; }
+        .type-toggle button { padding: 5px 14px; border: none; background: none; border-radius: 7px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: background 0.15s, color 0.15s; }
+        .type-toggle button.active { background: var(--white); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .quick-dates { display: flex; gap: 4px; }
+        .quick-dates button { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 7px; background: none; font-size: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+        .quick-dates button:hover, .quick-dates button.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+        .date-range { display: flex; align-items: center; gap: 6px; }
+        .date-range input { padding: 5px 10px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 12px; color: var(--text); background: var(--white); width: 130px; }
+        .date-range input:focus { outline: none; border-color: var(--blue); }
+        .search-box { position: relative; flex: 1; min-width: 160px; }
+        .search-box input { width: 100%; padding: 7px 10px 7px 34px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); background: var(--white); }
+        .search-box input:focus { outline: none; border-color: var(--blue); }
+        .search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted); pointer-events: none; }
+        .ctrl-spacer { flex: 1; }
+        .ctrl-actions { display: flex; gap: 8px; align-items: center; }
+
+        /* ── Extra filters ──────────────────────────────── */
+        .extra-filters { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 12px 16px; margin-bottom: 16px; display: none; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .extra-filters.open { display: flex; }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+        .filter-group input, .filter-group select { padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; color: var(--text); background: var(--white); min-width: 140px; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--blue); }
+
+        /* ── Table ────────────────────────────────────── */
+        .table-wrap { background: var(--white); border-radius: 14px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th { background: #f9fafb; padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--text); }
+        thead th .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.4; font-size: 10px; }
+        thead th.sorted .sort-icon { opacity: 1; color: var(--blue); }
+        thead th.no-sort { cursor: default; }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #fafbff; }
+        tbody tr.selected-row { background: #eff4ff; }
+        tbody td { padding: 11px 14px; color: var(--text); vertical-align: middle; }
+        .td-num { color: var(--text-muted); font-size: 12px; width: 40px; }
+        .td-check { width: 36px; }
+        .td-date { color: var(--text-muted); font-size: 13px; white-space: nowrap; }
+        .td-amount { font-weight: 700; text-align: right; white-space: nowrap; }
+        .amount-income { color: var(--green); }
+        .amount-expense { color: var(--red); }
+        .td-comment { color: var(--text-muted); font-size: 13px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .td-actions { text-align: right; white-space: nowrap; }
+        .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #f3f4f6; color: #374151; }
+
+        /* ── Footer row ───────────────────────────────── */
+        tfoot td { padding: 11px 14px; font-size: 13px; font-weight: 700; background: #f9fafb; border-top: 1.5px solid var(--border); }
+
+        /* ── Pagination ───────────────────────────────── */
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 16px; border-top: 1px solid var(--border); }
+        .pagination button { padding: 6px 12px; border: 1.5px solid var(--border); border-radius: 7px; background: none; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+        .pagination button:hover { border-color: var(--blue); color: var(--blue); }
+        .pagination button.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+        .pagination button:disabled { opacity: 0.4; cursor: default; }
+
+        /* ── Empty state ──────────────────────────────── */
+        .empty-state { padding: 40px 28px; text-align: center; }
+        .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .inline-form { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: flex-end; }
+        .inline-form .fg { display: flex; flex-direction: column; gap: 4px; }
+        .inline-form label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+        .inline-form input, .inline-form select { padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); background: var(--white); min-width: 130px; }
+        .inline-form input:focus, .inline-form select:focus { outline: none; border-color: var(--blue); }
+
+        /* ── Modal ────────────────────────────────────── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.hidden { display: none; }
+        .modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); }
+        .modal-header h2 { font-size: 17px; font-weight: 700; }
+        .modal-close { padding: 6px; border: none; background: none; cursor: pointer; color: var(--text-muted); border-radius: 7px; transition: background 0.15s; }
+        .modal-close:hover { background: var(--bg); }
+        .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+        .modal-footer { padding: 14px 24px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .modal-footer .spacer { flex: 1; }
+        .form-row { display: flex; gap: 14px; }
+        .form-row .form-group { flex: 1; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+        .form-group input, .form-group select, .form-group textarea { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; color: var(--text); background: var(--white); font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--blue); }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+        .type-seg { display: flex; background: var(--bg); border-radius: 9px; padding: 3px; }
+        .type-seg button { flex: 1; padding: 7px; border: none; background: none; border-radius: 7px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: background 0.15s, color 0.15s; }
+        .type-seg button.active-income { background: #f0fdf4; color: var(--green); }
+        .type-seg button.active-expense { background: #fef2f2; color: var(--red); }
+        .select-wrap { position: relative; }
+        .select-search { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; color: var(--text); background: var(--white); cursor: pointer; }
+        .select-search:focus { outline: none; border-color: var(--blue); }
+        .select-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--white); border: 1.5px solid var(--border); border-radius: 9px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; max-height: 220px; overflow-y: auto; display: none; }
+        .select-dropdown.open { display: block; }
+        .select-dropdown .opt { padding: 9px 14px; font-size: 14px; cursor: pointer; color: var(--text); }
+        .select-dropdown .opt:hover { background: var(--blue-light); color: var(--blue); }
+        .select-dropdown .opt.add-new { color: var(--blue); font-weight: 600; border-top: 1px solid var(--border); }
+        .select-dropdown .opt.add-new:hover { background: var(--blue-light); }
+
+        /* ── Add account mini modal ────────────────────── */
+        .mini-modal { max-width: 380px; }
+
+        /* ── States ────────────────────────────────────── */
+        .state-error { padding: 30px; text-align: center; color: var(--red); font-size: 14px; }
+
+        /* ── Checkbox ──────────────────────────────────── */
+        input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--blue); }
+    </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────── -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
+        <span>Личные финансы</span>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section">Меню</div>
+        <a class="nav-item" href="dashboard.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Главная
+        </a>
+        <a class="nav-item active" href="operations.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
+            Операции
+        </a>
+        <a class="nav-item" href="funds.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            Фонды
+        </a>
+        <a class="nav-item" href="accounts.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            Счета
+        </a>
+        <div class="nav-section">Прочее</div>
+        <a class="nav-item" href="categories.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
+            Справочники
+        </a>
+        <a class="nav-item" href="settings.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            Настройки
+        </a>
+        <a class="nav-item" href="profile.html">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Профиль
+        </a>
+    </nav>
+    <div class="sidebar-bottom">
+        <button class="nav-item" id="logout-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Выйти
+        </button>
+    </div>
+</aside>
+
+<!-- ── Header ────────────────────────────────────────── -->
+<header class="header">
+    <span class="header-title">Операции</span>
+    <div class="header-spacer"></div>
+    <div class="header-user">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
+    </div>
+    <button class="btn-logout" id="header-logout-btn">Выйти</button>
+</header>
+
+<!-- ── Content ───────────────────────────────────────── -->
+<main class="content">
+<div class="page">
+
+    <!-- Account cards -->
+    <div class="accounts-row" id="accounts-row">
+        <div class="acc-card all selected" data-id="all">
+            <div class="acc-name">Все счета</div>
+            <div class="acc-balance" id="total-balance">—</div>
+        </div>
+        <!-- dynamic cards inserted here -->
+        <div class="acc-card add" id="btn-add-account">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Добавить счёт</span>
+        </div>
+    </div>
+
+    <!-- Control panel -->
+    <div class="control-panel">
+        <div class="type-toggle">
+            <button class="active" data-type="all">Все</button>
+            <button data-type="income">Приход</button>
+            <button data-type="expense">Расход</button>
+        </div>
+        <div class="quick-dates">
+            <button data-q="yesterday">Вчера</button>
+            <button data-q="today">Сегодня</button>
+            <button data-q="week">Неделя</button>
+            <button data-q="month">Месяц</button>
+        </div>
+        <div class="date-range">
+            <input type="date" id="date-from" placeholder="От">
+            <span style="color:var(--text-muted);font-size:13px">—</span>
+            <input type="date" id="date-to" placeholder="До">
+        </div>
+        <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="search-input" placeholder="Поиск по комментарию...">
+        </div>
+        <div class="ctrl-spacer"></div>
+        <div class="ctrl-actions">
+            <button class="btn btn-secondary" id="btn-toggle-filters">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.25 5.61C6.27 8.2 10 13 10 13v6c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-6s3.72-4.8 5.74-7.39A.998.998 0 0 0 18.95 4H5.04a1 1 0 0 0-.79 1.61z"/></svg>
+                Фильтры
+            </button>
+            <button class="btn btn-secondary" id="btn-export">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Экспорт
+            </button>
+            <button class="btn btn-primary" id="btn-add-tx">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Добавить
+            </button>
+        </div>
+    </div>
+
+    <!-- Extra filters -->
+    <div class="extra-filters" id="extra-filters">
+        <div class="filter-group">
+            <label>Сумма от</label>
+            <input type="number" id="filter-amount-min" min="0" placeholder="0">
+        </div>
+        <div class="filter-group">
+            <label>Сумма до</label>
+            <input type="number" id="filter-amount-max" min="0" placeholder="∞">
+        </div>
+        <div class="filter-group">
+            <label>Фонд</label>
+            <select id="filter-fund">
+                <option value="">Все фонды</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Статья</label>
+            <select id="filter-category">
+                <option value="">Все статьи</option>
+            </select>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-clear-filters" style="align-self:flex-end">Сбросить</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap" id="table-section">
+        <table>
+            <thead>
+                <tr>
+                    <th class="no-sort td-check"><input type="checkbox" id="check-all"></th>
+                    <th class="no-sort td-num">№</th>
+                    <th data-col="date">Дата <span class="sort-icon">↕</span></th>
+                    <th data-col="category">Статья <span class="sort-icon">↕</span></th>
+                    <th data-col="fund">Фонд <span class="sort-icon">↕</span></th>
+                    <th data-col="account">Счёт <span class="sort-icon">↕</span></th>
+                    <th data-col="amount" style="text-align:right">Сумма <span class="sort-icon">↕</span></th>
+                    <th>Комментарий</th>
+                    <th class="no-sort" style="text-align:right">Действия</th>
+                </tr>
+            </thead>
+            <tbody id="tx-tbody">
+                <tr><td colspan="9" style="padding:30px;text-align:center;color:var(--text-muted)">Загрузка...</td></tr>
+            </tbody>
+            <tfoot id="tx-tfoot">
+                <tr>
+                    <td colspan="6" style="color:var(--text-muted)">Итого</td>
+                    <td style="text-align:right">
+                        <span id="foot-income" class="amount-income">+0 ₽</span>&nbsp;&nbsp;
+                        <span id="foot-expense" class="amount-expense">−0 ₽</span>&nbsp;&nbsp;
+                        <span id="foot-diff" style="font-size:12px;color:var(--text-muted)">= 0 ₽</span>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- Empty state (shown when no transactions) -->
+    <div id="empty-state" style="display:none">
+        <div class="table-wrap">
+            <div class="empty-state">
+                <h3>Добавьте первую операцию</h3>
+                <p>Здесь будут отображаться все ваши доходы и расходы</p>
+                <form class="inline-form" id="inline-form">
+                    <div class="fg">
+                        <label>Дата</label>
+                        <input type="date" id="il-date" required>
+                    </div>
+                    <div class="fg">
+                        <label>Тип</label>
+                        <select id="il-type">
+                            <option value="income">Доход</option>
+                            <option value="expense">Расход</option>
+                        </select>
+                    </div>
+                    <div class="fg">
+                        <label>Счёт</label>
+                        <select id="il-account"><option value="">Без счёта</option></select>
+                    </div>
+                    <div class="fg">
+                        <label>Фонд</label>
+                        <select id="il-fund" required></select>
+                    </div>
+                    <div class="fg">
+                        <label>Статья</label>
+                        <select id="il-category" required></select>
+                    </div>
+                    <div class="fg">
+                        <label>Сумма</label>
+                        <input type="number" id="il-amount" min="0.01" step="0.01" placeholder="0.00" required style="width:110px">
+                    </div>
+                    <div class="fg">
+                        <label>Описание</label>
+                        <input type="text" id="il-comment" placeholder="Комментарий" style="width:160px">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top:16px">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</main>
+
+<!-- ═══════════════════════════════════════════
+     Modal: Add / Edit transaction
+════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="tx-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="tx-modal-title">Добавить операцию</h2>
+            <button class="modal-close" id="tx-modal-close">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Date + type -->
+            <div class="form-row">
+                <div class="form-group" style="flex:1.2">
+                    <label>Дата</label>
+                    <input type="date" id="m-date">
+                </div>
+                <div class="form-group" style="flex:2">
+                    <label>Тип</label>
+                    <div class="type-seg">
+                        <button type="button" id="m-type-income" class="active-income" data-val="income">Доход</button>
+                        <button type="button" id="m-type-expense" data-val="expense">Расход</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account -->
+            <div class="form-group">
+                <label>Счёт</label>
+                <div class="select-wrap" id="wrap-account">
+                    <input type="text" class="select-search" id="m-account-search" placeholder="Без счёта" autocomplete="off">
+                    <input type="hidden" id="m-account-id">
+                    <div class="select-dropdown" id="dd-account"></div>
+                </div>
+            </div>
+
+            <!-- Fund -->
+            <div class="form-group">
+                <label>Фонд <span style="color:var(--red)">*</span></label>
+                <div class="select-wrap" id="wrap-fund">
+                    <input type="text" class="select-search" id="m-fund-search" placeholder="Выберите фонд..." autocomplete="off">
+                    <input type="hidden" id="m-fund-id">
+                    <div class="select-dropdown" id="dd-fund"></div>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label>Статья <span style="color:var(--red)">*</span></label>
+                <div class="select-wrap" id="wrap-category">
+                    <input type="text" class="select-search" id="m-category-search" placeholder="Выберите статью..." autocomplete="off">
+                    <input type="hidden" id="m-category-id">
+                    <div class="select-dropdown" id="dd-category"></div>
+                </div>
+            </div>
+
+            <!-- Amount + comment -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Сумма <span style="color:var(--red)">*</span></label>
+                    <input type="number" id="m-amount" min="0.01" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group" style="flex:2">
+                    <label>Описание</label>
+                    <input type="text" id="m-comment" placeholder="Комментарий к операции">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+                <input type="checkbox" id="m-add-more"> Добавить ещё одну
+            </label>
+            <div class="spacer"></div>
+            <button class="btn btn-secondary" id="tx-modal-cancel">Отмена</button>
+            <button class="btn btn-primary" id="tx-modal-save">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     Modal: Add account (mini)
+════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="acc-modal">
+    <div class="modal mini-modal">
+        <div class="modal-header">
+            <h2>Добавить счёт</h2>
+            <button class="modal-close" id="acc-modal-close">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Название</label>
+                <input type="text" id="acc-name" placeholder="Например: Сбербанк">
+            </div>
+            <div class="form-group">
+                <label>Начальный баланс</label>
+                <input type="number" id="acc-balance" placeholder="0.00" min="0" step="0.01">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="spacer"></div>
+            <button class="btn btn-secondary" id="acc-modal-cancel">Отмена</button>
+            <button class="btn btn-primary" id="acc-modal-save">Создать</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+const API = 'http://127.0.0.1:8000';
+
+// ── Auth ─────────────────────────────────────────────
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) window.location.href = 'index.html';
+
+function parseJwt(t) {
+    try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return {}; }
+}
+const jwt = parseJwt(token);
+const displayName = jwt.name || jwt.email || 'Пользователь';
+document.getElementById('user-name').textContent = displayName;
+document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
+
+function logout() {
+    localStorage.removeItem('token'); sessionStorage.removeItem('token');
+    window.location.href = 'index.html';
+}
+document.getElementById('logout-btn').addEventListener('click', logout);
+document.getElementById('header-logout-btn').addEventListener('click', logout);
+
+// ── Helpers ───────────────────────────────────────────
+function escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmt(amount) {
+    return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+}
+function fmtDate(iso) {
+    return new Date(iso).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function todayStr() {
+    return new Date().toISOString().slice(0,10);
+}
+
+async function apiFetch(path, opts = {}) {
+    const res = await fetch(API + path, {
+        ...opts,
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+    });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'HTTP ' + res.status);
+    }
+    if (res.status === 204) return null;
+    return res.json();
+}
+
+// ── State ─────────────────────────────────────────────
+let allTransactions = [];
+let accounts = [];
+let funds = [];
+let categories = [];
+let selectedAccounts = new Set(['all']); // 'all' means no filter
+let filterType = 'all';
+let dateFrom = '';
+let dateTo = '';
+let searchText = '';
+let amountMin = '';
+let amountMax = '';
+let filterFundId = '';
+let filterCategoryId = '';
+let sortCol = 'date';
+let sortDir = -1; // -1 desc, 1 asc
+let currentPage = 1;
+const PAGE_SIZE = 20;
+
+// ── Load data ─────────────────────────────────────────
+async function loadAll() {
+    [accounts, funds, categories, allTransactions] = await Promise.all([
+        apiFetch('/accounts'),
+        apiFetch('/funds'),
+        apiFetch('/categories'),
+        apiFetch('/transactions'),
+    ]);
+    renderAccountCards();
+    populateFilterSelects();
+    renderTable();
+}
+
+function renderAccountCards() {
+    const row = document.getElementById('accounts-row');
+    // remove old account cards (keep "all" card and "add" card)
+    row.querySelectorAll('.acc-card:not(.all):not(.add)').forEach(el => el.remove());
+
+    let totalBalance = 0;
+    accounts.forEach(acc => {
+        totalBalance += acc.balance || 0;
+        const card = document.createElement('div');
+        card.className = 'acc-card' + (selectedAccounts.has(acc.id) ? ' selected' : '');
+        card.dataset.id = acc.id;
+        card.innerHTML = `<div class="acc-name">${escHtml(acc.name)}</div><div class="acc-balance">${fmt(acc.balance || 0)}</div>`;
+        card.addEventListener('click', e => onAccountCardClick(e, acc.id));
+        row.insertBefore(card, document.getElementById('btn-add-account'));
+    });
+    document.getElementById('total-balance').textContent = fmt(totalBalance);
+}
+
+function onAccountCardClick(e, id) {
+    const allCard = document.querySelector('.acc-card.all');
+    if (e.ctrlKey || e.metaKey) {
+        // multi-select: remove 'all', toggle this
+        selectedAccounts.delete('all');
+        if (selectedAccounts.has(id)) selectedAccounts.delete(id);
+        else selectedAccounts.add(id);
+        if (selectedAccounts.size === 0) selectedAccounts.add('all');
+    } else {
+        selectedAccounts.clear();
+        selectedAccounts.add(id);
+    }
+    // update UI
+    document.querySelectorAll('.acc-card').forEach(c => {
+        c.classList.toggle('selected', selectedAccounts.has(c.dataset.id === 'all' ? 'all' : parseInt(c.dataset.id)));
+    });
+    currentPage = 1;
+    renderTable();
+}
+
+document.querySelector('.acc-card.all').addEventListener('click', e => {
+    if (!e.ctrlKey && !e.metaKey) {
+        selectedAccounts.clear();
+        selectedAccounts.add('all');
+        document.querySelectorAll('.acc-card').forEach(c => c.classList.toggle('selected', c.dataset.id === 'all'));
+        currentPage = 1;
+        renderTable();
+    }
+});
+
+function populateFilterSelects() {
+    const fundSel = document.getElementById('filter-fund');
+    fundSel.innerHTML = '<option value="">Все фонды</option>' +
+        funds.map(f => `<option value="${f.id}">${escHtml(f.name)}</option>`).join('');
+
+    const catSel = document.getElementById('filter-category');
+    const lvl2 = categories.filter(c => c.level === 2);
+    catSel.innerHTML = '<option value="">Все статьи</option>' +
+        lvl2.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+
+    // inline form
+    const ilAcc = document.getElementById('il-account');
+    ilAcc.innerHTML = '<option value="">Без счёта</option>' +
+        accounts.map(a => `<option value="${a.id}">${escHtml(a.name)}</option>`).join('');
+    const ilFund = document.getElementById('il-fund');
+    ilFund.innerHTML = funds.map(f => `<option value="${f.id}">${escHtml(f.name)}</option>`).join('');
+    const ilCat = document.getElementById('il-category');
+    ilCat.innerHTML = lvl2.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+}
+
+// ── Filter & sort ─────────────────────────────────────
+function getFiltered() {
+    let txs = [...allTransactions];
+
+    // account filter
+    if (!selectedAccounts.has('all')) {
+        txs = txs.filter(tx => selectedAccounts.has(tx.account_id));
+    }
+    // type filter
+    if (filterType !== 'all') txs = txs.filter(tx => tx.type === filterType);
+    // date range
+    if (dateFrom) txs = txs.filter(tx => tx.date >= dateFrom);
+    if (dateTo) {
+        const to = dateTo + 'T23:59:59';
+        txs = txs.filter(tx => tx.date <= to);
+    }
+    // search
+    if (searchText) {
+        const q = searchText.toLowerCase();
+        txs = txs.filter(tx => (tx.comment || '').toLowerCase().includes(q));
+    }
+    // amount
+    if (amountMin !== '') txs = txs.filter(tx => tx.amount >= parseFloat(amountMin));
+    if (amountMax !== '') txs = txs.filter(tx => tx.amount <= parseFloat(amountMax));
+    // fund
+    if (filterFundId) txs = txs.filter(tx => tx.fund_id === parseInt(filterFundId));
+    // category
+    if (filterCategoryId) txs = txs.filter(tx => tx.category_id === parseInt(filterCategoryId));
+
+    // sort
+    txs.sort((a, b) => {
+        let va, vb;
+        if (sortCol === 'date') { va = a.date; vb = b.date; }
+        else if (sortCol === 'amount') { va = a.amount; vb = b.amount; }
+        else if (sortCol === 'category') {
+            va = getCategoryName(a.category_id); vb = getCategoryName(b.category_id);
+        }
+        else if (sortCol === 'fund') {
+            va = getFundName(a.fund_id); vb = getFundName(b.fund_id);
+        }
+        else if (sortCol === 'account') {
+            va = getAccountName(a.account_id); vb = getAccountName(b.account_id);
+        }
+        if (va < vb) return -sortDir;
+        if (va > vb) return sortDir;
+        return 0;
+    });
+
+    return txs;
+}
+
+function getCategoryName(id) { const c = categories.find(x => x.id === id); return c ? c.name : '—'; }
+function getFundName(id) { const f = funds.find(x => x.id === id); return f ? f.name : '—'; }
+function getAccountName(id) { const a = accounts.find(x => x.id === id); return a ? a.name : '—'; }
+
+function renderTable() {
+    const filtered = getFiltered();
+    const tbody = document.getElementById('tx-tbody');
+    const emptyState = document.getElementById('empty-state');
+    const tableSection = document.getElementById('table-section');
+
+    if (allTransactions.length === 0) {
+        tableSection.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    tableSection.style.display = 'block';
+    emptyState.style.display = 'none';
+
+    // footer totals
+    let totalIncome = 0, totalExpense = 0;
+    filtered.forEach(tx => {
+        if (tx.type === 'income') totalIncome += tx.amount;
+        else totalExpense += tx.amount;
+    });
+    document.getElementById('foot-income').textContent = '+' + fmt(totalIncome);
+    document.getElementById('foot-expense').textContent = '−' + fmt(totalExpense);
+    const diff = totalIncome - totalExpense;
+    const diffEl = document.getElementById('foot-diff');
+    diffEl.textContent = '= ' + fmt(diff);
+    diffEl.style.color = diff >= 0 ? 'var(--green)' : 'var(--red)';
+
+    // pagination
+    const total = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const page = filtered.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = '';
+    if (!page.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="padding:30px;text-align:center;color:var(--text-muted)">Нет операций по выбранным фильтрам</td></tr>';
+    } else {
+        page.forEach((tx, idx) => {
+            const isIncome = tx.type === 'income';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="td-check"><input type="checkbox" class="row-check" data-id="${tx.id}"></td>
+                <td class="td-num">${start + idx + 1}</td>
+                <td class="td-date">${fmtDate(tx.date)}</td>
+                <td><span class="tag">${escHtml(getCategoryName(tx.category_id))}</span></td>
+                <td>${escHtml(getFundName(tx.fund_id))}</td>
+                <td>${escHtml(getAccountName(tx.account_id))}</td>
+                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${isIncome ? '+' : '−'}${fmt(tx.amount)}</td>
+                <td class="td-comment" title="${escHtml(tx.comment || '')}">${escHtml(tx.comment || '')}</td>
+                <td class="td-actions">
+                    <button class="btn-icon" title="Копировать" onclick="copyTx(${tx.id})">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    </button>
+                    <button class="btn-icon" title="Редактировать" onclick="editTx(${tx.id})">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </button>
+                    <button class="btn-icon" title="Удалить" style="color:#ef4444" onclick="deleteTx(${tx.id})">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    renderPagination(totalPages);
+    updateSortHeaders();
+}
+
+function renderPagination(totalPages) {
+    const pag = document.getElementById('pagination');
+    if (totalPages <= 1) { pag.innerHTML = ''; return; }
+    let html = '';
+    html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="goPage(${currentPage-1})">‹</button>`;
+    for (let i = 1; i <= totalPages; i++) {
+        if (totalPages > 7 && i > 2 && i < totalPages - 1 && Math.abs(i - currentPage) > 1) {
+            if (i === 3 || i === totalPages - 2) html += '<button disabled>…</button>';
+            continue;
+        }
+        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="goPage(${currentPage+1})">›</button>`;
+    pag.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; renderTable(); }
+
+function updateSortHeaders() {
+    document.querySelectorAll('thead th[data-col]').forEach(th => {
+        const col = th.dataset.col;
+        th.classList.toggle('sorted', col === sortCol);
+        const icon = th.querySelector('.sort-icon');
+        if (icon) icon.textContent = col === sortCol ? (sortDir === 1 ? '↑' : '↓') : '↕';
+    });
+}
+
+// ── Sort click ────────────────────────────────────────
+document.querySelectorAll('thead th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) sortDir *= -1;
+        else { sortCol = col; sortDir = -1; }
+        currentPage = 1;
+        renderTable();
+    });
+});
+
+// ── Check all ─────────────────────────────────────────
+document.getElementById('check-all').addEventListener('change', function() {
+    document.querySelectorAll('.row-check').forEach(c => c.checked = this.checked);
+});
+
+// ── Type toggle ───────────────────────────────────────
+document.querySelectorAll('.type-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.type-toggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterType = btn.dataset.type;
+        currentPage = 1;
+        renderTable();
+    });
+});
+
+// ── Quick dates ───────────────────────────────────────
+document.querySelectorAll('.quick-dates button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const now = new Date();
+        const today = now.toISOString().slice(0,10);
+        document.querySelectorAll('.quick-dates button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const q = btn.dataset.q;
+        if (q === 'today') {
+            dateFrom = today; dateTo = today;
+        } else if (q === 'yesterday') {
+            const y = new Date(now); y.setDate(y.getDate() - 1);
+            dateFrom = dateTo = y.toISOString().slice(0,10);
+        } else if (q === 'week') {
+            const w = new Date(now); w.setDate(w.getDate() - 6);
+            dateFrom = w.toISOString().slice(0,10); dateTo = today;
+        } else if (q === 'month') {
+            dateFrom = today.slice(0,7) + '-01'; dateTo = today;
+        }
+        document.getElementById('date-from').value = dateFrom;
+        document.getElementById('date-to').value = dateTo;
+        currentPage = 1;
+        renderTable();
+    });
+});
+
+document.getElementById('date-from').addEventListener('change', e => { dateFrom = e.target.value; document.querySelectorAll('.quick-dates button').forEach(b => b.classList.remove('active')); currentPage=1; renderTable(); });
+document.getElementById('date-to').addEventListener('change', e => { dateTo = e.target.value; document.querySelectorAll('.quick-dates button').forEach(b => b.classList.remove('active')); currentPage=1; renderTable(); });
+document.getElementById('search-input').addEventListener('input', e => { searchText = e.target.value; currentPage=1; renderTable(); });
+
+// ── Extra filters ─────────────────────────────────────
+document.getElementById('btn-toggle-filters').addEventListener('click', () => {
+    document.getElementById('extra-filters').classList.toggle('open');
+});
+document.getElementById('filter-amount-min').addEventListener('input', e => { amountMin = e.target.value; currentPage=1; renderTable(); });
+document.getElementById('filter-amount-max').addEventListener('input', e => { amountMax = e.target.value; currentPage=1; renderTable(); });
+document.getElementById('filter-fund').addEventListener('change', e => { filterFundId = e.target.value; currentPage=1; renderTable(); });
+document.getElementById('filter-category').addEventListener('change', e => { filterCategoryId = e.target.value; currentPage=1; renderTable(); });
+document.getElementById('btn-clear-filters').addEventListener('click', () => {
+    amountMin = amountMax = filterFundId = filterCategoryId = '';
+    document.getElementById('filter-amount-min').value = '';
+    document.getElementById('filter-amount-max').value = '';
+    document.getElementById('filter-fund').value = '';
+    document.getElementById('filter-category').value = '';
+    currentPage=1; renderTable();
+});
+
+// ── Export CSV ────────────────────────────────────────
+document.getElementById('btn-export').addEventListener('click', () => {
+    const rows = getFiltered();
+    const header = ['№','Дата','Тип','Статья','Фонд','Счёт','Сумма','Комментарий'];
+    const lines = [header.join(';')];
+    rows.forEach((tx, i) => {
+        lines.push([
+            i+1,
+            fmtDate(tx.date),
+            tx.type === 'income' ? 'Доход' : 'Расход',
+            getCategoryName(tx.category_id),
+            getFundName(tx.fund_id),
+            getAccountName(tx.account_id),
+            tx.amount,
+            (tx.comment || '').replace(/;/g, ','),
+        ].join(';'));
+    });
+    const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'transactions.csv';
+    a.click();
+});
+
+// ── CRUD operations ───────────────────────────────────
+async function deleteTx(id) {
+    if (!confirm('Удалить операцию?')) return;
+    await apiFetch('/transactions/' + id, { method: 'DELETE' });
+    allTransactions = allTransactions.filter(tx => tx.id !== id);
+    renderTable();
+}
+
+function copyTx(id) {
+    const tx = allTransactions.find(t => t.id === id);
+    if (!tx) return;
+    openTxModal(null, tx);
+}
+
+function editTx(id) {
+    const tx = allTransactions.find(t => t.id === id);
+    if (!tx) return;
+    openTxModal(id, tx);
+}
+
+// ── Add account button ────────────────────────────────
+document.getElementById('btn-add-account').addEventListener('click', () => {
+    document.getElementById('acc-name').value = '';
+    document.getElementById('acc-balance').value = '';
+    document.getElementById('acc-modal').classList.remove('hidden');
+});
+document.getElementById('acc-modal-close').addEventListener('click', () => document.getElementById('acc-modal').classList.add('hidden'));
+document.getElementById('acc-modal-cancel').addEventListener('click', () => document.getElementById('acc-modal').classList.add('hidden'));
+document.getElementById('acc-modal-save').addEventListener('click', async () => {
+    const name = document.getElementById('acc-name').value.trim();
+    if (!name) return alert('Введите название счёта');
+    const balance = parseFloat(document.getElementById('acc-balance').value) || 0;
+    const acc = await apiFetch('/accounts', { method: 'POST', body: JSON.stringify({ name, balance }) });
+    accounts.push(acc);
+    renderAccountCards();
+    populateFilterSelects();
+    document.getElementById('acc-modal').classList.add('hidden');
+});
+
+// ── Inline form (empty state) ─────────────────────────
+document.getElementById('il-date').value = todayStr();
+document.getElementById('inline-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = {
+        date: document.getElementById('il-date').value + 'T00:00:00',
+        type: document.getElementById('il-type').value,
+        account_id: parseInt(document.getElementById('il-account').value) || null,
+        fund_id: parseInt(document.getElementById('il-fund').value),
+        category_id: parseInt(document.getElementById('il-category').value),
+        amount: parseFloat(document.getElementById('il-amount').value),
+        comment: document.getElementById('il-comment').value.trim() || null,
+    };
+    const tx = await apiFetch('/transactions', { method: 'POST', body: JSON.stringify(data) });
+    allTransactions.unshift(tx);
+    renderTable();
+});
+
+// ══════════════════════════════════════════════════════
+// Tx modal: open/save
+// ══════════════════════════════════════════════════════
+let editingTxId = null;
+let modalTxType = 'income';
+
+function openTxModal(id, prefill = {}) {
+    editingTxId = id;
+    document.getElementById('tx-modal-title').textContent = id ? 'Редактировать операцию' : 'Добавить операцию';
+    document.getElementById('m-date').value = prefill.date ? prefill.date.slice(0,10) : todayStr();
+    document.getElementById('m-amount').value = prefill.amount || '';
+    document.getElementById('m-comment').value = prefill.comment || '';
+    document.getElementById('m-add-more').checked = false;
+
+    setModalType(prefill.type || 'income');
+
+    // account
+    const acc = accounts.find(a => a.id === prefill.account_id);
+    document.getElementById('m-account-search').value = acc ? acc.name : '';
+    document.getElementById('m-account-id').value = acc ? acc.id : '';
+
+    // fund
+    const fund = funds.find(f => f.id === prefill.fund_id);
+    document.getElementById('m-fund-search').value = fund ? fund.name : '';
+    document.getElementById('m-fund-id').value = fund ? fund.id : '';
+
+    // category
+    const cat = categories.find(c => c.id === prefill.category_id);
+    document.getElementById('m-category-search').value = cat ? cat.name : '';
+    document.getElementById('m-category-id').value = cat ? cat.id : '';
+
+    document.getElementById('tx-modal').classList.remove('hidden');
+    document.getElementById('m-date').focus();
+}
+
+function setModalType(type) {
+    modalTxType = type;
+    document.getElementById('m-type-income').className = type === 'income' ? 'active-income' : '';
+    document.getElementById('m-type-expense').className = type === 'expense' ? 'active-expense' : '';
+}
+
+document.getElementById('m-type-income').addEventListener('click', () => setModalType('income'));
+document.getElementById('m-type-expense').addEventListener('click', () => setModalType('expense'));
+
+document.getElementById('btn-add-tx').addEventListener('click', () => openTxModal(null));
+document.getElementById('tx-modal-close').addEventListener('click', () => document.getElementById('tx-modal').classList.add('hidden'));
+document.getElementById('tx-modal-cancel').addEventListener('click', () => document.getElementById('tx-modal').classList.add('hidden'));
+
+document.getElementById('tx-modal-save').addEventListener('click', async () => {
+    const dateVal = document.getElementById('m-date').value;
+    const amountVal = parseFloat(document.getElementById('m-amount').value);
+    const fundId = parseInt(document.getElementById('m-fund-id').value);
+    const catId = parseInt(document.getElementById('m-category-id').value);
+    const accId = parseInt(document.getElementById('m-account-id').value) || null;
+    const comment = document.getElementById('m-comment').value.trim() || null;
+
+    if (!dateVal) return alert('Укажите дату');
+    if (!amountVal || amountVal <= 0) return alert('Укажите корректную сумму');
+    if (!fundId) return alert('Выберите фонд');
+    if (!catId) return alert('Выберите статью');
+
+    const body = { date: dateVal + 'T00:00:00', amount: amountVal, type: modalTxType, fund_id: fundId, category_id: catId, account_id: accId, comment };
+
+    try {
+        if (editingTxId) {
+            const updated = await apiFetch('/transactions/' + editingTxId, { method: 'PUT', body: JSON.stringify(body) });
+            const idx = allTransactions.findIndex(t => t.id === editingTxId);
+            if (idx >= 0) allTransactions[idx] = updated;
+        } else {
+            const created = await apiFetch('/transactions', { method: 'POST', body: JSON.stringify(body) });
+            allTransactions.unshift(created);
+        }
+    } catch(e) { alert('Ошибка: ' + e.message); return; }
+
+    const addMore = document.getElementById('m-add-more').checked;
+    if (!addMore || editingTxId) {
+        document.getElementById('tx-modal').classList.add('hidden');
+    } else {
+        // reset for new entry
+        openTxModal(null, { type: modalTxType });
+    }
+    renderTable();
+});
+
+// ══════════════════════════════════════════════════════
+// Searchable selects for modal
+// ══════════════════════════════════════════════════════
+function setupSearchSelect(inputId, hiddenId, dropdownId, getItems, onSelect) {
+    const input = document.getElementById(inputId);
+    const hidden = document.getElementById(hiddenId);
+    const dd = document.getElementById(dropdownId);
+
+    function render(q) {
+        const items = getItems();
+        const filtered = q ? items.filter(it => it.label.toLowerCase().includes(q.toLowerCase())) : items;
+        dd.innerHTML = filtered.map(it =>
+            `<div class="opt" data-id="${it.id}">${escHtml(it.label)}</div>`
+        ).join('') + `<div class="opt add-new" data-id="__add__">+ Добавить новый</div>`;
+        dd.classList.add('open');
+    }
+
+    input.addEventListener('focus', () => render(input.value));
+    input.addEventListener('input', () => render(input.value));
+
+    dd.addEventListener('mousedown', e => {
+        const opt = e.target.closest('.opt');
+        if (!opt) return;
+        e.preventDefault();
+        if (opt.dataset.id === '__add__') {
+            dd.classList.remove('open');
+            onSelect('add');
+        } else {
+            const id = opt.dataset.id;
+            const label = opt.textContent;
+            input.value = label;
+            hidden.value = id;
+            dd.classList.remove('open');
+        }
+    });
+
+    document.addEventListener('click', e => {
+        if (!input.contains(e.target) && !dd.contains(e.target)) dd.classList.remove('open');
+    });
+}
+
+setupSearchSelect('m-account-search', 'm-account-id', 'dd-account',
+    () => [{ id: '', label: '— Без счёта —' }, ...accounts.map(a => ({ id: a.id, label: a.name }))],
+    action => { if (action === 'add') document.getElementById('acc-modal').classList.remove('hidden'); }
+);
+
+setupSearchSelect('m-fund-search', 'm-fund-id', 'dd-fund',
+    () => funds.map(f => ({ id: f.id, label: f.name })),
+    action => { if (action === 'add') window.location.href = 'funds.html'; }
+);
+
+setupSearchSelect('m-category-search', 'm-category-id', 'dd-category',
+    () => categories.filter(c => c.level === 2).map(c => ({ id: c.id, label: c.name })),
+    action => { if (action === 'add') window.location.href = 'categories.html'; }
+);
+
+// ── Init ──────────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>

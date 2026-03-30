@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f finance.db)",
+      "Bash(python -c \"from database import engine; from models import Base; Base.metadata.create_all\\(bind=engine\\); print\\(''DB recreated''\\)\")",
+      "Bash(python -c \":*)"
+    ]
+  }
+}
