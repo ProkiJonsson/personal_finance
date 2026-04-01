@@ -6,25 +6,11 @@
 
 ## Стек технологий
 
-### Backend
-- **Python 3.x** + **FastAPI 0.115** — REST API, автодокументация `/docs`
-- **SQLAlchemy 2.0** — ORM, модели в `backend/models.py`
-- **SQLite** — `backend/finance.db` (без миграций, только `metadata.create_all`)
-- **Uvicorn 0.30** — ASGI-сервер
-- **python-jose + passlib[bcrypt]** — JWT-аутентификация
-- **Pydantic 2.9** — валидация запросов/ответов
+**Backend:** Python 3.x + FastAPI 0.115, SQLAlchemy 2.0, SQLite (`backend/finance.db`), Uvicorn 0.30, python-jose + passlib[bcrypt], Pydantic 2.9. Документация: `/docs`.
 
-### Frontend
-- **Vanilla HTML5 / CSS3 / JavaScript (ES6+)** — без фреймворков
-- **Fetch API** — взаимодействие с backend
-- **localStorage / sessionStorage** — хранение JWT-токена
-- Утилиты инлайновые в каждой странице: `fmt()`, `fmtDate()`, `escHtml()`
+**Frontend:** Vanilla HTML5 / CSS3 / JavaScript ES6+, Fetch API, localStorage/sessionStorage. Утилиты инлайновые: `fmt()`, `fmtDate()`, `escHtml()`.
 
-### Запуск
-```bash
-cd backend && uvicorn main:app --reload
-```
-Frontend — статичные HTML-файлы, открываются через `file://` или HTTP-сервер.
+**Запуск:** `cd backend && uvicorn main:app --reload`. Frontend — статичные HTML-файлы через `file://` или HTTP-сервер.
 
 ---
 
@@ -37,26 +23,24 @@ finance/
 │   ├── models.py            # SQLAlchemy ORM-модели
 │   ├── database.py          # SQLite-соединение, сессии
 │   ├── auth.py              # JWT, get_current_user
-│   ├── requirements.txt
-│   ├── finance.db
 │   └── routers/
 │       ├── auth.py          # /auth/register, /auth/login
 │       ├── funds.py         # /funds CRUD
 │       ├── accounts.py      # /accounts CRUD
 │       ├── categories.py    # /categories CRUD (иерархия)
 │       └── transactions.py  # /transactions CRUD + фильтры
-├── frontend/
-│   ├── index.html           # Вход / Регистрация
-│   ├── dashboard.html       # Главная, карточки фондов
-│   ├── accounts.html        # CRUD счетов
-│   ├── funds.html           # CRUD фондов
-│   ├── categories.html      # Справочники (виды/группы/статьи)
-│   ├── operations.html      # Транзакции с фильтрами
-│   ├── css/style.css        # Устаревшие стили (не используются)
-│   └── js/app.js            # Устаревший файл (не подключается)
-├── README.md
-├── task.md
-└── CLAUDE.md
+└── frontend/
+    ├── index.html           # Вход / Регистрация
+    ├── dashboard.html       # Главная, карточки фондов
+    ├── accounts.html        # CRUD счетов
+    ├── funds.html           # CRUD фондов
+    ├── categories.html      # Справочники (виды/группы/статьи)
+    ├── operations.html      # Транзакции с фильтрами
+    ├── css/
+    │   ├── sidebar.css      # Стили боковой панели
+    │   └── common.css       # Общие CSS-переменные и базовые стили
+    └── js/
+        └── layout.js        # Инъекция sidebar и header на все страницы
 ```
 
 ---
@@ -75,50 +59,50 @@ finance/
 Связи: `funds`, `accounts`, `categories`, `transactions` — CASCADE DELETE.
 
 ### `funds`
-| Поле | Тип | Описание |
-|------|-----|---------|
+| Поле | Тип | |
+|------|-----|-|
 | id | Integer PK | |
-| user_id | FK → users | CASCADE DELETE |
+| user_id | FK → users CASCADE | |
 | name | String(255) | |
 | type | Enum | `current` / `investment` |
-| created_at | DateTime | |
 
 ### `accounts`
-| Поле | Тип | Описание |
-|------|-----|---------|
+| Поле | Тип | |
+|------|-----|-|
 | id | Integer PK | |
-| user_id | FK → users | CASCADE DELETE |
+| user_id | FK → users CASCADE | |
 | name | String(255) | |
 | balance | Float | default 0.0 |
-| created_at | DateTime | |
 
 ### `categories`
 | Поле | Тип | Описание |
 |------|-----|---------|
 | id | Integer PK | |
-| user_id | FK → users | CASCADE DELETE |
+| user_id | FK → users CASCADE | |
 | name | String(255) | |
 | type | Enum | `income` / `expense` / NULL |
-| level | Integer 1–4 | 4=вид, 3=группа, 2=статья, 1=резерв |
-| parent_id | FK → categories | SET NULL on delete, nullable |
+| level | Integer 1–4 | 4=вид деятельности, 3=тип операции, 2=группа, 1=статья |
+| parent_id | FK → categories | nullable, SET NULL on delete |
 | sort_order | Integer | default 0 |
-| created_at | DateTime | |
 
-Иерархия: Level 4 (корень, без parent) → Level 3 (тип: income/expense) → Level 2. Нельзя удалить с дочерними. Перемещение через `PATCH /categories/{id}/move`.
+**Иерархия:** Level 4 (Вид деятельности, корень) → Level 3 (Тип операции: income/expense) → Level 2 (Группа) → Level 1 (Статья).
+
+Нельзя удалить категорию с дочерними (409). Перемещение: `PATCH /categories/{id}/move`.
+
+**Режим учёта по видам деятельности** — опция `activityMode` хранится в `localStorage` браузера. При смене режима все категории уровней 1 и 2 удаляются через `DELETE /categories/clear-user-data` (уровни 3 и 4 сохраняются). Пользователь подтверждает действие в модальном окне.
 
 ### `transactions`
 | Поле | Тип | Описание |
 |------|-----|---------|
 | id | Integer PK | |
-| user_id | FK → users | CASCADE DELETE, индекс |
+| user_id | FK → users CASCADE | индекс |
 | date | DateTime | NOT NULL, индекс |
 | amount | Float | > 0 (CheckConstraint) |
 | type | Enum | `income` / `expense` |
 | fund_id | FK → funds | RESTRICT DELETE |
-| account_id | FK → accounts | SET NULL on delete, nullable |
+| account_id | FK → accounts | SET NULL, nullable |
 | category_id | FK → categories | RESTRICT DELETE |
 | comment | Text | nullable |
-| created_at | DateTime | |
 
 ---
 
@@ -130,14 +114,13 @@ finance/
 - Данные изолируются фильтром `user_id == current_user.id` в каждом запросе
 - HTTP-статусы: 201 создание, 204 удаление, 401 неавторизован, 404 не найдено, 409 конфликт
 - Ошибки логируются через `traceback.print_exc()` в middleware
-- `PUT /categories/{id}` — обновляет name/type/sort_order (level и parent_id не трогает)
-- `PATCH /categories/{id}/move` — меняет level/parent_id/sort_order, рекурсивно обновляет дочерние уровни
+- В `categories.py` маршрут `/clear-user-data` должен быть зарегистрирован **до** `/{category_id}`
 
 ### Frontend
 - Токен: `localStorage` (remember me) или `sessionStorage`
 - Заголовок `Authorization: Bearer <token>` на все защищённые запросы
-- Утилиты инлайновые: `fmt(amount)` → рубли, `fmtDate(iso)` → DD.MM.YYYY HH:MM, `escHtml(s)` → XSS
-- CSS-переменные: `--blue: #1a6dff`, `--green: #16a34a`, `--red: #dc2626`, `--bg: #f5f7fb`, `--text: #111827`
+- CSS-переменные определены в `css/common.css`: `--primary`, `--primary-dark`, `--primary-light`, `--success`, `--danger`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border`, `--bg-body`, `--bg-card-light`
+- `js/layout.js` подключается последним скриптом на каждой странице — инъектирует sidebar и header
 
 ---
 
@@ -146,6 +129,5 @@ finance/
 1. **SQLite без миграций** — при изменении моделей удалять и пересоздавать `finance.db` (или ALTER TABLE вручную).
 2. **Фонды vs Счета** — Фонд — логическая единица бюджета, Счёт — физическое хранилище. Транзакция обязательно привязана к фонду, счёт опционален.
 3. **Баланс фонда** — вычисляется на лету как `SUM(income) - SUM(expenses)`. Баланс счёта хранится как явное поле.
-4. **Иерархия категорий** — 3 уровня (4/3/2): вид → [Доходы/Расходы] → группа → статья. В дереве уровень 3 сгруппирован по type под визуальными разделителями.
-5. **JWT без refresh-токенов** — 24-часовой токен, при истечении — повторный логин.
-6. **CORS** — разрешены все источники (только для локальной разработки).
+4. **JWT без refresh-токенов** — 24-часовой токен, при истечении — повторный логин.
+5. **CORS** — разрешены все источники (только для локальной разработки).

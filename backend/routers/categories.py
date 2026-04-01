@@ -42,15 +42,14 @@ class CategoryCreate(BaseModel):
     @model_validator(mode="after")
     def validate_hierarchy(self) -> "CategoryCreate":
         """
-        Схема уровней: 4=Виды деятельности (корень), 3=Группы, 2=Статьи, 1=зарезервирован.
+        Схема уровней: 4=Виды деятельности (корень), 3=Тип операции, 2=Группа статей, 1=Статья.
         Уровень 4 — корневой, не имеет родителя.
         Уровень 3 — родитель необязателен (если есть, должен быть уровня 4).
-        Уровень 2 — родитель обязателен (должен быть уровня 3).
+        Уровень 2 — родитель необязателен (если есть, должен быть уровня 3).
+        Уровень 1 — родитель необязателен (если есть, должен быть уровня 2).
         """
         if self.level == 4 and self.parent_id is not None:
             raise ValueError("Вид деятельности (уровень 4) не может иметь родителя")
-        if self.level == 2 and self.parent_id is None:
-            raise ValueError("Статья (уровень 2) должна иметь родительскую группу")
         return self
 
 
@@ -218,9 +217,6 @@ def move_category(
     if data.level == 4 and data.parent_id is not None:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                             detail="Вид деятельности (уровень 4) не может иметь родителя")
-    if data.level == 2 and data.parent_id is None:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail="Статья (уровень 2) должна иметь родительскую группу")
     if data.parent_id is not None:
         _verify_parent(data.parent_id, current_user.id, data.level, db)
 
@@ -244,6 +240,20 @@ def move_category(
     db.commit()
     db.refresh(category)
     return category
+
+
+@router.delete("/clear-user-data", status_code=status.HTTP_204_NO_CONTENT, summary="Удалить все статьи и группы пользователя")
+def clear_user_categories(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> None:
+    """Удаляет все категории уровней 1 и 2 текущего пользователя (при смене режима учёта)."""
+    for level in [1, 2]:
+        db.query(models.Category).filter(
+            models.Category.user_id == current_user.id,
+            models.Category.level == level,
+        ).delete(synchronize_session=False)
+    db.commit()
 
 
 @router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Удалить категорию")

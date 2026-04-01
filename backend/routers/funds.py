@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, field_validator
 from sqlalchemy import case, func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from auth import get_current_user
@@ -176,5 +177,12 @@ def delete_fund(
     current_user: models.User = Depends(get_current_user),
 ) -> None:
     fund = _get_fund_or_404(fund_id, current_user.id, db)
-    db.delete(fund)
-    db.commit()
+    try:
+        db.delete(fund)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Нельзя удалить фонд: есть связанные операции",
+        )

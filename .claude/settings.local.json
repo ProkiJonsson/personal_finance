@@ -10,7 +10,10 @@
       "Bash(head -10 grep -n \"sidebar.classList.add\\\\|document.body.classList.add.*sidebar\" \"C:/Users/samsung/dev/finance/frontend/categories.html\")",
       "Bash(head -10 grep -n \"sidebar.classList.add\\\\|document.body.classList.add.*sidebar\" \"C:/Users/samsung/dev/finance/frontend/operations.html\")",
       "Bash(grep -n \"onclick=\" *.html)",
-      "Bash(grep -n \"<aside class=\"\"sidebar\"\"\" *.html)"
+      "Bash(grep -n \"<aside class=\"\"sidebar\"\"\" *.html)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/routers/categories.py'\\).read\\(\\)\\); print\\('backend OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/routers/categories.py', encoding='utf-8'\\).read\\(\\)\\); print\\('backend OK'\\)\")",
+      "Bash(sqlite3 finance.db \"SELECT COUNT\\(*\\) as funds FROM funds; SELECT COUNT\\(*\\) as transactions FROM transactions;\")"
     ]
   }
 }

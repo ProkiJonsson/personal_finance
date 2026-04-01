@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Вход</title>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -51,22 +52,28 @@
             margin-bottom: 32px;
         }
 
-        .auth-logo-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--primary);
-            border-radius: 16px;
+        .auth-logo-brand {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
             margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(26, 109, 255, 0.3);
         }
 
-        .auth-logo-icon svg {
-            width: 30px;
-            height: 30px;
-            fill: #fff;
+        .auth-logo-brand-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+        }
+
+        .auth-logo-brand-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .auth-logo-brand-text {
+            width: 84px;
+            height: 33px;
+            flex-shrink: 0;
         }
 
         .auth-logo h1 {
@@ -401,10 +408,11 @@
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-logo">
-            <div class="auth-logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                </svg>
+            <div class="auth-logo-brand">
+                <div class="auth-logo-brand-icon">
+                    <img src="assets/icons/logo.svg" alt="">
+                </div>
+                <img src="assets/icons/logo-text.svg" alt="МОЯ ПРИБЫЛЬ" class="auth-logo-brand-text">
             </div>
             <h1>Личные финансы</h1>
             <p>Управляйте своими финансами просто</p>
@@ -428,10 +436,7 @@
                     <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
                 </div>
                 <div class="remember-row">
-                    <div class="remember-left">
-                        <input type="checkbox" id="remember-me">
-                        <label for="remember-me">Запомнить меня</label>
-                    </div>
+                    <div class="remember-left"></div>
                     <button type="button" class="forgot-link" id="forgot-link">Забыли пароль?</button>
                 </div>
                 <button type="submit" class="btn-submit" id="login-btn">Войти</button>
@@ -489,10 +494,25 @@
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// Redirect if already logged in
-if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
-    window.location.href = 'dashboard.html';
-}
+// Redirect if already logged in with a valid token
+(function () {
+    var t = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!t) return;
+    try {
+        var b64 = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        b64 += '=='.slice(0, (4 - b64.length % 4) % 4);
+        var payload = JSON.parse(atob(b64));
+        if (payload.exp && Math.floor(Date.now() / 1000) < payload.exp) {
+            window.location.href = 'dashboard.html';
+        } else {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+        }
+    } catch (e) {
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+    }
+}());
 
 // Tab switching
 document.querySelectorAll('.auth-tab').forEach(btn => {
@@ -582,9 +602,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         if (!res.ok) {
             showAlert('login-alert', data.detail || 'Неверный email или пароль.');
         } else {
-            const remember = document.getElementById('remember-me').checked;
-            const storage = remember ? localStorage : sessionStorage;
-            storage.setItem('token', data.access_token);
+            localStorage.setItem('token', data.access_token);
             window.location.href = 'dashboard.html';
         }
     } catch {

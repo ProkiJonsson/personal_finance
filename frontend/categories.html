@@ -4,146 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Справочники</title>
+    <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/common.css">
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #1a6dff;
-            --primary-dark: #1558d6;
-            --primary-light: #eff4ff;
-            --bg-body: #f5f7fb;
-            --bg-card-light: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --text-muted: #9ca3af;
-            --border: #e5e7eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #f59e0b;
-
-            --header-h: 64px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-body);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-        }
-
-        /* Sidebar */
-
-        /* Header */
-        .header {
-            height: var(--header-h);
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .header-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-nav-item {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.2s;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .header-nav-item:hover { background: var(--primary-light); color: var(--primary); }
-        .header-nav-item.active { color: var(--primary); background: var(--primary-light); }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .header-icon-btn {
-            width: 40px; height: 40px;
-            border: none; background: transparent;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .header-icon-btn:hover { background: var(--primary-light); color: var(--primary); }
-        .header-icon-btn svg { width: 20px; height: 20px; }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            background: var(--bg-body);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .user-menu:hover { background: var(--primary-light); }
-
-        .user-avatar {
-            width: 32px; height: 32px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 600; color: #fff;
-        }
-
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Page */
-        .main-content {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            min-width: 0;
-        }
-
-        body.sidebar-expanded .main-content {
-            margin-left: var(--sidebar-w-expanded);
-            transition: margin-left 0.3s ease;
-        }
 
         .page {
             padding: 32px;
@@ -383,6 +248,7 @@
 
         .tree-node-children {
             margin-left: 32px;
+            min-height: 8px; /* гарантирует drop-зону даже у пустых контейнеров */
         }
 
         .tree-toggle {
@@ -732,110 +598,254 @@
             .tree-node-children { margin-left: 20px; }
         }
 
+        /* Tabs */
+        .page-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card-light);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 32px;
+            width: fit-content;
+        }
+
+        .page-tab {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-tab.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(26, 109, 255, 0.3);
+        }
+
+        /* Button select groups */
+        .btn-select-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-select {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: #fafafa;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .btn-select:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-select.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Drag and drop (SortableJS) */
+        .sortable-ghost {
+            opacity: 0.4;
+            background: var(--primary-light);
+            border-radius: 12px;
+        }
+
+        .sortable-chosen > .tree-node {
+            background: var(--primary-light);
+            border-radius: 12px;
+        }
+
+        /* Settings */
+        .settings-card {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .settings-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 8px 0;
+        }
+
+        .settings-label h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .settings-label p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-width: 480px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 28px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(24px);
+        }
+
+
+        /* ── Add-more checkbox ── */
+        .modal-footer { flex-wrap: wrap; }
+        .add-more-label {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--text-secondary);
+            cursor: pointer; user-select: none;
+        }
+        .add-more-label input[type="checkbox"] {
+            width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary);
+        }
+        .add-more-label:hover span { color: var(--text-primary); }
+
+        /* ── Info panel close ── */
+        .info-panel { position: relative; }
+        .info-panel-close {
+            position: absolute; top: 12px; right: 12px;
+            background: none; border: none; cursor: pointer;
+            color: var(--text-secondary); padding: 4px; border-radius: 6px;
+            transition: all 0.2s; line-height: 0;
+        }
+        .info-panel-close:hover { color: var(--text-primary); background: rgba(0,0,0,0.06); }
+        .info-panel-close svg { width: 16px; height: 16px; }
+
+        /* ── Split columns ── */
+        .categories-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            align-items: start;
+        }
+        .categories-col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .income-header { background: #f0fdf4; color: var(--success); }
+        .expense-header { background: #fef2f2; color: var(--danger); }
+        .btn-add-col {
+            display: flex; align-items: center; gap: 4px;
+            background: none; border: none; cursor: pointer;
+            font-size: 13px; font-weight: 500; padding: 4px 8px;
+            border-radius: 6px; font-family: inherit;
+        }
+        .income-header .btn-add-col { color: var(--success); }
+        .income-header .btn-add-col:hover { background: #dcfce7; }
+        .expense-header .btn-add-col { color: var(--danger); }
+        .expense-header .btn-add-col:hover { background: #fee2e2; }
+        .btn-add-col svg { width: 14px; height: 14px; }
+        .categories-col > .tree-node-children {
+            margin-left: 0;
+            background: var(--bg-card-light);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 8px;
+            min-height: 60px;
+        }
+
+        /* ── Activity tabs ── */
+        .activity-tabs {
+            display: flex; gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+        .activity-tab {
+            padding: 8px 16px; background: none; border: none;
+            cursor: pointer; font-size: 14px; color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px; border-radius: 4px 4px 0 0;
+            transition: color 0.15s; font-family: inherit;
+        }
+        .activity-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+        .activity-tab:hover:not(.active) { color: var(--text-primary); background: #f3f4f6; }
+
+        @media (max-width: 900px) {
+            .categories-split { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-inner">
-        <div class="sidebar-content">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-icon">
-                    <img src="assets/icons/logo.svg" alt="МОЯ ПРИБЫЛЬ">
-                </div>
-                <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
-            </div>
-
-            <div class="sidebar-header">
-                <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
-                    <img src="assets/icons/arrow-double-left.svg" alt="">
-                </button>
-            </div>
-
-            <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/dashboard.svg" alt="">
-            </div>
-            <span class="nav-item-text">Главная</span>
-            <span class="nav-tooltip">Главная</span>
-        </a>
-        <a href="operations.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/operations.svg" alt="">
-            </div>
-            <span class="nav-item-text">Операции</span>
-            <span class="nav-tooltip">Операции</span>
-        </a>
-        <a href="funds.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/funds.svg" alt="">
-            </div>
-            <span class="nav-item-text">Фонды</span>
-            <span class="nav-tooltip">Фонды</span>
-        </a>
-        <a href="accounts.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/accounts.svg" alt="">
-            </div>
-            <span class="nav-item-text">Счета</span>
-            <span class="nav-tooltip">Счета</span>
-        </a>
-    </nav>
-        </div>
-
-        <div class="sidebar-bottom">
-        <a href="categories.html" class="nav-item active">
-            <div class="nav-item-icon">
-                <img src="assets/icons/categories.svg" alt="">
-            </div>
-            <span class="nav-item-text">Справочники</span>
-            <span class="nav-tooltip">Справочники</span>
-        </a>
-        <button class="nav-item" id="logout-btn">
-            <div class="nav-item-icon">
-                <img src="assets/icons/logout.svg" alt="">
-            </div>
-            <span class="nav-item-text">Выйти</span>
-            <span class="nav-tooltip">Выйти</span>
-        </button>
-        </div>
-    </div>
-</aside>
-
 <!-- Main Content -->
 <main class="main-content">
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <h1 class="header-title">Справочники</h1>
-            <nav class="header-nav">
-                <a href="dashboard.html" class="header-nav-item">Главная</a>
-                <a href="operations.html" class="header-nav-item">Операции</a>
-                <a href="funds.html" class="header-nav-item">Фонды</a>
-                <a href="accounts.html" class="header-nav-item">Счета</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <button class="header-icon-btn" aria-label="Поиск">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="m21 21-4.35-4.35"/>
-                </svg>
-            </button>
-            <button class="header-icon-btn" aria-label="Уведомления">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-            </button>
-            <div class="user-menu">
-                <div class="user-avatar" id="user-avatar">?</div>
-                <span class="user-name" id="user-name">Загрузка...</span>
-            </div>
-        </div>
-    </header>
+    <!-- Header и sidebar инъектируются через layout.js -->
 
     <!-- Page Content -->
     <div class="page">
@@ -843,90 +853,54 @@
             <h1>Справочники</h1>
         </div>
 
+        <!-- Tabs -->
+        <div class="page-tabs">
+            <button class="page-tab active" data-tab="catalog">Справочник</button>
+            <button class="page-tab" data-tab="settings">Настройки</button>
+        </div>
+
+        <!-- Catalog Content -->
+        <div id="catalog-content">
+
         <!-- Info Panel -->
-        <div class="info-panel">
+        <div class="info-panel" id="info-panel">
+            <button class="info-panel-close" onclick="dismissInfoPanel()" title="Скрыть">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
             <div class="info-panel-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 16v-4"/>
-                    <path d="M12 8h.01"/>
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
                 </svg>
             </div>
             <div class="info-panel-content">
-                <h3>Иерархия категорий</h3>
-                <p>Категории организованы в 4 уровня для удобной группировки операций:</p>
+                <h3>Справочник статей доходов и расходов</h3>
+                <p>Учет операций организован в несколько уровней:</p>
                 <ul>
-                    <li><strong>Уровень 4:</strong> Вид деятельности (корневая категория)</li>
-                    <li><strong>Уровень 3:</strong> Тип операции (Доходы / Расходы)</li>
-                    <li><strong>Уровень 2:</strong> Группа категорий</li>
-                    <li><strong>Уровень 1:</strong> Конкретная статья</li>
+                    <li id="info-level-activity"><strong>Уровень 1:</strong> Вид деятельности (опционально)</li>
+                    <li id="info-level-type"><strong>Уровень 2:</strong> Тип операции (Доходы / Расходы)</li>
+                    <li id="info-level-group"><strong>Уровень 3:</strong> Группа статей операций</li>
+                    <li id="info-level-article"><strong>Уровень 4:</strong> Конкретная статья</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Section 1: Activities (Level 4) -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    Виды деятельности
-                    <button class="help-btn" title="Корневые категории">?</button>
-                </h2>
-                <button class="btn btn-primary" id="add-activity-btn">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                    </svg>
-                    Добавить вид
-                </button>
-            </div>
-            <div class="table-container">
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Название</th>
-                                <th>Уровень</th>
-                                <th>Тип</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="activities-tbody">
-                            <!-- Skeleton -->
-                            <tr>
-                                <td><span class="skeleton" style="width: 200px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 60px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 80px; height: 24px;"></span></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><span class="skeleton" style="width: 180px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 60px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 80px; height: 24px;"></span></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
         <!-- Section 2: Category Tree -->
         <section class="section">
             <div class="section-header">
-                <h2 class="section-title">Структура категорий</h2>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn btn-secondary" id="expand-all-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                        Развернуть все
-                    </button>
-                    <button class="btn btn-primary" id="add-category-btn">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        </svg>
-                        Добавить категорию
-                    </button>
-                </div>
+                <h2 class="section-title">Статьи доходов и расходов</h2>
+                <button class="btn btn-secondary" id="expand-all-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline id="expand-all-icon" points="18 15 12 9 6 15"/>
+                    </svg>
+                    <span id="expand-all-label">Свернуть все</span>
+                </button>
             </div>
             <div class="tree-container" id="category-tree">
                 <!-- Skeleton -->
@@ -962,14 +936,32 @@
                 </div>
             </div>
         </section>
+        </div><!-- end catalog-content -->
+
+        <!-- Settings Content -->
+        <div id="settings-content" style="display:none">
+            <div class="settings-card">
+                <div class="settings-card-title">Параметры учета</div>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <h4>Вести учет по видам деятельности</h4>
+                        <p>При включении в структуру категорий добавляется уровень «Вид деятельности» с тремя разделами: Операционная, Инвестиционная и Финансовая деятельность.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="activity-mode-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
 <!-- Add/Edit Category Modal -->
 <div class="modal-overlay" id="category-modal">
-    <div class="modal">
+    <div class="modal" style="max-width:520px">
         <div class="modal-header">
-            <h3 class="modal-title" id="modal-title">Добавить категорию</h3>
+            <h3 class="modal-title" id="modal-title">Добавить статью</h3>
             <button class="modal-close" id="modal-close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"/>
@@ -979,43 +971,55 @@
         </div>
         <form id="category-form">
             <div class="modal-body">
+                <!-- Что добавляем -->
+                <div class="form-group" id="field-level-selector">
+                    <label>Что добавляем</label>
+                    <div class="btn-select-group" id="level-selector-btns"></div>
+                </div>
+
+                <!-- Вид деятельности -->
+                <div class="form-group" id="field-activity" style="display:none">
+                    <label>Вид деятельности</label>
+                    <div class="btn-select-group" id="activity-btns">
+                        <button type="button" class="btn-select" data-value="operational" onclick="selectBtn(this,'activity-btns')">Операционная</button>
+                        <button type="button" class="btn-select" data-value="investment" onclick="selectBtn(this,'activity-btns')">Инвестиционная</button>
+                        <button type="button" class="btn-select" data-value="financial" onclick="selectBtn(this,'activity-btns')">Финансовая</button>
+                    </div>
+                </div>
+
+                <!-- Тип операции -->
+                <div class="form-group" id="field-type" style="display:none">
+                    <label>Тип операции</label>
+                    <div class="btn-select-group" id="type-btns">
+                        <button type="button" class="btn-select" data-value="income" onclick="selectBtn(this,'type-btns');onTypeSelected('income')">Доходы</button>
+                        <button type="button" class="btn-select" data-value="expense" onclick="selectBtn(this,'type-btns');onTypeSelected('expense')">Расходы</button>
+                    </div>
+                </div>
+
+                <!-- Группа статей -->
+                <div class="form-group" id="field-group" style="display:none">
+                    <label>Группа статей</label>
+                    <div class="btn-select-group" id="group-btns"></div>
+                </div>
+
+                <!-- Название -->
                 <div class="form-group">
-                    <label for="category-name">Название</label>
-                    <input type="text" id="category-name" placeholder="Например: Продукты" maxlength="100" required>
+                    <label for="category-name" id="name-field-label">Название статьи</label>
+                    <input type="text" id="category-name" placeholder="Введите название" maxlength="100" required>
                     <span class="form-error" id="err-name"></span>
                 </div>
-                <div class="form-group">
-                    <label for="category-type">Тип</label>
-                    <select id="category-type" required>
-                        <option value="">Выбрать тип</option>
-                        <option value="income">Доход</option>
-                        <option value="expense">Расход</option>
-                    </select>
-                    <span class="form-error" id="err-type"></span>
-                </div>
-                <div class="form-group">
-                    <label for="category-parent">Родительская категория</label>
-                    <select id="category-parent">
-                        <option value="">Без родителя (корневая)</option>
-                    </select>
-                    <span class="form-hint">Оставьте пустым для создания категории верхнего уровня</span>
-                    <span class="form-error" id="err-parent"></span>
-                </div>
-                <div class="form-group">
-                    <label for="category-level">Уровень</label>
-                    <select id="category-level" disabled>
-                        <option value="4">Уровень 4 (Вид деятельности)</option>
-                        <option value="3">Уровень 3 (Тип операции)</option>
-                        <option value="2">Уровень 2 (Группа)</option>
-                        <option value="1">Уровень 1 (Статья)</option>
-                    </select>
-                    <span class="form-hint">Уровень определяется автоматически на основе родителя</span>
-                </div>
+
                 <span class="form-error" id="err-global"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="modal-cancel">Отмена</button>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <label class="add-more-label" id="add-more-wrap">
+                    <input type="checkbox" id="add-more-chk">
+                    <span>Добавить ещё</span>
+                </label>
+                <div style="display:flex;gap:12px;margin-left:auto">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
             </div>
         </form>
     </div>
@@ -1033,6 +1037,19 @@
     </div>
 </div>
 
+<!-- Activity Mode Switch Warning Modal -->
+<div class="confirm-overlay" id="activity-switch-modal">
+    <div class="confirm-box">
+        <h3>Сменить режим учёта?</h3>
+        <p>Все группы статей и статьи будут удалены. Виды деятельности и типы операций сохранятся. Данные придётся заполнить заново.</p>
+        <div class="confirm-footer">
+            <button class="btn btn-secondary" id="activity-switch-cancel">Отмена</button>
+            <button class="btn btn-danger" id="activity-switch-ok">Сменить и очистить</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
 
@@ -1040,361 +1057,863 @@ const API = 'http://127.0.0.1:8000';
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (!token) { window.location.href = 'index.html'; }
 
-// Decode JWT
-function parseJwt(t) {
-    try {
-        const payload = t.split('.')[1];
-        const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-        return JSON.parse(json);
-    } catch { return {}; }
-}
+let activityMode = localStorage.getItem('activityMode') === 'true';
+let infoPanelDismissed = localStorage.getItem('infoPanelDismissed') === 'true';
+let allCategories = [];
 
-const jwt = parseJwt(token);
-const displayName = jwt.name || jwt.email || 'Пользователь';
-document.getElementById('user-name').textContent = displayName;
-document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
-
-// Logout
+// Logout (используется в apiFetch при 401)
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
-document.getElementById('logout-btn').addEventListener('click', logout);
 
-// API fetch
 async function apiFetch(path, options = {}) {
     const res = await fetch(API + path, {
         ...options,
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(options.headers || {}) },
     });
     if (res.status === 401) { logout(); }
     if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || 'HTTP ' + res.status);
+        let msg;
+        if (typeof body.detail === 'string') msg = body.detail;
+        else if (Array.isArray(body.detail)) msg = body.detail.map(e => e.msg || JSON.stringify(e)).join('; ');
+        else msg = 'HTTP ' + res.status;
+        throw new Error(msg);
     }
     if (res.status === 204) return null;
     return res.json();
 }
 
-// Formatters
 function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-const TYPE_LABELS = { income: 'Доход', expense: 'Расход', null: '—' };
-const TYPE_CSS = { income: 'type-income', expense: 'type-expense', null: 'type-neutral' };
-const LEVEL_LABELS = { 1: 'Статья', 2: 'Группа', 3: 'Тип', 4: 'Вид' };
+const TYPE_LABELS  = { income: 'Доход', expense: 'Расход' };
+const TYPE_CSS     = { income: 'type-income', expense: 'type-expense' };
+const LEVEL_LABELS = { 1: 'Статья', 2: 'Группа статей', 3: 'Тип операции', 4: 'Вид деятельности' };
 
-// Render activities (Level 4 categories)
-function renderActivities(categories) {
-    const tbody = document.getElementById('activities-tbody');
-    const level4 = categories.filter(c => c.level === 4);
-    
-    tbody.innerHTML = '';
-    
-    if (!level4.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4">
-                    <div class="empty-state">
-                        <h3>Виды деятельности не созданы</h3>
-                        <p>Добавьте первый вид деятельности для начала работы</p>
-                    </div>
-                </td>
-            </tr>
-        `;
-        return;
+function findCat(id) { return allCategories.find(c => c.id === id); }
+
+// Виртуальные id: '__income__', '__expense__', '__income_5__', '__expense_5__'
+function isVirtualId(id) { return typeof id === 'string' && id.startsWith('__'); }
+function parseVirtualId(id) {
+    const m = String(id).match(/^__(income|expense)(?:_(\d+))?__$/);
+    if (!m) return null;
+    return { type: m[1], actId: m[2] ? parseInt(m[2]) : null };
+}
+
+function matchesActivityKey(cat, key) {
+    const n = (cat.name || '').toLowerCase();
+    return (key === 'operational' && n.includes('операц')) ||
+           (key === 'investment'  && n.includes('инвест')) ||
+           (key === 'financial'   && n.includes('финанс'));
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.page-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.getElementById('catalog-content').style.display  = tab === 'catalog'  ? '' : 'none';
+    document.getElementById('settings-content').style.display = tab === 'settings' ? '' : 'none';
+}
+document.querySelectorAll('.page-tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+// ── Activity mode ─────────────────────────────────────────────────────────────
+const activityToggle = document.getElementById('activity-mode-toggle');
+activityToggle.checked = activityMode;
+activityToggle.addEventListener('change', () => {
+    activityToggle.checked = activityMode; // вернуть визуально до подтверждения
+    document.getElementById('activity-switch-modal').classList.add('open');
+});
+
+const activitySwitchModal = document.getElementById('activity-switch-modal');
+
+document.getElementById('activity-switch-cancel').addEventListener('click', () => {
+    activitySwitchModal.classList.remove('open');
+});
+activitySwitchModal.addEventListener('click', e => {
+    if (e.target === activitySwitchModal) activitySwitchModal.classList.remove('open');
+});
+document.getElementById('activity-switch-ok').addEventListener('click', async () => {
+    activitySwitchModal.classList.remove('open');
+    try {
+        await apiFetch('/categories/clear-user-data', { method: 'DELETE' });
+        activityMode = !activityMode;
+        activityToggle.checked = activityMode;
+        localStorage.setItem('activityMode', activityMode);
+        expandLevel = -1;
+        localStorage.removeItem('infoPanelDismissed');
+        infoPanelDismissed = false;
+        document.getElementById('info-panel').style.display = '';
+        switchTab('catalog');
+        updateActivityUI();
+        await loadCategories();
+    } catch (err) {
+        alert('Ошибка при очистке справочника: ' + err.message);
     }
-    
-    level4.forEach(cat => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>
-                <div class="td-name">
-                    <div class="td-name-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                        </svg>
-                    </div>
-                    <span>${escHtml(cat.name)}</span>
-                </div>
-            </td>
-            <td class="td-level">${LEVEL_LABELS[cat.level]}</td>
-            <td><span class="${TYPE_CSS[cat.type]}">${TYPE_LABELS[cat.type] || '—'}</span></td>
-            <td class="td-actions">
-                <div class="td-actions-inner">
-                    <button class="action-btn" onclick="editCategory(${cat.id})" aria-label="Редактировать">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn delete" onclick="deleteCategory(${cat.id})" aria-label="Удалить">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+});
+
+function dismissInfoPanel() {
+    localStorage.setItem('infoPanelDismissed', 'true');
+    infoPanelDismissed = true;
+    document.getElementById('info-panel').style.display = 'none';
 }
 
-// Build tree structure
-function buildTree(categories, parentId = null, level = 4) {
-    return categories
+function updateActivityUI() {
+    document.getElementById('info-level-activity').style.display = activityMode ? '' : 'none';
+    if (activityMode) {
+        document.getElementById('info-level-type').innerHTML    = '<strong>Уровень 2:</strong> Тип операции (Доходы / Расходы)';
+        document.getElementById('info-level-group').innerHTML   = '<strong>Уровень 3:</strong> Группа статей операций';
+        document.getElementById('info-level-article').innerHTML = '<strong>Уровень 4:</strong> Конкретная статья';
+    } else {
+        document.getElementById('info-level-type').innerHTML    = '<strong>Уровень 1:</strong> Тип операции (Доходы / Расходы)';
+        document.getElementById('info-level-group').innerHTML   = '<strong>Уровень 2:</strong> Группа статей операций';
+        document.getElementById('info-level-article').innerHTML = '<strong>Уровень 3:</strong> Конкретная статья';
+    }
+}
+
+// ── Авто-миграция: понизить user-created level-3 узлы до level-2 ──────────────
+async function migrateUserLevel3(cats) {
+    const SYSTEM_NAMES = ['доходы', 'расходы'];
+    // Level-3 без родителя, с нестандартным именем → это не системный тип, а группа ошибочно созданная как тип
+    const toMigrate = cats.filter(c =>
+        c.level === 3 &&
+        c.parent_id === null &&
+        !SYSTEM_NAMES.includes((c.name || '').toLowerCase().trim())
+    );
+    for (const cat of toMigrate) {
+        try {
+            await apiFetch(`/categories/${cat.id}/move`, {
+                method: 'PATCH',
+                body: JSON.stringify({ level: 2, parent_id: null, sort_order: cat.sort_order || 0 }),
+            });
+        } catch (e) { console.warn('Миграция level-3 узла не удалась:', cat.name, e.message); }
+    }
+    return toMigrate.length > 0;
+}
+
+// ── Tree build ────────────────────────────────────────────────────────────────
+function buildChildren(cats, parentId, level) {
+    if (level < 1) return [];
+    return cats
         .filter(c => c.parent_id === parentId && c.level === level)
-        .map(node => ({
-            ...node,
-            children: buildTree(categories, node.id, level - 1)
-        }));
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id)
+        .map(n => ({ ...n, children: buildChildren(cats, n.id, level - 1) }));
 }
 
-// Render tree node
-function renderTreeNode(node, depth = 0) {
+// Найти level-2 группы, принадлежащие данной активности через цепь level3→level4
+function getGroupsForActivity(sorted, actId, type) {
+    const typeNodeIds = new Set(
+        sorted.filter(c => c.level === 3 && c.parent_id === actId && c.type === type).map(c => c.id)
+    );
+    return sorted
+        .filter(c => c.level === 2 && typeNodeIds.has(c.parent_id))
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id)
+        .map(g => ({ ...g, children: buildChildren(sorted, g.id, 1) }));
+}
+
+function buildTree(cats) {
+    const sorted = [...cats].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id);
+
+    if (activityMode) {
+        // Корни: level-4 активности → виртуальные Доходы/Расходы → level-2 группы → level-1 статьи
+        return sorted.filter(c => c.level === 4).map(act => ({
+            ...act,
+            children: ['income', 'expense'].map(type => ({
+                id: `__${type}_${act.id}__`,
+                name: type === 'income' ? 'Доходы' : 'Расходы',
+                level: 3, type, virtual: true, parentActId: act.id,
+                children: getGroupsForActivity(sorted, act.id, type),
+            })),
+        }));
+    }
+
+    // activityMode=OFF: виртуальные Доходы/Расходы → ВСЕ level-2 группы по type → level-1 статьи
+    return ['income', 'expense'].map(type => ({
+        id: `__${type}__`,
+        name: type === 'income' ? 'Доходы' : 'Расходы',
+        level: 3, type, virtual: true,
+        children: sorted
+            .filter(c => c.level === 2 && c.type === type)
+            .map(g => ({ ...g, children: buildChildren(sorted, g.id, 1) })),
+    }));
+}
+
+// ── Tree render ───────────────────────────────────────────────────────────────
+function nodeIcon(level, type) {
+    if (level === 4) return `<rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/>`;
+    if (level === 3) {
+        if (type === 'income')  return `<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>`;
+        if (type === 'expense') return `<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>`;
+    }
+    if (level === 2) return `<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>`;
+    return `<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>`;
+}
+
+function renderTreeNode(node) {
     const hasChildren = node.children && node.children.length > 0;
-    const typeClass = node.type === 'income' ? 'income' : node.type === 'expense' ? 'expense' : '';
-    
-    let html = `
-        <div class="tree-node" data-id="${node.id}">
-            ${hasChildren ? `
-                <button class="tree-toggle" onclick="toggleNode(this)">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5l8 7-8 7V5z"/>
-                    </svg>
-                </button>
-            ` : '<div style="width: 28px; margin-right: 8px;"></div>'}
+    const typeClass   = node.type === 'income' ? 'income' : node.type === 'expense' ? 'expense' : '';
+    // Системные узлы: level-4 реальные + все виртуальные type-папки + реальные level-3 под level-4
+    const isSystem    = node.level === 4 || node.virtual === true || node.level === 3;
+    const noDrag      = isSystem;
+    const canEdit     = !isSystem;
+    const canDelete   = !isSystem;
+    const canCopy     = node.level <= 2 && !isSystem;
+    const canAddChild = node.level >= 2; // виртуальные type-папки (level 3) и группы (level 2) могут добавлять детей
+
+    const nodeIdSafe = escHtml(String(node.id));
+    const nodeIdJs   = `'${String(node.id)}'`;
+
+    let html = `<div class="tree-item${noDrag ? ' no-drag' : ''}" data-id="${nodeIdSafe}">`;
+    html += `
+        <div class="tree-node" data-id="${nodeIdSafe}" data-level="${node.level}">
+            ${hasChildren
+                ? `<button class="tree-toggle expanded" onclick="toggleNode(this)">
+                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l8 7-8 7V5z"/></svg>
+                   </button>`
+                : '<div style="width:28px;margin-right:8px"></div>'}
             <div class="tree-icon ${typeClass}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    ${node.type === 'income' ? `
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    ` : node.type === 'expense' ? `
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    ` : `
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                    `}
+                    ${nodeIcon(node.level, node.type)}
                 </svg>
             </div>
             <div class="tree-content">
                 <div class="tree-name">${escHtml(node.name)}</div>
-                <div class="tree-meta">Уровень ${node.level} • ${LEVEL_LABELS[node.level]}</div>
+                <div class="tree-meta">${LEVEL_LABELS[node.level] || ''}</div>
             </div>
-            ${node.type ? `<span class="tree-badge ${TYPE_CSS[node.type]}">${TYPE_LABELS[node.type]}</span>` : ''}
+            ${node.type && !isSystem ? `<span class="tree-badge ${TYPE_CSS[node.type]}">${TYPE_LABELS[node.type]}</span>` : ''}
             <div class="tree-actions">
-                <button class="action-btn" onclick="editCategory(${node.id})" aria-label="Редактировать">
+                ${canAddChild ? `
+                <button class="action-btn" title="Добавить" onclick="openModalForChild(${nodeIdJs})">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                </button>` : ''}
+                ${canCopy ? `
+                <button class="action-btn" title="Скопировать" onclick="copyCategory(${node.id})">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                </button>` : ''}
+                ${canEdit ? `
+                <button class="action-btn" title="Редактировать" onclick="editCategory(${node.id})">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
-                </button>
-                <button class="action-btn delete" onclick="deleteCategory(${node.id})" aria-label="Удалить">
+                </button>` : ''}
+                ${canDelete ? `
+                <button class="action-btn delete" title="Удалить" onclick="deleteCategory(${node.id})">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"/>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
-                </button>
+                </button>` : ''}
             </div>
-        </div>
-    `;
-    
-    if (hasChildren) {
-        html += `<div class="tree-node-children">`;
-        node.children.forEach(child => {
-            html += renderTreeNode(child, depth + 1);
-        });
+        </div>`;
+
+    // Контейнер детей:
+    // - виртуальные type-папки (level 3): всегда (drop-зона для групп)
+    // - реальные группы (level 2): всегда (drop-зона для статей, в т.ч. если группа пустая)
+    const needsContainer = node.virtual || node.level === 2;
+    if (needsContainer || hasChildren) {
+        let containerAttrs = '';
+        if (node.virtual) {
+            containerAttrs = `data-virtual-type="${node.type}" data-act-id="${node.parentActId || ''}" data-container-level="2"`;
+        } else {
+            containerAttrs = `data-parent-id="${node.id}" data-container-level="1"`;
+        }
+        html += `<div class="tree-node-children" ${containerAttrs}>`;
+        if (!hasChildren) {
+            // Пустой placeholder — видимая drop-зона
+            const hint = node.virtual ? 'Нет групп — перетащите сюда или нажмите +' : 'Нет статей — перетащите группу сюда, чтобы она стала статьёй';
+            html += `<div class="tree-node tree-drop-hint" style="opacity:0.38;pointer-events:none;padding-left:44px">
+                <div class="tree-content"><div class="tree-meta">${hint}</div></div>
+            </div>`;
+        } else {
+            node.children.forEach(child => { html += renderTreeNode(child); });
+        }
         html += `</div>`;
     }
-    
+    html += `</div>`;
     return html;
 }
 
-// Render category tree
+function renderSplitPanel(actId, incNode, expNode, hidden) {
+    const incId = actId ? `__income_${actId}__` : `__income__`;
+    const expId = actId ? `__expense_${actId}__` : `__expense__`;
+    const actAttr = actId ? ` data-act-id="${actId}"` : ' data-act-id=""';
+    const panelOpen = actId
+        ? `<div class="activity-panel" data-act-id="${actId}"${hidden ? ' style="display:none"' : ''}>`
+        : '<div>';
+
+    function colContent(node) {
+        if (!node || !node.children.length) {
+            return `<div class="tree-node tree-drop-hint" style="opacity:0.38;pointer-events:none;padding:12px 14px">
+                        <div class="tree-content"><div class="tree-meta">Нет групп — нажмите + Группу</div></div>
+                    </div>`;
+        }
+        return node.children.map(c => renderTreeNode(c)).join('');
+    }
+
+    return `${panelOpen}
+        <div class="categories-split">
+            <div class="categories-col">
+                <div class="categories-col-header income-header">
+                    <span>Доходы</span>
+                    <button class="btn-add-col" onclick="openModalForChild('${incId}')">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        Группу
+                    </button>
+                </div>
+                <div class="tree-node-children" data-virtual-type="income"${actAttr} data-container-level="2">
+                    ${colContent(incNode)}
+                </div>
+            </div>
+            <div class="categories-col">
+                <div class="categories-col-header expense-header">
+                    <span>Расходы</span>
+                    <button class="btn-add-col" onclick="openModalForChild('${expId}')">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        Группу
+                    </button>
+                </div>
+                <div class="tree-node-children" data-virtual-type="expense"${actAttr} data-container-level="2">
+                    ${colContent(expNode)}
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function switchActivityTab(actId) {
+    localStorage.setItem('activeActId', actId);
+    document.querySelectorAll('#category-tree .activity-tab').forEach(t =>
+        t.classList.toggle('active', String(t.dataset.actId) === String(actId))
+    );
+    document.querySelectorAll('#category-tree .activity-panel').forEach(p =>
+        p.style.display = String(p.dataset.actId) === String(actId) ? '' : 'none'
+    );
+}
+
 function renderTree(categories) {
     const container = document.getElementById('category-tree');
-    const trees = buildTree(categories);
-    
-    if (!trees.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <h3>Категорий пока нет</h3>
-                <p>Добавьте первую категорию для начала работы</p>
-                <button class="btn btn-primary" onclick="openModal()">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                    </svg>
-                    Добавить категорию
-                </button>
-            </div>
-        `;
-        return;
-    }
-    
+
+    const collapsed = new Set();
+    container.querySelectorAll('.tree-item').forEach(item => {
+        const ch = item.querySelector(':scope > .tree-node-children');
+        if (ch && ch.style.display === 'none') collapsed.add(item.dataset.id);
+    });
+
     container.innerHTML = '';
-    trees.forEach(tree => {
-        container.innerHTML += renderTreeNode(tree);
+    const trees = buildTree(categories);
+
+    if (activityMode) {
+        if (!trees.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>Нет видов деятельности</h3>
+                    <p>Включите «Вести учёт по видам деятельности» — тогда здесь появятся предустановленные разделы</p>
+                </div>`;
+            return;
+        }
+        const savedActId = parseInt(localStorage.getItem('activeActId'));
+        const initActId = trees.find(a => a.id === savedActId) ? savedActId : trees[0].id;
+
+        let html = '<div class="activity-tabs">';
+        trees.forEach(act => {
+            html += `<button class="activity-tab${act.id === initActId ? ' active' : ''}" data-act-id="${act.id}" onclick="switchActivityTab(${act.id})">${escHtml(act.name)}</button>`;
+        });
+        html += '</div>';
+        trees.forEach(act => {
+            const incNode = act.children.find(c => c.type === 'income');
+            const expNode = act.children.find(c => c.type === 'expense');
+            html += renderSplitPanel(act.id, incNode, expNode, act.id !== initActId);
+        });
+        container.innerHTML = html;
+    } else {
+        const incNode = trees.find(t => t.type === 'income');
+        const expNode = trees.find(t => t.type === 'expense');
+        container.innerHTML = renderSplitPanel(null, incNode, expNode, false);
+    }
+
+    container.querySelectorAll('.tree-item').forEach(item => {
+        if (collapsed.has(item.dataset.id)) {
+            const ch = item.querySelector(':scope > .tree-node-children');
+            if (ch) {
+                ch.style.display = 'none';
+                const btn = item.querySelector(':scope > .tree-node .tree-toggle');
+                if (btn) btn.classList.remove('expanded');
+            }
+        }
+    });
+
+    initSortable();
+    if (expandLevel < 0) expandLevel = getMaxExpandLevel();
+    syncExpandBtn();
+}
+
+function toggleNode(btn) {
+    btn.classList.toggle('expanded');
+    const item = btn.closest('.tree-item');
+    const ch = item && item.querySelector(':scope > .tree-node-children');
+    if (ch) ch.style.display = ch.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── Drag and Drop (SortableJS) ────────────────────────────────────────────────
+async function moveCat(id, level, parentId, sortOrder) {
+    await apiFetch(`/categories/${id}/move`, {
+        method: 'PATCH',
+        body: JSON.stringify({ level, parent_id: parentId !== undefined ? parentId : null, sort_order: sortOrder }),
+    });
+    await loadCategories();
+}
+
+function initSortable() {
+    if (typeof Sortable === 'undefined') return;
+    const baseOpts = {
+        group: { name: 'cats', pull: true, put: true },
+        animation: 150,
+        fallbackOnBody: true,
+        swapThreshold: 0.65,
+        draggable: '.tree-item:not(.no-drag)',
+        handle: '.tree-node',
+        filter: '.no-drag',
+        preventOnFilter: true,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        onEnd: handleSortEnd,
+    };
+    // Создаём Sortable на всех .tree-node-children контейнерах
+    document.querySelectorAll('#category-tree .tree-node-children').forEach(el => {
+        Sortable.create(el, { ...baseOpts });
     });
 }
 
-// Toggle tree node
-function toggleNode(btn) {
-    btn.classList.toggle('expanded');
-    const node = btn.closest('.tree-node');
-    const children = node.nextElementSibling;
-    if (children && children.classList.contains('tree-node-children')) {
-        children.style.display = children.style.display === 'none' ? 'block' : 'none';
+async function handleSortEnd(evt) {
+    if (evt.from === evt.to && evt.oldIndex === evt.newIndex) return;
+
+    const draggedIdStr = evt.item.dataset.id;
+    if (!draggedIdStr || isVirtualId(draggedIdStr)) { await loadCategories(); return; }
+    const draggedId = parseInt(draggedIdStr);
+
+    const toEl = evt.to;
+    const isVirtualContainer = !!toEl.dataset.virtualType;
+    const toParentIdStr = toEl.dataset.parentId;
+
+    let newLevel, newParentId;
+
+    if (isVirtualContainer) {
+        // Бросили в виртуальную type-папку → элемент становится группой (level 2)
+        newLevel    = 2;
+        newParentId = null; // по умолчанию без activityMode
+
+        if (activityMode) {
+            const actId = parseInt(toEl.dataset.actId);
+            const vType = toEl.dataset.virtualType;
+            const realTypeNode = allCategories.find(c =>
+                c.level === 3 && c.parent_id === actId && c.type === vType
+            );
+            newParentId = realTypeNode ? realTypeNode.id : null;
+        }
+    } else {
+        // Бросили в контейнер реальной группы → элемент становится статьёй (level 1)
+        // Если перетаскиваемый узел сам имеет детей — нельзя опустить его на уровень ниже,
+        // так как его дети стали бы level 0. Просто тихо отменяем операцию.
+        const draggedCat = findCat(draggedId);
+        const hasSubItems = draggedCat && allCategories.some(c => c.parent_id === draggedId);
+        if (hasSubItems) {
+            await loadCategories();
+            return;
+        }
+        newLevel    = 1;
+        newParentId = toParentIdStr ? parseInt(toParentIdStr) : null;
+    }
+
+    const siblings = [...evt.to.children].filter(el => el.classList.contains('tree-item'));
+    const newOrder  = siblings.indexOf(evt.item) * 10;
+
+    try {
+        await moveCat(draggedId, newLevel, newParentId, newOrder);
+    } catch (err) {
+        await loadCategories();
     }
 }
 
-// Modal handling
+// ── Modal ─────────────────────────────────────────────────────────────────────
 const categoryModal = document.getElementById('category-modal');
-let editingId = null;
+let editingId           = null;
+let modalLevel          = null;
+let modalForcedParentId = null;
+let modalForcedType     = null; // для открытия из виртуальной type-папки
+let modalForcedActId    = null; // actId при activityMode=ON
 
-function openModal(edit = false) {
-    editingId = edit ? null : null;
-    document.getElementById('modal-title').textContent = edit ? 'Редактировать категорию' : 'Добавить категорию';
-    document.getElementById('category-name').value = '';
-    document.getElementById('category-type').value = '';
-    document.getElementById('category-parent').value = '';
-    document.getElementById('category-level').value = '4';
+function selectBtn(btn, groupId) {
+    document.querySelectorAll(`#${groupId} .btn-select`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+function getSelActivity() { const s = document.querySelector('#activity-btns .btn-select.selected'); return s ? s.dataset.value : null; }
+function getSelType()     { const s = document.querySelector('#type-btns .btn-select.selected');     return s ? s.dataset.value : null; }
+function getSelGroup()    { const s = document.querySelector('#group-btns .btn-select.selected');    return s ? parseInt(s.dataset.value) : null; }
+
+function onTypeSelected(type) { if (modalLevel === 1) renderGroupButtons(type); }
+
+function renderGroupButtons(type) {
+    const container = document.getElementById('group-btns');
+    let groups = allCategories.filter(c => c.level === 2 && c.type === type);
+
+    if (activityMode) {
+        const actKey = getSelActivity();
+        if (actKey) {
+            const actNode = allCategories.find(c => c.level === 4 && matchesActivityKey(c, actKey));
+            if (actNode) {
+                const typeNodeIds = new Set(
+                    allCategories.filter(c => c.level === 3 && c.parent_id === actNode.id && c.type === type).map(c => c.id)
+                );
+                groups = groups.filter(g => typeNodeIds.has(g.parent_id));
+            }
+        }
+    }
+
+    container.innerHTML = '';
+    if (!groups.length) {
+        container.innerHTML = '<span style="font-size:13px;color:var(--text-muted)">Нет групп для выбранного типа</span>';
+        return;
+    }
+    groups.forEach(g => {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'btn-select';
+        btn.dataset.value = g.id; btn.textContent = g.name;
+        btn.onclick = () => selectBtn(btn, 'group-btns');
+        container.appendChild(btn);
+    });
+}
+
+function setModalLevel(level) {
+    modalLevel = level;
+    document.querySelectorAll('#level-selector-btns .btn-select').forEach(b =>
+        b.classList.toggle('selected', parseInt(b.dataset.value) === level)
+    );
+
+    // activityMode=ON и уровень 2 (группа) — нужно выбрать активность для привязки к level-3 узлу
+    const showActivity = activityMode && level === 2;
+    const showType     = level <= 2; // тип нужен и для группы, и для статьи
+    const showGroup    = level === 1;
+
+    document.getElementById('field-activity').style.display = showActivity ? '' : 'none';
+    document.getElementById('field-type').style.display     = showType     ? '' : 'none';
+    document.getElementById('field-group').style.display    = showGroup    ? '' : 'none';
+    if (!showGroup) document.getElementById('group-btns').innerHTML = '';
+
+    document.getElementById('name-field-label').textContent =
+        level === 2 ? 'Название группы статей' : 'Название статьи';
+}
+
+function buildLevelSelectorBtns() {
+    const wrap = document.getElementById('level-selector-btns');
+    wrap.innerHTML = '';
+    // Только уровни доступные пользователю: Группа (2) и Статья (1)
+    [{ v: 2, l: 'Группа статей' }, { v: 1, l: 'Статья' }].forEach(({ v, l }) => {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'btn-select';
+        btn.dataset.value = v; btn.textContent = l;
+        btn.onclick = () => setModalLevel(v);
+        wrap.appendChild(btn);
+    });
+}
+
+function preSelectChain(cat) {
+    // Определяем type
+    let typeVal  = cat.type;
+    let groupId  = null;
+
+    if (cat.level === 1) {
+        const grp = cat.parent_id ? findCat(cat.parent_id) : null;
+        if (grp) { typeVal = grp.type || typeVal; groupId = grp.id; }
+    }
+
+    if (typeVal) {
+        const tb = document.querySelector(`#type-btns .btn-select[data-value="${typeVal}"]`);
+        if (tb) { selectBtn(tb, 'type-btns'); if (cat.level === 1) renderGroupButtons(typeVal); }
+    }
+    if (groupId) {
+        setTimeout(() => {
+            const gb = document.querySelector(`#group-btns .btn-select[data-value="${groupId}"]`);
+            if (gb) selectBtn(gb, 'group-btns');
+        }, 0);
+    }
+
+    // activityMode: найти активность через цепь level2 → level3 → level4
+    if (activityMode) {
+        let chain = cat;
+        while (chain && chain.parent_id) { chain = findCat(chain.parent_id); }
+        // chain теперь корень; ищем level-4
+        let cur = cat;
+        let actNode = null;
+        while (cur && cur.parent_id != null) {
+            const p = findCat(cur.parent_id);
+            if (p && p.level === 4) { actNode = p; break; }
+            cur = p;
+        }
+        if (actNode) {
+            const key = actNode.name.toLowerCase().includes('операц') ? 'operational'
+                : actNode.name.toLowerCase().includes('инвест') ? 'investment' : 'financial';
+            const ab = document.querySelector(`#activity-btns .btn-select[data-value="${key}"]`);
+            if (ab) selectBtn(ab, 'activity-btns');
+        }
+    }
+}
+
+function openModal(catData = null, forcedParentId = null) {
+    editingId = catData ? catData.id : null;
+    modalForcedParentId = forcedParentId;
+    modalForcedType     = null;
+    modalForcedActId    = null;
+
+    document.getElementById('modal-title').textContent = catData ? 'Редактировать' : 'Добавить';
+    document.getElementById('category-name').value = catData ? catData.name : '';
     document.getElementById('err-name').textContent = '';
-    document.getElementById('err-type').textContent = '';
-    document.getElementById('err-parent').textContent = '';
     document.getElementById('err-global').textContent = '';
+    document.querySelectorAll('.btn-select').forEach(b => b.classList.remove('selected'));
+    document.getElementById('group-btns').innerHTML = '';
+    document.getElementById('add-more-wrap').style.display = catData ? 'none' : '';
+
+    buildLevelSelectorBtns();
+    document.getElementById('field-level-selector').style.display = catData ? 'none' : '';
+
+    if (catData) {
+        setModalLevel(catData.level <= 2 ? catData.level : 2);
+        preSelectChain(catData);
+    } else if (forcedParentId != null) {
+        const parent = findCat(forcedParentId);
+        if (parent && parent.level === 2) {
+            // Добавляем статью в конкретную группу
+            setModalLevel(1);
+            preSelectChain(parent);
+        } else {
+            setModalLevel(2);
+        }
+    } else {
+        setModalLevel(2); // по умолчанию — Группа
+    }
+
     categoryModal.classList.add('open');
+}
+
+function openModalForChild(parentIdStr) {
+    if (isVirtualId(parentIdStr)) {
+        // Клик "+" на виртуальной type-папке → добавляем Группу нужного типа
+        const parsed = parseVirtualId(parentIdStr);
+        if (!parsed) return;
+
+        modalForcedType  = parsed.type;
+        modalForcedActId = parsed.actId;
+        editingId = null;
+        modalForcedParentId = null;
+
+        document.getElementById('modal-title').textContent = 'Добавить группу';
+        document.getElementById('category-name').value = '';
+        document.getElementById('err-name').textContent = '';
+        document.getElementById('err-global').textContent = '';
+        document.querySelectorAll('.btn-select').forEach(b => b.classList.remove('selected'));
+        document.getElementById('group-btns').innerHTML = '';
+        document.getElementById('add-more-wrap').style.display = '';
+
+        buildLevelSelectorBtns();
+        document.getElementById('field-level-selector').style.display = 'none'; // фиксируем level 2
+
+        setModalLevel(2);
+
+        // Предвыбираем type
+        const tb = document.querySelector(`#type-btns .btn-select[data-value="${parsed.type}"]`);
+        if (tb) selectBtn(tb, 'type-btns');
+
+        // Предвыбираем активность (actMode)
+        if (activityMode && parsed.actId) {
+            const actNode = allCategories.find(c => c.level === 4 && c.id === parsed.actId);
+            if (actNode) {
+                const key = actNode.name.toLowerCase().includes('операц') ? 'operational'
+                    : actNode.name.toLowerCase().includes('инвест') ? 'investment' : 'financial';
+                const ab = document.querySelector(`#activity-btns .btn-select[data-value="${key}"]`);
+                if (ab) selectBtn(ab, 'activity-btns');
+            }
+        }
+
+        categoryModal.classList.add('open');
+        return;
+    }
+    // Клик "+" на реальной группе (level 2) → добавляем Статью в неё
+    openModal(null, parseInt(parentIdStr));
+}
+
+function copyCategory(id) {
+    const cat = findCat(id);
+    if (!cat) return;
+    openModal(null, cat.parent_id || null);
+    document.getElementById('category-name').value = cat.name + ' (копия)';
+    preSelectChain(cat);
 }
 
 function closeModal() {
     categoryModal.classList.remove('open');
-    editingId = null;
+    editingId = null; modalLevel = null; modalForcedParentId = null;
+    modalForcedType = null; modalForcedActId = null;
+    document.getElementById('add-more-chk').checked = false;
 }
 
-document.getElementById('add-activity-btn').addEventListener('click', () => openModal());
-document.getElementById('add-category-btn').addEventListener('click', () => openModal());
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
-categoryModal.addEventListener('click', (e) => {
-    if (e.target === categoryModal) closeModal();
-});
+categoryModal.addEventListener('click', e => { if (e.target === categoryModal) closeModal(); });
 
-// Form submit
+// ── Form submit ───────────────────────────────────────────────────────────────
 document.getElementById('category-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('category-name').value.trim();
-    const type = document.getElementById('category-type').value || null;
-    const parentId = document.getElementById('category-parent').value ? parseInt(document.getElementById('category-parent').value) : null;
-    const level = parseInt(document.getElementById('category-level').value);
+    if (!name) { document.getElementById('err-name').textContent = 'Введите название'; return; }
+    document.getElementById('err-name').textContent = '';
+    document.getElementById('err-global').textContent = '';
 
-    if (!name) {
-        document.getElementById('err-name').textContent = 'Введите название';
-        return;
+    const level      = modalLevel || 2;
+    const selType    = modalForcedType || getSelType();
+    const selGroupId = getSelGroup();
+    const selActKey  = getSelActivity();
+
+    let parentId  = null;
+    const typeValue = selType || null;
+
+    if (level === 1) {
+        // Статья → parent = выбранная группа
+        parentId = selGroupId != null ? selGroupId : (modalForcedParentId || null);
+    } else if (level === 2) {
+        // Группа:
+        // - activityMode=OFF → parent_id=null (виртуальный тип)
+        // - activityMode=ON  → parent_id = реальный level-3 узел под данной активностью
+        if (activityMode && selType) {
+            let typeNodes = allCategories.filter(c => c.level === 3 && c.type === selType);
+            const actNode = modalForcedActId
+                ? allCategories.find(c => c.level === 4 && c.id === modalForcedActId)
+                : selActKey ? allCategories.find(c => c.level === 4 && matchesActivityKey(c, selActKey)) : null;
+            if (actNode) typeNodes = typeNodes.filter(c => c.parent_id === actNode.id);
+            parentId = typeNodes.length ? typeNodes[0].id : null;
+        } else {
+            parentId = null;
+        }
     }
 
     try {
         if (editingId) {
             await apiFetch(`/categories/${editingId}`, {
                 method: 'PUT',
-                body: JSON.stringify({ name, type }),
+                body: JSON.stringify({ name, type: typeValue }),
             });
         } else {
             await apiFetch('/categories', {
                 method: 'POST',
-                body: JSON.stringify({ name, type, parent_id: parentId, level }),
+                body: JSON.stringify({ name, type: typeValue, parent_id: parentId, level }),
             });
         }
-        closeModal();
-        loadCategories();
+        const addMore = document.getElementById('add-more-chk').checked;
+        if (addMore) {
+            document.getElementById('category-name').value = '';
+            document.getElementById('category-name').focus();
+        } else {
+            closeModal();
+        }
+        await loadCategories();
     } catch (err) {
         document.getElementById('err-global').textContent = err.message;
     }
 });
 
-// Delete confirmation
+// ── Delete ────────────────────────────────────────────────────────────────────
 const confirmModal = document.getElementById('confirm-modal');
 let deleteId = null;
 
-function showConfirm(id) {
-    deleteId = id;
-    confirmModal.classList.add('open');
-}
-
-function hideConfirm() {
-    confirmModal.classList.remove('open');
-    deleteId = null;
-}
+function showConfirm(id) { deleteId = id; confirmModal.classList.add('open'); }
+function hideConfirm()   { confirmModal.classList.remove('open'); deleteId = null; }
 
 document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
-confirmModal.addEventListener('click', (e) => {
-    if (e.target === confirmModal) hideConfirm();
-});
-
+confirmModal.addEventListener('click', e => { if (e.target === confirmModal) hideConfirm(); });
 document.getElementById('confirm-ok').addEventListener('click', async () => {
     if (!deleteId) return;
     try {
         await apiFetch(`/categories/${deleteId}`, { method: 'DELETE' });
         hideConfirm();
-        loadCategories();
-    } catch (err) {
-        alert('Ошибка удаления: ' + err.message);
-    }
+        await loadCategories();
+    } catch (err) { alert('Ошибка удаления: ' + err.message); }
 });
 
-// Load categories
+// ── Load ──────────────────────────────────────────────────────────────────────
 async function loadCategories() {
     try {
-        const categories = await apiFetch('/categories');
-        renderActivities(categories);
-        renderTree(categories);
-        
-        // Populate parent select
-        const parentSelect = document.getElementById('category-parent');
-        parentSelect.innerHTML = '<option value="">Без родителя (корневая)</option>';
-        categories.filter(c => c.level === 4).forEach(cat => {
-            const opt = document.createElement('option');
-            opt.value = cat.id;
-            opt.textContent = cat.name;
-            parentSelect.appendChild(opt);
+        const cats = await apiFetch('/categories');
+        const migrated = await migrateUserLevel3(cats);
+        if (migrated) {
+            const fresh = await apiFetch('/categories');
+            allCategories = fresh;
+            renderTree(fresh);
+        } else {
+            allCategories = cats;
+            renderTree(cats);
+        }
+    } catch (err) { console.error('Ошибка загрузки категорий:', err); }
+}
+
+// ── Expand / Collapse ─────────────────────────────────────────────────────────
+let expandLevel = -1;
+
+function getMaxExpandLevel() { return 1; }
+
+function applyExpandLevel(n) {
+    expandLevel = n;
+    function walk(el, depth) {
+        el.querySelectorAll(':scope > .tree-item').forEach(item => {
+            const chEl  = item.querySelector(':scope > .tree-node-children');
+            const togBtn = item.querySelector(':scope > .tree-node .tree-toggle');
+            if (!chEl) return;
+            if (depth < n) {
+                chEl.style.display = 'block';
+                if (togBtn) togBtn.classList.add('expanded');
+                walk(chEl, depth + 1);
+            } else {
+                chEl.style.display = 'none';
+                if (togBtn) togBtn.classList.remove('expanded');
+            }
         });
-    } catch (err) {
-        console.error('Error loading categories:', err);
+    }
+    document.querySelectorAll('#category-tree .tree-node-children[data-container-level="2"]')
+        .forEach(col => walk(col, 0));
+    syncExpandBtn();
+}
+
+function syncExpandBtn() {
+    const max   = getMaxExpandLevel();
+    const icon  = document.getElementById('expand-all-icon');
+    const label = document.getElementById('expand-all-label');
+    if (expandLevel >= max) {
+        icon.setAttribute('points', '18 15 12 9 6 15');
+        label.textContent = 'Свернуть все';
+    } else {
+        icon.setAttribute('points', '6 9 12 15 18 9');
+        label.textContent = expandLevel === 0 ? 'Развернуть все' : 'Развернуть ещё';
     }
 }
 
-// Expand all
 document.getElementById('expand-all-btn').addEventListener('click', () => {
-    document.querySelectorAll('.tree-toggle').forEach(btn => {
-        btn.classList.add('expanded');
-    });
-    document.querySelectorAll('.tree-node-children').forEach(el => {
-        el.style.display = 'block';
-    });
+    if (expandLevel < 0) expandLevel = getMaxExpandLevel();
+    applyExpandLevel(expandLevel >= getMaxExpandLevel() ? 0 : expandLevel + 1);
 });
 
-// Placeholder functions
-function editCategory(id) {
-    console.log('Edit category:', id);
-    // TODO: Load category data and open modal
-}
+function editCategory(id)   { const cat = findCat(id); if (cat) openModal(cat); }
+function deleteCategory(id) { showConfirm(id); }
 
-function deleteCategory(id) {
-    showConfirm(id);
-}
-
-// Init
+// ── Init ──────────────────────────────────────────────────────────────────────
+if (infoPanelDismissed) document.getElementById('info-panel').style.display = 'none';
+updateActivityUI();
 loadCategories();
 </script>
-<script src="js/sidebar.js"></script>
+<script src="js/layout.js"></script>
 </body>
 </html>

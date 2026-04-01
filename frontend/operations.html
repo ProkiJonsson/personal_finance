@@ -4,171 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Операции</title>
+    <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/common.css">
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #1a6dff;
-            --primary-dark: #1558d6;
-            --primary-light: #eff4ff;
-            --bg-body: #f5f7fb;
-            --bg-card-dark: #1e293b;
-            --bg-card-light: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --text-muted: #9ca3af;
-            --border: #e5e7eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #f59e0b;
-
-            --header-h: 64px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-body);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-        }
-
-        /* ========== MAIN CONTENT ========== */
-        .main-content {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            min-width: 0;
-        }
-
-        body.sidebar-expanded .main-content {
-            margin-left: var(--sidebar-w-expanded);
-            transition: margin-left 0.3s ease;
-        }
-
-        /* ========== HEADER ========== */
-        .header {
-            height: var(--header-h);
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .header-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-nav-item {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.2s;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .header-nav-item:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .header-nav-item.active {
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .header-icon-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            background: transparent;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .header-icon-btn:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .header-icon-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            background: var(--bg-body);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .user-menu:hover {
-            background: var(--primary-light);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
         /* ========== PAGE CONTENT ========== */
         .page {
             padding: 32px;
@@ -984,132 +824,13 @@
             }
         }
 
-        .nav-item-text {
-            display: none;
-            font-size: 14px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .sidebar.expanded .nav-item-text {
-            display: block;
-        }
-        .sidebar:not(.expanded) .nav-item {
-            justify-content: center;
-        }
-        .sidebar.expanded .nav-item {
-            justify-content: flex-start;
-        }
-        .sidebar.expanded .nav-item .nav-tooltip {
-            display: none;
-        }
-        .sidebar:not(.expanded) .nav-item:hover .nav-tooltip {
-            opacity: 1;
-        }
-
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-inner">
-        <div class="sidebar-content">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-icon">
-                    <img src="assets/icons/logo.svg" alt="МОЯ ПРИБЫЛЬ">
-                </div>
-                <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
-            </div>
-
-            <div class="sidebar-header">
-                <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
-                    <img src="assets/icons/arrow-double-left.svg" alt="">
-                </button>
-            </div>
-
-            <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/dashboard.svg" alt="">
-            </div>
-            <span class="nav-item-text">Главная</span>
-            <span class="nav-tooltip">Главная</span>
-        </a>
-        <a href="operations.html" class="nav-item active">
-            <div class="nav-item-icon">
-                <img src="assets/icons/operations.svg" alt="">
-            </div>
-            <span class="nav-item-text">Операции</span>
-            <span class="nav-tooltip">Операции</span>
-        </a>
-        <a href="funds.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/funds.svg" alt="">
-            </div>
-            <span class="nav-item-text">Фонды</span>
-            <span class="nav-tooltip">Фонды</span>
-        </a>
-        <a href="accounts.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/accounts.svg" alt="">
-            </div>
-            <span class="nav-item-text">Счета</span>
-            <span class="nav-tooltip">Счета</span>
-        </a>
-    </nav>
-        </div>
-
-        <div class="sidebar-bottom">
-        <a href="categories.html" class="nav-item">
-            <div class="nav-item-icon">
-                <img src="assets/icons/categories.svg" alt="">
-            </div>
-            <span class="nav-item-text">Справочники</span>
-            <span class="nav-tooltip">Справочники</span>
-        </a>
-        <button class="nav-item" id="logout-btn">
-            <div class="nav-item-icon">
-                <img src="assets/icons/logout.svg" alt="">
-            </div>
-            <span class="nav-item-text">Выйти</span>
-            <span class="nav-tooltip">Выйти</span>
-        </button>
-        </div>
-    </div>
-</aside>
-
 <!-- Main Content -->
 <main class="main-content">
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <h1 class="header-title">Операции</h1>
-            <nav class="header-nav">
-                <a href="dashboard.html" class="header-nav-item">Главная</a>
-                <a href="operations.html" class="header-nav-item active">Операции</a>
-                <a href="funds.html" class="header-nav-item">Фонды</a>
-                <a href="accounts.html" class="header-nav-item">Счета</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <button class="header-icon-btn" aria-label="Поиск">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="m21 21-4.35-4.35"/>
-                </svg>
-            </button>
-            <button class="header-icon-btn" aria-label="Уведомления">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-            </button>
-            <div class="user-menu">
-                <div class="user-avatar" id="user-avatar">?</div>
-                <span class="user-name" id="user-name">Загрузка...</span>
-            </div>
-        </div>
-    </header>
+    <!-- Header и sidebar инъектируются через layout.js -->
 
     <!-- Page Content -->
     <div class="page">
@@ -1361,27 +1082,12 @@ const API = 'http://127.0.0.1:8000';
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (!token) { window.location.href = 'index.html'; }
 
-// Decode JWT
-function parseJwt(t) {
-    try {
-        const payload = t.split('.')[1];
-        const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-        return JSON.parse(json);
-    } catch { return {}; }
-}
-
-const jwt = parseJwt(token);
-const displayName = jwt.name || jwt.email || 'Пользователь';
-document.getElementById('user-name').textContent = displayName;
-document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
-
-// Logout
+// Logout (используется в apiFetch при 401)
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
-document.getElementById('logout-btn').addEventListener('click', logout);
 
 // API fetch
 async function apiFetch(path, options = {}) {
@@ -1704,6 +1410,6 @@ document.getElementById('select-all').addEventListener('change', (e) => {
     });
 });
 </script>
-<script src="js/sidebar.js"></script>
+<script src="js/layout.js"></script>
 </body>
 </html>
