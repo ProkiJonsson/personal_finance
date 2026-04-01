@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Операции</title>
+    <link rel="stylesheet" href="css/sidebar.css">
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -25,9 +26,7 @@
             --success: #16a34a;
             --danger: #dc2626;
             --warning: #f59e0b;
-            
-            --sidebar-w: 80px;
-            --sidebar-w-expanded: 260px;
+
             --header-h: 64px;
         }
 
@@ -37,132 +36,6 @@
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-        }
-
-        /* ========== SIDEBAR ========== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-w);
-            height: 100vh;
-            background: #ffffff;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px 12px;
-            z-index: 100;
-            transition: width 0.3s ease, padding 0.3s ease;
-        }
-
-        .sidebar.expanded {
-            width: var(--sidebar-w-expanded);
-            padding: 16px 20px;
-            align-items: flex-start;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 32px;
-            width: 100%;
-            flex-shrink: 0;
-        }
-        .sidebar-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .sidebar-logo-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .sidebar-logo-text {
-            display: none;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            white-space: nowrap;
-        }
-        .sidebar.expanded .sidebar-logo-text { display: block; }
-
-        .sidebar-nav {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .nav-item {
-            width: 100%;
-            height: 48px;
-            border: none;
-            background: transparent;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-secondary);
-            position: relative;
-            gap: 12px;
-            padding: 0 12px;
-        }
-
-        .nav-item:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .nav-item.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .nav-item .nav-tooltip {
-            position: absolute;
-            left: calc(100% + 12px);
-            background: var(--text-primary);
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .nav-item:hover .nav-tooltip {
-            opacity: 1;
-        }
-
-        .sidebar-bottom {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
         }
 
         /* ========== MAIN CONTENT ========== */
@@ -1110,34 +983,7 @@
                 padding: 16px;
             }
         }
-    
-        .sidebar-toggle {
-            width: 100%;
-            height: 32px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-            margin-bottom: 16px;
-            padding: 0;
-        }
-        .sidebar-toggle:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        .sidebar-toggle svg {
-            width: 20px;
-            height: 20px;
-            transition: transform 0.3s;
-        }
-        .sidebar:not(.expanded) .sidebar-toggle svg {
-            transform: rotate(180deg);
-        }
+
         .nav-item-text {
             display: none;
             font-size: 14px;
@@ -1166,67 +1012,69 @@
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M8 4v16M8 4h5a4 4 0 0 1 0 8H8M6 12h7M6 16h7"/>
-            </svg>
-        </div>
-        <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
-    </div>
+    <div class="sidebar-inner">
+        <div class="sidebar-content">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <img src="assets/icons/logo.svg" alt="МОЯ ПРИБЫЛЬ">
+                </div>
+                <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
+            </div>
 
-    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"/>
-        </svg>
-    </button>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
+                    <img src="assets/icons/arrow-double-left.svg" alt="">
+                </button>
+            </div>
 
-    <nav class="sidebar-nav">
-        <button class="nav-item" onclick="location.href='dashboard.html'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
+            <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-item-icon">
+                <img src="assets/icons/dashboard.svg" alt="">
+            </div>
             <span class="nav-item-text">Главная</span>
             <span class="nav-tooltip">Главная</span>
-        </button>
-        <button class="nav-item active" onclick="location.href='operations.html'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
-            </svg>
+        </a>
+        <a href="operations.html" class="nav-item active">
+            <div class="nav-item-icon">
+                <img src="assets/icons/operations.svg" alt="">
+            </div>
             <span class="nav-item-text">Операции</span>
             <span class="nav-tooltip">Операции</span>
-        </button>
-        <button class="nav-item" onclick="location.href='funds.html'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-            </svg>
+        </a>
+        <a href="funds.html" class="nav-item">
+            <div class="nav-item-icon">
+                <img src="assets/icons/funds.svg" alt="">
+            </div>
             <span class="nav-item-text">Фонды</span>
             <span class="nav-tooltip">Фонды</span>
-        </button>
-        <button class="nav-item" onclick="location.href='accounts.html'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-            </svg>
+        </a>
+        <a href="accounts.html" class="nav-item">
+            <div class="nav-item-icon">
+                <img src="assets/icons/accounts.svg" alt="">
+            </div>
             <span class="nav-item-text">Счета</span>
             <span class="nav-tooltip">Счета</span>
-        </button>
+        </a>
     </nav>
+        </div>
 
-    <div class="sidebar-bottom">
-        <button class="nav-item" onclick="location.href='categories.html'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/>
-            </svg>
+        <div class="sidebar-bottom">
+        <a href="categories.html" class="nav-item">
+            <div class="nav-item-icon">
+                <img src="assets/icons/categories.svg" alt="">
+            </div>
             <span class="nav-item-text">Справочники</span>
             <span class="nav-tooltip">Справочники</span>
-        </button>
+        </a>
         <button class="nav-item" id="logout-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-            </svg>
+            <div class="nav-item-icon">
+                <img src="assets/icons/logout.svg" alt="">
+            </div>
             <span class="nav-item-text">Выйти</span>
             <span class="nav-tooltip">Выйти</span>
         </button>
+        </div>
     </div>
 </aside>
 
@@ -1855,23 +1703,7 @@ document.getElementById('select-all').addEventListener('change', (e) => {
         cb.checked = e.target.checked;
     });
 });
-
-    // Sidebar toggle
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    if (sidebar && sidebarToggle) {
-        const SIDEBAR_STATE_KEY = 'sidebar_expanded';
-        const isExpanded = localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
-        if (isExpanded) {
-            sidebar.classList.add('expanded');
-            document.body.classList.add('sidebar-expanded');
-        }
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('expanded');
-            document.body.classList.toggle('sidebar-expanded');
-            localStorage.setItem(SIDEBAR_STATE_KEY, sidebar.classList.contains('expanded'));
-        });
-    }
 </script>
+<script src="js/sidebar.js"></script>
 </body>
 </html>

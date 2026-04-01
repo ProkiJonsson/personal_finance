@@ -1,6 +1,19 @@
 /* Sidebar Styles - Shared across all pages */
+/* Pure CSS/JS implementation following design mockups */
 
 :root {
+    /* Colors from mockup */
+    --primary: #1a6dff;
+    --primary-dark: #1558d6;
+    --primary-light: #eff4ff;
+    --primary-bright: #1a6dff;
+    --bg-body: #f5f7fb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    
+    /* Layout */
     --sidebar-w: 80px;
     --sidebar-w-expanded: 260px;
 }
@@ -16,127 +29,164 @@
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 16px 12px;
+    padding: 0;
     z-index: 100;
     transition: width 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
 }
 
 .sidebar.expanded {
     width: var(--sidebar-w-expanded);
+}
+
+/* Inner wrapper for padding */
+.sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 16px 12px;
+    overflow: hidden;
+}
+
+.sidebar.expanded .sidebar-inner {
     padding: 16px 20px;
-    align-items: flex-start;
+}
+
+/* Wrapper for scrollable content (logo + nav) */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* ========== BOTTOM SECTION ========== */
+/* Fixed at bottom of sidebar */
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+/* ========== COLLAPSE ARROW ========== */
+/* Fixed position - aligned to LEFT edge under logo */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 24px;
+    height: 40px;
+    flex-shrink: 0;
 }
 
 .sidebar-toggle {
-    position: absolute;
-    top: 16px;
-    right: -10px;
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     border: none;
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
+    background: transparent;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     color: var(--text-secondary);
     transition: all 0.2s;
-    z-index: 10;
+    padding: 0;
+    flex-shrink: 0;
+    margin-left: 0;
 }
 
 .sidebar-toggle:hover {
     background: var(--primary-light);
-    border-color: var(--primary);
     color: var(--primary);
 }
 
-.sidebar-toggle svg {
+.sidebar-toggle svg,
+.sidebar-toggle img {
     width: 12px;
     height: 12px;
     transition: transform 0.3s;
 }
 
-.sidebar.expanded .sidebar-toggle svg {
+.sidebar.expanded .sidebar-toggle svg,
+.sidebar.expanded .sidebar-toggle img {
     transform: rotate(180deg);
 }
 
+/* ========== LOGO ========== */
+/* Full logo with icon and text "МОЯ ПРИБЫЛЬ" */
 .sidebar-logo {
-    width: 40px;
-    height: 40px;
-    background: var(--primary);
-    border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 32px;
-    flex-shrink: 0;
-    transition: all 0.3s;
-}
-
-.sidebar.expanded .sidebar-logo {
+    gap: 12px;
     width: 100%;
-    justify-content: flex-start;
-    padding-left: 8px;
+    padding: 0 4px;
+    margin-bottom: 24px;
+    height: 40px;
+    flex-shrink: 0;
 }
 
-.sidebar-logo svg {
-    width: 24px;
-    height: 24px;
-    fill: #fff;
+.sidebar-logo-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo-icon svg,
+.sidebar-logo-icon img {
+    width: 100%;
+    height: 100%;
 }
 
 .sidebar-logo-text {
     display: none;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text-primary);
-    margin-left: 10px;
     white-space: nowrap;
+    letter-spacing: -0.02em;
 }
 
 .sidebar.expanded .sidebar-logo-text {
     display: block;
 }
 
-.sidebar-logo-text-short {
-    display: block;
-}
-
-.sidebar.expanded .sidebar-logo-text-short {
-    display: none;
-}
-
+/* ========== NAVIGATION ========== */
 .sidebar-nav {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     width: 100%;
-    margin-top: 40px;
 }
 
 .nav-item {
     width: 100%;
-    height: 48px;
+    height: 52px;
     border: none;
     background: transparent;
     border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text-secondary);
     position: relative;
     gap: 12px;
-    padding: 0 12px;
+    padding: 0 14px;
+    text-decoration: none;
 }
 
 .sidebar:not(.expanded) .nav-item {
     justify-content: center;
+    padding: 0;
 }
 
 .sidebar.expanded .nav-item {
@@ -148,15 +198,61 @@
     color: var(--primary);
 }
 
+/* Active state: only icon container has blue background */
 .nav-item.active {
-    background: var(--primary);
-    color: #fff;
+    background: transparent;
+    color: var(--text-primary);
 }
 
-.nav-item svg {
+.nav-item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.nav-item-icon svg,
+.nav-item-icon img {
     width: 22px;
     height: 22px;
-    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+/* Hover state: change icon color */
+.nav-item:hover .nav-item-icon svg {
+    fill: var(--primary);
+}
+
+.nav-item:hover .nav-item-icon img {
+    filter: none;
+}
+
+/* Active state: icon container gets bright blue background and white icon */
+/* These rules come AFTER hover rules to take precedence */
+.nav-item.active .nav-item-icon {
+    background-color: var(--primary-bright);
+}
+
+/* Active state: make icon white using filter for img elements */
+.nav-item.active .nav-item-icon svg {
+    fill: #ffffff;
+}
+
+.nav-item.active .nav-item-icon img {
+    filter: brightness(0) invert(1);
+}
+
+/* Active + Hover: keep white icon on hover */
+.nav-item.active:hover .nav-item-icon svg {
+    fill: #ffffff;
+}
+
+.nav-item.active:hover .nav-item-icon img {
+    filter: brightness(0) invert(1);
 }
 
 .nav-item-text {
@@ -164,12 +260,14 @@
     font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
+    color: var(--text-primary);
 }
 
 .sidebar.expanded .nav-item-text {
     display: block;
 }
 
+/* Tooltip for collapsed state */
 .nav-item .nav-tooltip {
     position: absolute;
     left: calc(100% + 12px);
@@ -183,6 +281,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
+    z-index: 101;
 }
 
 .sidebar.expanded .nav-item .nav-tooltip {
@@ -193,9 +292,21 @@
     opacity: 1;
 }
 
-.sidebar-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
+/* Divider for menu sections */
+.sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+    transition: margin-left 0.3s ease;
+}
+
+body.sidebar-expanded .main-content {
+    margin-left: var(--sidebar-w-expanded);
 }
