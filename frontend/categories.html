@@ -1845,19 +1845,69 @@ document.getElementById('confirm-ok').addEventListener('click', async () => {
     } catch (err) { alert('Ошибка удаления: ' + err.message); }
 });
 
+// ── Seed activity structure ───────────────────────────────────────────────────
+async function ensureActivityStructure(cats) {
+    const acts = cats.filter(c => c.level === 4);
+    if (!acts.length) {
+        // Создать полную структуру с нуля
+        const activities = [
+            'Операционная деятельность',
+            'Инвестиционная деятельность',
+            'Финансовая деятельность',
+        ];
+        for (let i = 0; i < activities.length; i++) {
+            const act = await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name: activities[i], level: 4, sort_order: i * 10 }),
+            });
+            acts.push(act);
+            await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name: 'Доходы', type: 'income', level: 3, parent_id: act.id, sort_order: 0 }),
+            });
+            await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name: 'Расходы', type: 'expense', level: 3, parent_id: act.id, sort_order: 10 }),
+            });
+        }
+        return true;
+    }
+    // Проверить, что у каждой деятельности есть узлы Доходы и Расходы (level 3)
+    let changed = false;
+    for (const act of acts) {
+        if (!cats.some(c => c.level === 3 && c.parent_id === act.id && c.type === 'income')) {
+            await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name: 'Доходы', type: 'income', level: 3, parent_id: act.id, sort_order: 0 }),
+            });
+            changed = true;
+        }
+        if (!cats.some(c => c.level === 3 && c.parent_id === act.id && c.type === 'expense')) {
+            await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name: 'Расходы', type: 'expense', level: 3, parent_id: act.id, sort_order: 10 }),
+            });
+            changed = true;
+        }
+    }
+    return changed;
+}
+
 // ── Load ──────────────────────────────────────────────────────────────────────
 async function loadCategories() {
     try {
         const cats = await apiFetch('/categories');
         const migrated = await migrateUserLevel3(cats);
-        if (migrated) {
-            const fresh = await apiFetch('/categories');
-            allCategories = fresh;
-            renderTree(fresh);
-        } else {
-            allCategories = cats;
-            renderTree(cats);
+        let finalCats = migrated ? await apiFetch('/categories') : cats;
+
+        // В режиме деятельности убедиться, что структура level-4/level-3 полная
+        if (activityMode) {
+            const seeded = await ensureActivityStructure(finalCats);
+            if (seeded) finalCats = await apiFetch('/categories');
         }
+
+        allCategories = finalCats;
+        renderTree(finalCats);
     } catch (err) { console.error('Ошибка загрузки категорий:', err); }
 }
 
