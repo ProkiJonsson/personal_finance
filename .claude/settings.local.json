@@ -3,7 +3,14 @@
     "allow": [
       "Bash(rm -f finance.db)",
       "Bash(python -c \"from database import engine; from models import Base; Base.metadata.create_all\\(bind=engine\\); print\\(''DB recreated''\\)\")",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(head -20 grep -n \"sidebar.css\\\\|stylesheet\\\\|sidebar-w-expanded\" \"C:/Users/samsung/dev/finance/frontend/funds.html\")",
+      "Bash(head -20 grep -n \"sidebar.css\\\\|stylesheet\\\\|sidebar-w-expanded\" \"C:/Users/samsung/dev/finance/frontend/categories.html\")",
+      "Bash(head -20 grep -n \"sidebar.css\\\\|stylesheet\\\\|sidebar-w-expanded\" \"C:/Users/samsung/dev/finance/frontend/dashboard.html\")",
+      "Bash(head -10 grep -n \"sidebar.classList.add\\\\|document.body.classList.add.*sidebar\" \"C:/Users/samsung/dev/finance/frontend/categories.html\")",
+      "Bash(head -10 grep -n \"sidebar.classList.add\\\\|document.body.classList.add.*sidebar\" \"C:/Users/samsung/dev/finance/frontend/operations.html\")",
+      "Bash(grep -n \"onclick=\" *.html)",
+      "Bash(grep -n \"<aside class=\"\"sidebar\"\"\" *.html)"
     ]
   }
 }

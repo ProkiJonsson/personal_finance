@@ -5,283 +5,321 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Счета</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
-            --blue:       #1a6dff;
-            --blue-dark:  #1558d6;
-            --blue-light: #eff4ff;
-            --sidebar-w:  240px;
-            --header-h:   64px;
-            --text:       #111827;
-            --text-muted: #6b7280;
-            --border:     #e5e7eb;
-            --bg:         #f5f7fb;
-            --white:      #ffffff;
+            --primary: #1a6dff;
+            --primary-dark: #1558d6;
+            --primary-light: #eff4ff;
+            --bg-body: #f5f7fb;
+            --bg-card-light: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            
+            --sidebar-w: 80px;
+            --sidebar-w-expanded: 260px;
+            --header-h: 64px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
             min-height: 100vh;
+            display: flex;
         }
 
-        /* ── Sidebar ─────────────────────────────────── */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0; left: 0;
             width: var(--sidebar-w);
             height: 100vh;
-            background: var(--white);
+            background: #ffffff;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            z-index: 50;
+            align-items: center;
+            padding: 16px 12px;
+            z-index: 100;
+            transition: width 0.3s ease, padding 0.3s ease;
+        }
+
+        .sidebar.expanded {
+            width: var(--sidebar-w-expanded);
+            padding: 16px 20px;
+            align-items: flex-start;
         }
 
         .sidebar-logo {
-            height: var(--header-h);
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+            width: 100%;
             flex-shrink: 0;
         }
-
         .sidebar-logo-icon {
-            width: 34px; height: 34px;
-            background: var(--blue);
-            border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
-
-        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-
-        .sidebar-logo span {
+        .sidebar-logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .sidebar-logo-text {
+            display: none;
             font-size: 15px;
             font-weight: 700;
-            color: var(--text);
-            line-height: 1.2;
+            color: var(--text-primary);
+            white-space: nowrap;
         }
+        .sidebar.expanded .sidebar-logo-text { display: block; }
 
         .sidebar-nav {
             flex: 1;
-            padding: 12px 10px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
 
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 10px 12px;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-decoration: none;
+            width: 100%; height: 48px;
+            border: none; background: transparent;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            position: relative;
+            gap: 12px;
+            padding: 0 12px;
         }
 
-        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: #fff; }
+        .nav-item svg { width: 22px; height: 22px; }
 
-        .nav-item.active {
-            background: var(--blue-light);
-            color: var(--blue);
-            font-weight: 600;
+        .nav-item .nav-tooltip {
+            position: absolute;
+            left: calc(100% + 12px);
+            background: var(--text-primary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-        .nav-section {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.07em;
-            color: #9ca3af;
-            text-transform: uppercase;
-            padding: 16px 12px 6px;
-        }
+        .nav-item:hover .nav-tooltip { opacity: 1; }
 
         .sidebar-bottom {
-            padding: 10px;
-            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
 
-        /* ── Header ──────────────────────────────────── */
+        /* Header */
         .header {
-            position: fixed;
-            top: 0;
-            left: var(--sidebar-w);
-            right: 0;
             height: var(--header-h);
-            background: var(--white);
+            background: #ffffff;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 28px;
-            gap: 14px;
-            z-index: 40;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
         .header-title {
-            font-size: 17px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
-        .header-spacer { flex: 1; }
-
-        .header-user {
+        .header-nav {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
+        .header-nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .header-nav-item.active { color: var(--primary); background: var(--primary-light); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-icon-btn {
+            width: 40px; height: 40px;
+            border: none; background: transparent;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .header-icon-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .header-icon-btn svg { width: 20px; height: 20px; }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: var(--bg-body);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover { background: var(--primary-light); }
+
         .user-avatar {
-            width: 34px; height: 34px;
-            background: var(--blue-light);
+            width: 32px; height: 32px;
+            background: var(--primary);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--blue);
-            flex-shrink: 0;
+            font-size: 14px; font-weight: 600; color: #fff;
         }
 
         .user-name {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text);
-            text-decoration: none;
-        }
-        .user-name:hover { color: var(--blue); }
-
-        .btn-logout {
-            padding: 7px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            background: none;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
+            color: var(--text-primary);
         }
 
-        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
-
-        /* ── Main content ─────────────────────────────── */
-        .content {
+        /* Page */
+        .main-content {
             margin-left: var(--sidebar-w);
-            padding-top: var(--header-h);
-            min-height: 100vh;
+            flex: 1;
+            min-width: 0;
+        }
+
+        body.sidebar-expanded .main-content {
+            margin-left: var(--sidebar-w-expanded);
+            transition: margin-left 0.3s ease;
         }
 
         .page {
-            padding: 28px 28px 40px;
-            max-width: 1100px;
+            padding: 32px;
+            max-width: 1400px;
         }
 
         .page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .page-header h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
-        /* ── Buttons ──────────────────────────────────── */
-        .btn-primary {
+        .page-header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 9px 18px;
-            background: var(--blue);
-            color: #fff;
+            gap: 8px;
             border: none;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
         }
 
-        .btn-primary:hover { background: var(--blue-dark); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-primary svg { width: 16px; height: 16px; fill: #fff; }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
+        }
 
         .btn-secondary {
-            padding: 9px 18px;
+            background: #fff;
+            color: var(--text-secondary);
             border: 1.5px solid var(--border);
-            border-radius: 9px;
-            background: none;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-            font-family: inherit;
         }
 
-        .btn-secondary:hover { border-color: #9ca3af; color: var(--text); }
-
-        .btn-danger {
-            padding: 9px 18px;
-            background: #dc2626;
-            color: #fff;
-            border: none;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
-        .btn-danger:hover { background: #b91c1c; }
+        .btn svg { width: 18px; height: 18px; }
 
-        .btn-icon {
-            width: 32px; height: 32px;
-            border-radius: 7px;
-            border: 1.5px solid var(--border);
-            background: none;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.15s, border-color 0.15s, color 0.15s;
-        }
-
-        .btn-icon svg { width: 15px; height: 15px; fill: currentColor; }
-
-        .btn-icon-edit { color: var(--text-muted); }
-        .btn-icon-edit:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
-
-        .btn-icon-del { color: var(--text-muted); }
-        .btn-icon-del:hover { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
-
-        .btn-icon-copy { color: var(--text-muted); }
-        .btn-icon-copy:hover { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
-
-        /* ── Table ────────────────────────────────────── */
-        .table-wrap {
-            background: var(--white);
-            border-radius: 14px;
+        /* Table */
+        .table-container {
+            background: var(--bg-card-light);
+            border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
         }
 
         table {
@@ -291,88 +329,145 @@
         }
 
         thead th {
-            background: #f9fafb;
-            padding: 12px 16px;
+            padding: 16px 20px;
             text-align: left;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            background: #fafafa;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
         }
 
         tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background 0.12s;
+            transition: background 0.2s;
         }
 
         tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: #fafbff; }
+        tbody tr:hover { background: var(--primary-light); }
 
         tbody td {
-            padding: 13px 16px;
-            color: var(--text);
+            padding: 18px 20px;
+            color: var(--text-primary);
             vertical-align: middle;
         }
 
-        .td-name { font-weight: 600; }
+        .td-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .td-name-icon {
+            width: 40px; height: 40px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .td-name-icon svg {
+            width: 20px; height: 20px;
+            color: var(--primary);
+        }
 
         .td-balance {
             font-weight: 700;
+            font-size: 16px;
             white-space: nowrap;
         }
 
         .td-date {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-size: 13px;
             white-space: nowrap;
         }
 
         .td-actions {
+            text-align: right;
             white-space: nowrap;
         }
 
         .td-actions-inner {
             display: flex;
             gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            width: 34px; height: 34px;
+            border: none;
+            background: var(--bg-body);
+            border-radius: 8px;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
 
-        /* ── States ───────────────────────────────────── */
-        .state-empty, .state-error {
-            padding: 60px 20px;
+        .action-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .action-btn.delete:hover {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .action-btn svg { width: 16px; height: 16px; }
+
+        /* Empty State */
+        .empty-state {
+            padding: 80px 20px;
             text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
+            color: var(--text-secondary);
         }
 
-        .state-error { color: #dc2626; }
+        .empty-state svg {
+            width: 64px; height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
 
-        /* ── Skeleton ─────────────────────────────────── */
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        /* Skeleton */
         .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
-            border-radius: 4px;
-            display: inline-block;
+            border-radius: 6px;
         }
 
-        @keyframes shimmer { to { background-position: -200% 0; } }
+        @keyframes shimmer {
+            to { background-position: -200% 0; }
+        }
 
-        .sk-row td { padding: 14px 16px; }
-        .sk { display: block; height: 14px; border-radius: 4px; }
+        .sk-row td { padding: 18px 20px; }
+        .sk { display: block; height: 14px; }
 
-        /* ── Modal overlay ────────────────────────────── */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.35);
+            background: rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 200;
+            z-index: 1000;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s;
@@ -384,76 +479,74 @@
         }
 
         .modal {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 28px;
+            background: #fff;
+            border-radius: 20px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-            transform: translateY(12px);
-            transition: transform 0.2s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
-
-        .modal-overlay.open .modal { transform: translateY(0); }
 
         .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 22px;
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
         }
 
         .modal-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
         .modal-close {
-            width: 30px; height: 30px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            border-radius: 7px;
+            width: 36px; height: 36px;
+            border: none; background: transparent;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            color: var(--text-muted);
-            transition: background 0.15s;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
 
-        .modal-close:hover { background: #f3f4f6; }
-        .modal-close svg { width: 16px; height: 16px; fill: currentColor; }
+        .modal-close:hover { background: var(--bg-body); color: var(--text-primary); }
+        .modal-close svg { width: 18px; height: 18px; }
+
+        .modal-body { padding: 24px; }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             font-size: 13px;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .form-group input,
-        .form-group select {
-            padding: 10px 13px;
+        .form-group input {
+            padding: 12px 16px;
             border: 1.5px solid var(--border);
-            border-radius: 9px;
+            border-radius: 12px;
             font-size: 14px;
-            color: var(--text);
-            background: var(--white);
+            color: var(--text-primary);
+            background: #fafafa;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
             font-family: inherit;
         }
 
-        .form-group input:focus,
-        .form-group select:focus { border-color: var(--blue); }
-
-        .form-group input.invalid,
-        .form-group select.invalid { border-color: #dc2626; }
+        .form-group input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
 
         .form-hint {
             font-size: 12px;
@@ -462,26 +555,27 @@
 
         .form-error {
             font-size: 12px;
-            color: #dc2626;
+            color: var(--danger);
             min-height: 16px;
         }
 
         .modal-footer {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: flex-end;
-            margin-top: 22px;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
         }
 
-        /* ── Confirm dialog ───────────────────────────── */
+        /* Confirm Modal */
         .confirm-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.35);
+            background: rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 300;
+            z-index: 1100;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s;
@@ -493,210 +587,385 @@
         }
 
         .confirm-box {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 28px;
+            background: #fff;
+            border-radius: 20px;
             width: 100%;
-            max-width: 360px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-            transform: translateY(12px);
-            transition: transform 0.2s;
+            max-width: 380px;
+            padding: 32px;
+            text-align: center;
         }
 
-        .confirm-overlay.open .confirm-box { transform: translateY(0); }
-
         .confirm-box h3 {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            color: var(--text);
-            margin-bottom: 10px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
         }
 
         .confirm-box p {
             font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 22px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
             line-height: 1.5;
         }
 
         .confirm-footer {
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
+            gap: 12px;
+            justify-content: center;
         }
 
-        /* ── IB modal ─────────────────────────────────── */
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* Initial Balances Modal */
         .modal-wide { max-width: 720px; }
-        .ib-table-wrap { overflow-x: auto; margin-top: 4px; }
-        .ib-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .ib-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-        .ib-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
-        .ib-table tr:last-child td { border-bottom: none; }
-        .ib-table input[type="number"] { width: 120px; padding: 6px 8px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; color: var(--text); background: var(--white); font-family: inherit; }
-        .ib-table input[type="number"]:focus { outline: none; border-color: var(--blue); }
+
+        .ib-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .ib-table th {
+            background: #fafafa;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ib-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ib-table input[type="number"] {
+            width: 140px;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: #fff;
+            font-family: inherit;
+        }
+
+        .ib-table input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                bottom: 0; top: auto;
+                flex-direction: row;
+                padding: 12px;
+                border-right: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .main-content { margin-left: 0; margin-bottom: 70px; }
+
+            .header { padding: 0 16px; }
+            .header-nav { display: none; }
+            .page { padding: 16px; }
+            .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .table-wrapper { overflow-x: scroll; }
+        }
+    
+        .sidebar-toggle {
+            width: 100%;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-bottom: 16px;
+            padding: 0;
+        }
+        .sidebar-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .sidebar-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s;
+        }
+        .sidebar:not(.expanded) .sidebar-toggle svg {
+            transform: rotate(180deg);
+        }
+        .nav-item-text {
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .sidebar.expanded .nav-item-text {
+            display: block;
+        }
+        .sidebar:not(.expanded) .nav-item {
+            justify-content: center;
+        }
+        .sidebar.expanded .nav-item {
+            justify-content: flex-start;
+        }
+        .sidebar.expanded .nav-item .nav-tooltip {
+            display: none;
+        }
+        .sidebar:not(.expanded) .nav-item:hover .nav-tooltip {
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body>
 
-<!-- ── Sidebar ──────────────────────────────────────── -->
-<aside class="sidebar">
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
         <div class="sidebar-logo-icon">
-            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M8 4v16M8 4h5a4 4 0 0 1 0 8H8M6 12h7M6 16h7"/>
+            </svg>
         </div>
-        <span>Личные финансы</span>
+        <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
     </div>
 
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+    </button>
+
     <nav class="sidebar-nav">
-        <div class="nav-section">Меню</div>
-
-        <a class="nav-item" href="dashboard.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Главная
-        </a>
-        <a class="nav-item" href="operations.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
-            Операции
-        </a>
-        <a class="nav-item" href="funds.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-            Фонды
-        </a>
-        <a class="nav-item active" href="accounts.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-            Счета
-        </a>
-
-        <div class="nav-section">Прочее</div>
-
-        <a class="nav-item" href="categories.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
-            Справочники
-        </a>
-        <a class="nav-item" href="settings.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-            Настройки
-        </a>
-        <a class="nav-item" href="profile.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Профиль
-        </a>
+        <button class="nav-item" onclick="location.href='dashboard.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span class="nav-item-text">Главная</span>
+            <span class="nav-tooltip">Главная</span>
+        </button>
+        <button class="nav-item" onclick="location.href='operations.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
+            </svg>
+            <span class="nav-item-text">Операции</span>
+            <span class="nav-tooltip">Операции</span>
+        </button>
+        <button class="nav-item" onclick="location.href='funds.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+            <span class="nav-item-text">Фонды</span>
+            <span class="nav-tooltip">Фонды</span>
+        </button>
+        <button class="nav-item active" onclick="location.href='accounts.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+            </svg>
+            <span class="nav-item-text">Счета</span>
+            <span class="nav-tooltip">Счета</span>
+        </button>
     </nav>
 
     <div class="sidebar-bottom">
+        <button class="nav-item" onclick="location.href='categories.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/>
+            </svg>
+            <span class="nav-item-text">Справочники</span>
+            <span class="nav-tooltip">Справочники</span>
+        </button>
         <button class="nav-item" id="logout-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-            Выйти
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            <span class="nav-item-text">Выйти</span>
+            <span class="nav-tooltip">Выйти</span>
         </button>
     </div>
 </aside>
 
-<!-- ── Header ────────────────────────────────────────── -->
-<header class="header">
-    <span class="header-title">Счета</span>
-    <div class="header-spacer"></div>
-    <div class="header-user">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
-    </div>
-    <button class="btn-logout" id="header-logout-btn">Выйти</button>
-</header>
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="header-title">Счета</h1>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Главная</a>
+                <a href="operations.html" class="header-nav-item">Операции</a>
+                <a href="funds.html" class="header-nav-item">Фонды</a>
+                <a href="accounts.html" class="header-nav-item active">Счета</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <button class="header-icon-btn" aria-label="Поиск">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </button>
+            <button class="header-icon-btn" aria-label="Уведомления">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span class="user-name" id="user-name">Загрузка...</span>
+            </div>
+        </div>
+    </header>
 
-<!-- ── Content ───────────────────────────────────────── -->
-<main class="content">
+    <!-- Page Content -->
     <div class="page">
-
         <div class="page-header">
             <h1>Счета</h1>
-            <div style="display:flex;gap:10px;align-items:center">
-                <button class="btn-secondary" id="btn-initial-balances">Начальные остатки</button>
-                <button class="btn-primary" id="add-account-btn">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <div class="page-header-actions">
+                <button class="btn btn-secondary" id="initial-balances-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    Начальные остатки
+                </button>
+                <button class="btn btn-primary" id="add-account-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
                     Добавить счёт
                 </button>
             </div>
         </div>
 
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>Баланс</th>
-                        <th>Дата создания</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="accounts-tbody">
-                    <tr class="sk-row"><td><span class="skeleton sk" style="width:120px"></span></td><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:100px"></span></td><td></td></tr>
-                    <tr class="sk-row"><td><span class="skeleton sk" style="width:100px"></span></td><td><span class="skeleton sk" style="width:70px"></span></td><td><span class="skeleton sk" style="width:100px"></span></td><td></td></tr>
-                    <tr class="sk-row"><td><span class="skeleton sk" style="width:130px"></span></td><td><span class="skeleton sk" style="width:90px"></span></td><td><span class="skeleton sk" style="width:100px"></span></td><td></td></tr>
-                </tbody>
-            </table>
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Баланс</th>
+                            <th>Дата создания</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="accounts-tbody">
+                        <!-- Skeleton -->
+                        <tr class="sk-row">
+                            <td><span class="skeleton sk" style="width: 150px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 100px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 120px;"></span></td>
+                            <td></td>
+                        </tr>
+                        <tr class="sk-row">
+                            <td><span class="skeleton sk" style="width: 130px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 90px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 120px;"></span></td>
+                            <td></td>
+                        </tr>
+                        <tr class="sk-row">
+                            <td><span class="skeleton sk" style="width: 140px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 100px;"></span></td>
+                            <td><span class="skeleton sk" style="width: 120px;"></span></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
     </div>
 </main>
 
-<!-- ── Account modal ──────────────────────────────────── -->
-<div class="modal-overlay" id="account-modal-overlay">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<!-- Add/Edit Account Modal -->
+<div class="modal-overlay" id="account-modal">
+    <div class="modal">
         <div class="modal-header">
-            <span class="modal-title" id="modal-title">Добавить счёт</span>
-            <button class="modal-close" id="modal-close-btn" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <h3 class="modal-title" id="modal-title">Добавить счёт</h3>
+            <button class="modal-close" id="modal-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
             </button>
         </div>
-
-        <form id="account-form" novalidate>
-            <div class="form-group">
-                <label for="field-name">Название</label>
-                <input type="text" id="field-name" placeholder="Например: Основная карта" maxlength="100" autocomplete="off">
-                <span class="form-error" id="err-name"></span>
+        <form id="account-form">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="account-name">Название</label>
+                    <input type="text" id="account-name" placeholder="Например: Тинькофф" maxlength="100" required>
+                    <span class="form-hint">Банковский счёт, карта или наличка</span>
+                    <span class="form-error" id="err-name"></span>
+                </div>
+                <span class="form-error" id="err-global"></span>
             </div>
-            <span class="form-error" id="err-global"></span>
             <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="modal-cancel-btn">Отмена</button>
-                <button type="submit" class="btn-primary" id="modal-submit-btn">Добавить</button>
+                <button type="button" class="btn btn-secondary" id="modal-cancel">Отмена</button>
+                <button type="submit" class="btn btn-primary">Добавить</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ── Confirm dialog ─────────────────────────────────── -->
-<div class="confirm-overlay" id="confirm-overlay">
-    <div class="confirm-box" role="dialog" aria-modal="true">
+<!-- Confirm Delete Modal -->
+<div class="confirm-overlay" id="confirm-modal">
+    <div class="confirm-box">
         <h3>Удалить счёт?</h3>
-        <p id="confirm-text">Это действие нельзя отменить.</p>
+        <p>Это действие нельзя отменить. Все связанные операции будут удалены.</p>
         <div class="confirm-footer">
-            <button class="btn-secondary" id="confirm-cancel-btn">Отмена</button>
-            <button class="btn-danger" id="confirm-ok-btn">Удалить</button>
+            <button class="btn btn-secondary" id="confirm-cancel">Отмена</button>
+            <button class="btn btn-danger" id="confirm-ok">Удалить</button>
         </div>
     </div>
 </div>
 
-<!-- ── Initial balances modal ──────────────────────────── -->
-<div class="modal-overlay" id="ib-modal-overlay">
-    <div class="modal modal-wide" role="dialog" aria-modal="true">
+<!-- Initial Balances Modal -->
+<div class="modal-overlay" id="ib-modal">
+    <div class="modal modal-wide">
         <div class="modal-header">
-            <span class="modal-title">Начальные остатки</span>
+            <h3 class="modal-title">Начальные остатки</h3>
             <button class="modal-close" id="ib-modal-close">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
             </button>
         </div>
-        <div class="form-group">
-            <label for="ib-date">Дата остатков</label>
-            <input type="date" id="ib-date" style="max-width:180px">
-        </div>
-        <div class="ib-table-wrap">
-            <table class="ib-table">
-                <thead id="ib-thead"></thead>
-                <tbody id="ib-tbody"></tbody>
-            </table>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="ib-date">Дата остатков</label>
+                <input type="date" id="ib-date" style="max-width: 180px;">
+            </div>
+            <div class="table-wrapper">
+                <table class="ib-table">
+                    <thead id="ib-thead"></thead>
+                    <tbody id="ib-tbody"></tbody>
+                </table>
+            </div>
         </div>
         <div class="modal-footer">
-            <button class="btn-secondary" id="ib-modal-cancel">Отмена</button>
-            <button class="btn-primary" id="ib-modal-save">Сохранить</button>
+            <button class="btn btn-secondary" id="ib-modal-cancel">Отмена</button>
+            <button class="btn btn-primary" id="ib-modal-save">Сохранить</button>
         </div>
     </div>
 </div>
@@ -704,15 +973,16 @@
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// ── Auth guard ──────────────────────────────────────
+// Auth guard
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (!token) { window.location.href = 'index.html'; }
 
-// ── Decode JWT ──────────────────────────────────────
+// Decode JWT
 function parseJwt(t) {
     try {
         const payload = t.split('.')[1];
-        return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+        const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+        return JSON.parse(json);
     } catch { return {}; }
 }
 
@@ -721,16 +991,15 @@ const displayName = jwt.name || jwt.email || 'Пользователь';
 document.getElementById('user-name').textContent = displayName;
 document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
 
-// ── Logout ──────────────────────────────────────────
+// Logout
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
 document.getElementById('logout-btn').addEventListener('click', logout);
-document.getElementById('header-logout-btn').addEventListener('click', logout);
 
-// ── API helper ──────────────────────────────────────
+// API fetch
 async function apiFetch(path, options = {}) {
     const res = await fetch(API + path, {
         ...options,
@@ -749,7 +1018,7 @@ async function apiFetch(path, options = {}) {
     return res.json();
 }
 
-// ── Formatters ──────────────────────────────────────
+// Formatters
 function fmt(amount, currency = 'RUB') {
     return new Intl.NumberFormat('ru-RU', {
         style: 'currency', currency,
@@ -758,7 +1027,6 @@ function fmt(amount, currency = 'RUB') {
 }
 
 function fmtDate(iso) {
-    if (!iso) return '—';
     return new Date(iso).toLocaleDateString('ru-RU', {
         day: '2-digit', month: '2-digit', year: 'numeric',
     });
@@ -772,258 +1040,255 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
-// ── State ───────────────────────────────────────────
-let editingId = null;
-
-// ── Render table ────────────────────────────────────
+// Render accounts
 function renderAccounts(accounts) {
     const tbody = document.getElementById('accounts-tbody');
     tbody.innerHTML = '';
 
     if (!accounts.length) {
-        tbody.innerHTML = `<tr><td colspan="4" class="state-empty">Счетов пока нет. Добавьте первый счёт.</td></tr>`;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                        <h3>Счетов пока нет</h3>
+                        <p>Добавьте первый счёт для учёта средств</p>
+                    </div>
+                </td>
+            </tr>
+        `;
         return;
     }
 
     accounts.forEach(acc => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="td-name">${escHtml(acc.name)}</td>
-            <td class="td-balance">${fmt(acc.balance ?? 0, acc.currency || 'RUB')}</td>
+            <td>
+                <div class="td-name">
+                    <div class="td-name-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                    </div>
+                    <span>${escHtml(acc.name)}</span>
+                </div>
+            </td>
+            <td class="td-balance">${fmt(acc.balance)}</td>
             <td class="td-date">${fmtDate(acc.created_at)}</td>
             <td class="td-actions">
                 <div class="td-actions-inner">
-                    <button class="btn-icon btn-icon-copy" title="Копировать" data-id="${acc.id}">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    <button class="action-btn" onclick="editAccount(${acc.id})" aria-label="Редактировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
                     </button>
-                    <button class="btn-icon btn-icon-edit" title="Редактировать" data-id="${acc.id}">
-                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </button>
-                    <button class="btn-icon btn-icon-del" title="Удалить" data-id="${acc.id}" data-name="${escHtml(acc.name)}">
-                        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    <button class="action-btn delete" onclick="deleteAccount(${acc.id})" aria-label="Удалить">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
                     </button>
                 </div>
             </td>
         `;
-
-        tr.querySelector('.btn-icon-copy').addEventListener('click', () => openCopyModal(acc));
-        tr.querySelector('.btn-icon-edit').addEventListener('click', () => openEditModal(acc));
-        tr.querySelector('.btn-icon-del').addEventListener('click', () => openConfirm(acc.id, acc.name));
-
         tbody.appendChild(tr);
     });
 }
 
-async function loadAccounts() {
-    const tbody = document.getElementById('accounts-tbody');
-    try {
-        const accounts = await apiFetch('/accounts');
-        renderAccounts(accounts);
-    } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" class="state-error">Ошибка загрузки: ${escHtml(err.message)}</td></tr>`;
-    }
-}
+// Modal handling
+const accountModal = document.getElementById('account-modal');
+let editingId = null;
 
-// ── Modal ───────────────────────────────────────────
-const overlay    = document.getElementById('account-modal-overlay');
-const modalTitle = document.getElementById('modal-title');
-const submitBtn  = document.getElementById('modal-submit-btn');
-const fieldName  = document.getElementById('field-name');
-const errName    = document.getElementById('err-name');
-const errGlobal  = document.getElementById('err-global');
-
-function clearErrors() {
-    errName.textContent   = '';
-    errGlobal.textContent = '';
-    fieldName.classList.remove('invalid');
-}
-
-function openModal(title, submitLabel) {
-    modalTitle.textContent = title;
-    submitBtn.textContent  = submitLabel;
-    submitBtn.disabled     = false;
-    clearErrors();
-    overlay.classList.add('open');
-    fieldName.focus();
+function openModal(edit = false) {
+    editingId = edit ? null : null;
+    document.getElementById('modal-title').textContent = edit ? 'Редактировать счёт' : 'Добавить счёт';
+    document.getElementById('account-name').value = '';
+    document.getElementById('err-name').textContent = '';
+    document.getElementById('err-global').textContent = '';
+    accountModal.classList.add('open');
 }
 
 function closeModal() {
-    overlay.classList.remove('open');
+    accountModal.classList.remove('open');
     editingId = null;
-    document.getElementById('account-form').reset();
 }
 
-function openAddModal() {
-    editingId = null;
-    openModal('Добавить счёт', 'Добавить');
-}
+document.getElementById('add-account-btn').addEventListener('click', () => openModal());
+document.getElementById('add-btn').addEventListener('click', () => openModal());
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+accountModal.addEventListener('click', (e) => {
+    if (e.target === accountModal) closeModal();
+});
 
-function openEditModal(acc) {
-    editingId       = acc.id;
-    fieldName.value = acc.name;
-    openModal('Редактировать счёт', 'Сохранить');
-}
-
-function openCopyModal(acc) {
-    editingId       = null;
-    fieldName.value = 'Копия — ' + acc.name;
-    openModal('Копировать счёт', 'Создать копию');
-}
-
-document.getElementById('add-account-btn').addEventListener('click', openAddModal);
-document.getElementById('modal-close-btn').addEventListener('click', closeModal);
-document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-
-// ── Form submit ─────────────────────────────────────
-document.getElementById('account-form').addEventListener('submit', async e => {
+// Form submit
+document.getElementById('account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearErrors();
-
-    const name = fieldName.value.trim();
+    const name = document.getElementById('account-name').value.trim();
 
     if (!name) {
-        errName.textContent = 'Введите название счёта';
-        fieldName.classList.add('invalid');
+        document.getElementById('err-name').textContent = 'Введите название';
         return;
     }
 
-    submitBtn.disabled    = true;
-    submitBtn.textContent = 'Сохранение…';
-
-    const body = { name };
-
     try {
-        if (editingId !== null) {
-            await apiFetch(`/accounts/${editingId}`, { method: 'PUT', body: JSON.stringify(body) });
+        if (editingId) {
+            await apiFetch(`/accounts/${editingId}`, {
+                method: 'PUT',
+                body: JSON.stringify({ name }),
+            });
         } else {
-            await apiFetch('/accounts', { method: 'POST', body: JSON.stringify(body) });
+            await apiFetch('/accounts', {
+                method: 'POST',
+                body: JSON.stringify({ name, balance: 0 }),
+            });
         }
         closeModal();
         loadAccounts();
     } catch (err) {
-        errGlobal.textContent = err.message || 'Произошла ошибка';
-        submitBtn.disabled    = false;
-        submitBtn.textContent = editingId !== null ? 'Сохранить' : 'Добавить';
+        document.getElementById('err-global').textContent = err.message;
     }
 });
 
-// ── Confirm delete ──────────────────────────────────
-let pendingDeleteId = null;
+// Delete confirmation
+const confirmModal = document.getElementById('confirm-modal');
+let deleteId = null;
 
-const confirmOverlay = document.getElementById('confirm-overlay');
-const confirmText    = document.getElementById('confirm-text');
-
-function openConfirm(id, name) {
-    pendingDeleteId = id;
-    confirmText.textContent = `Счёт «${name}» будет удалён. Это действие нельзя отменить.`;
-    confirmOverlay.classList.add('open');
+function showConfirm(id) {
+    deleteId = id;
+    confirmModal.classList.add('open');
 }
 
-function closeConfirm() {
-    confirmOverlay.classList.remove('open');
-    pendingDeleteId = null;
+function hideConfirm() {
+    confirmModal.classList.remove('open');
+    deleteId = null;
 }
 
-document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
-confirmOverlay.addEventListener('click', e => { if (e.target === confirmOverlay) closeConfirm(); });
+document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
+confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) hideConfirm();
+});
 
-document.getElementById('confirm-ok-btn').addEventListener('click', async () => {
-    if (!pendingDeleteId) return;
-    const id = pendingDeleteId;
-    closeConfirm();
+document.getElementById('confirm-ok').addEventListener('click', async () => {
+    if (!deleteId) return;
     try {
-        await apiFetch(`/accounts/${id}`, { method: 'DELETE' });
+        await apiFetch(`/accounts/${deleteId}`, { method: 'DELETE' });
+        hideConfirm();
         loadAccounts();
     } catch (err) {
         alert('Ошибка удаления: ' + err.message);
     }
 });
 
-// ── Keyboard ────────────────────────────────────────
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        if (confirmOverlay.classList.contains('open')) closeConfirm();
-        else if (overlay.classList.contains('open')) closeModal();
-        else if (document.getElementById('ib-modal-overlay').classList.contains('open')) closeIbModal();
+// Load accounts
+async function loadAccounts() {
+    const tbody = document.getElementById('accounts-tbody');
+    try {
+        const accounts = await apiFetch('/accounts');
+        renderAccounts(accounts);
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><h3>Ошибка загрузки</h3></td></tr>';
+    }
+}
+
+// Initial Balances Modal
+const ibModal = document.getElementById('ib-modal');
+
+document.getElementById('initial-balances-btn').addEventListener('click', async () => {
+    document.getElementById('ib-date').valueAsDate = new Date();
+    
+    try {
+        const accounts = await apiFetch('/accounts');
+        const thead = document.getElementById('ib-thead');
+        const tbody = document.getElementById('ib-tbody');
+        
+        thead.innerHTML = '<tr><th>Счёт</th><th>Текущий баланс</th><th>Новый баланс</th></tr>';
+        tbody.innerHTML = '';
+        
+        accounts.forEach(acc => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escHtml(acc.name)}</td>
+                <td>${fmt(acc.balance)}</td>
+                <td><input type="number" data-id="${acc.id}" value="${acc.balance}" step="0.01"></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        ibModal.classList.add('open');
+    } catch (err) {
+        alert('Ошибка загрузки: ' + err.message);
     }
 });
 
-// ── Initial balances modal ───────────────────────────
-let ibFunds = [];
+document.getElementById('ib-modal-close').addEventListener('click', () => {
+    ibModal.classList.remove('open');
+});
 
-const ibOverlay = document.getElementById('ib-modal-overlay');
+document.getElementById('ib-modal-cancel').addEventListener('click', () => {
+    ibModal.classList.remove('open');
+});
 
-function closeIbModal() { ibOverlay.classList.remove('open'); }
-
-document.getElementById('ib-modal-close').addEventListener('click', closeIbModal);
-document.getElementById('ib-modal-cancel').addEventListener('click', closeIbModal);
-ibOverlay.addEventListener('click', e => { if (e.target === ibOverlay) closeIbModal(); });
-
-document.getElementById('btn-initial-balances').addEventListener('click', async () => {
-    // Set default date: Jan 1 of current year
-    const year = new Date().getFullYear();
-    document.getElementById('ib-date').value = `${year}-01-01`;
-
-    // Load funds and existing initial balances in parallel
-    const [funds, existing, accounts] = await Promise.all([
-        apiFetch('/funds'),
-        apiFetch('/transactions/initial-balances'),
-        apiFetch('/accounts'),
-    ]);
-    ibFunds = funds;
-
-    const thead = document.getElementById('ib-thead');
-    const tbody = document.getElementById('ib-tbody');
-
-    thead.innerHTML = '<tr><th>Фонд</th>' +
-        accounts.map(a => `<th>${escHtml(a.name)}</th>`).join('') +
-        '<th>Без счёта</th></tr>';
-
-    tbody.innerHTML = '';
-    funds.forEach(fund => {
-        const tr = document.createElement('tr');
-        let cells = `<td><strong>${escHtml(fund.name)}</strong></td>`;
-        accounts.forEach(acc => {
-            const ex = existing.find(t => t.fund_id === fund.id && t.account_id === acc.id);
-            cells += `<td><input type="number" min="0" step="0.01" placeholder="0"
-                data-fund="${fund.id}" data-account="${acc.id}" value="${ex ? ex.amount : ''}"></td>`;
-        });
-        const exNoAcc = existing.find(t => t.fund_id === fund.id && t.account_id === null);
-        cells += `<td><input type="number" min="0" step="0.01" placeholder="0"
-            data-fund="${fund.id}" data-account="" value="${exNoAcc ? exNoAcc.amount : ''}"></td>`;
-        tr.innerHTML = cells;
-        tbody.appendChild(tr);
-    });
-
-    ibOverlay.classList.add('open');
+ibModal.addEventListener('click', (e) => {
+    if (e.target === ibModal) ibModal.classList.remove('open');
 });
 
 document.getElementById('ib-modal-save').addEventListener('click', async () => {
+    const inputs = document.querySelectorAll('#ib-tbody input');
     const date = document.getElementById('ib-date').value;
-    if (!date) { alert('Укажите дату остатков'); return; }
-
-    const items = [];
-    document.querySelectorAll('#ib-tbody input[type="number"]').forEach(inp => {
-        const val = parseFloat(inp.value);
-        if (!val || val <= 0) return;
-        const fundId = parseInt(inp.dataset.fund);
-        const accId = inp.dataset.account ? parseInt(inp.dataset.account) : null;
-        items.push({ fund_id: fundId, account_id: accId, amount: val, date: date + 'T00:00:00' });
-    });
-
-    if (!items.length) { alert('Введите хотя бы одно значение'); return; }
-
+    
     try {
-        await apiFetch('/transactions/initial-balances', { method: 'POST', body: JSON.stringify({ items }) });
-        closeIbModal();
+        for (const input of inputs) {
+            const id = input.dataset.id;
+            const balance = parseFloat(input.value);
+            if (!isNaN(balance)) {
+                await apiFetch(`/accounts/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ balance }),
+                });
+            }
+        }
+        ibModal.classList.remove('open');
+        loadAccounts();
     } catch (err) {
-        alert('Ошибка: ' + err.message);
+        alert('Ошибка сохранения: ' + err.message);
     }
 });
 
-// ── Init ─────────────────────────────────────────────
+// Placeholder functions
+function editAccount(id) {
+    console.log('Edit account:', id);
+    // TODO: Load account data and open modal
+}
+
+function deleteAccount(id) {
+    showConfirm(id);
+}
+
+// Init
 loadAccounts();
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebar && sidebarToggle) {
+        const SIDEBAR_STATE_KEY = 'sidebar_expanded';
+        const isExpanded = localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
+        if (isExpanded) {
+            sidebar.classList.add('expanded');
+            document.body.classList.add('sidebar-expanded');
+        }
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('expanded');
+            document.body.classList.toggle('sidebar-expanded');
+            localStorage.setItem(SIDEBAR_STATE_KEY, sidebar.classList.contains('expanded'));
+        });
+    }
 </script>
 </body>
 </html>

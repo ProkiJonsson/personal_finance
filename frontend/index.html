@@ -11,201 +11,193 @@
             padding: 0;
         }
 
+        :root {
+            --primary: #1a6dff;
+            --primary-dark: #1558d6;
+            --primary-light: #eff4ff;
+            --bg-body: #f0f4ff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f4ff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-body);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(26, 109, 255, 0.10);
-            padding: 40px 36px 36px;
+        .auth-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
         }
 
-        .logo {
+        .auth-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 12px 48px rgba(26, 109, 255, 0.12);
+            padding: 48px 40px 40px;
+        }
+
+        .auth-logo {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
 
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: #1a6dff;
-            border-radius: 12px;
+        .auth-logo-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(26, 109, 255, 0.3);
         }
 
-        .logo-icon svg {
-            width: 26px;
-            height: 26px;
+        .auth-logo-icon svg {
+            width: 30px;
+            height: 30px;
             fill: #fff;
         }
 
-        .logo h1 {
-            font-size: 20px;
+        .auth-logo h1 {
+            font-size: 22px;
             font-weight: 700;
-            color: #111;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .auth-logo p {
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
         /* Tabs */
-        .tabs {
+        .auth-tabs {
             display: flex;
-            background: #f0f4ff;
-            border-radius: 10px;
-            padding: 4px;
+            background: var(--bg-body);
+            border-radius: 12px;
+            padding: 5px;
             margin-bottom: 28px;
         }
 
-        .tab-btn {
+        .auth-tab {
             flex: 1;
-            padding: 9px;
+            padding: 11px;
             border: none;
             background: transparent;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
-            color: #6b7280;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: background 0.2s, color 0.2s;
+            transition: all 0.2s;
         }
 
-        .tab-btn.active {
+        .auth-tab:hover {
+            color: var(--primary);
+        }
+
+        .auth-tab.active {
             background: #fff;
-            color: #1a6dff;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         /* Forms */
-        .form-panel {
+        .auth-form {
             display: none;
         }
 
-        .form-panel.active {
+        .auth-form.active {
             display: block;
         }
 
-        .field {
-            margin-bottom: 16px;
+        .form-group {
+            margin-bottom: 18px;
         }
 
-        .field label {
+        .form-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 6px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
-        .field input {
+        .form-group input {
             width: 100%;
-            padding: 11px 14px;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 9px;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
             font-size: 15px;
-            color: #111;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--text-primary);
             background: #fafafa;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
-        .field input:focus {
-            border-color: #1a6dff;
-            box-shadow: 0 0 0 3px rgba(26, 109, 255, 0.12);
+        .form-group input:focus {
+            border-color: var(--primary);
             background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        .field input.error {
-            border-color: #ef4444;
+        .form-group input::placeholder {
+            color: var(--text-muted);
         }
 
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: #1a6dff;
-            color: #fff;
-            border: none;
-            border-radius: 9px;
-            font-size: 15px;
-            font-weight: 700;
+        .form-group input.error {
+            border-color: var(--danger);
+        }
+
+        .form-group input.error:focus {
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        /* Remember me */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .remember-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
             cursor: pointer;
-            margin-top: 4px;
-            transition: background 0.2s, transform 0.1s;
-            letter-spacing: 0.01em;
         }
 
-        .btn-submit:hover {
-            background: #1558d6;
-        }
-
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        .btn-submit:disabled {
-            background: #93b4ff;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Alert */
-        .alert {
-            display: none;
-            padding: 11px 14px;
-            border-radius: 8px;
+        .remember-row label {
             font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
         }
 
-        .alert.error {
-            display: block;
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-
-        .alert.success {
-            display: block;
-            background: #f0fdf4;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-        }
-
-        /* Spinner inside button */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-right: 6px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Forgot password link */
         .forgot-link {
-            display: block;
-            text-align: right;
-            margin-top: 6px;
             font-size: 13px;
-            color: #1a6dff;
+            color: var(--primary);
             text-decoration: none;
+            font-weight: 500;
             cursor: pointer;
             background: none;
             border: none;
@@ -213,41 +205,93 @@
         }
 
         .forgot-link:hover {
-            color: #1558d6;
+            color: var(--primary-dark);
+            text-decoration: underline;
         }
 
-        /* Modal overlay */
-        /* Remember me */
-        .remember-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .remember-row input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #1a6dff;
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            flex-shrink: 0;
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
         }
 
-        .remember-row label {
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            background: #93b4ff;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Alert */
+        .alert {
+            display: none;
+            padding: 13px 16px;
+            border-radius: 12px;
             font-size: 13px;
-            color: #374151;
-            cursor: pointer;
-            user-select: none;
+            font-weight: 500;
+            margin-bottom: 20px;
         }
 
+        .alert.error {
+            display: block;
+            background: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .alert.success {
+            display: block;
+            background: #f0fdf4;
+            color: var(--success);
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.4);
             align-items: center;
             justify-content: center;
             z-index: 100;
+            padding: 20px;
         }
 
         .modal-overlay.open {
@@ -256,52 +300,63 @@
 
         .modal {
             background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-            padding: 32px 28px 28px;
+            border-radius: 20px;
+            padding: 32px 28px;
             width: 100%;
-            max-width: 360px;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
         .modal h2 {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-            color: #111;
-            margin-bottom: 6px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
         .modal p {
-            font-size: 13px;
-            color: #6b7280;
-            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         .modal-close {
             position: absolute;
-            top: 14px;
+            top: 16px;
             right: 16px;
-            background: none;
+            width: 36px;
+            height: 36px;
             border: none;
-            font-size: 20px;
-            color: #9ca3af;
+            background: transparent;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            line-height: 1;
-            padding: 2px 4px;
+            color: var(--text-muted);
+            transition: all 0.2s;
         }
 
         .modal-close:hover {
-            color: #374151;
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
+
+        .modal-close svg {
+            width: 18px;
+            height: 18px;
         }
 
         .modal-info {
             display: none;
-            padding: 11px 14px;
-            border-radius: 8px;
+            padding: 13px 16px;
+            border-radius: 12px;
             font-size: 13px;
             font-weight: 500;
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: var(--primary-light);
+            color: var(--primary);
             border: 1px solid #bfdbfe;
             margin-top: 16px;
         }
@@ -309,74 +364,118 @@
         .modal-info.visible {
             display: block;
         }
+
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .auth-footer p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 36px 28px 32px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo">
-        <div class="logo-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <div class="auth-logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                </svg>
+            </div>
+            <h1>Личные финансы</h1>
+            <p>Управляйте своими финансами просто</p>
         </div>
-        <h1>Личные финансы</h1>
-    </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="login">Войти</button>
-        <button class="tab-btn" data-tab="register">Регистрация</button>
-    </div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Войти</button>
+            <button class="auth-tab" data-tab="register">Регистрация</button>
+        </div>
 
-    <!-- Login -->
-    <div class="form-panel active" id="panel-login">
-        <div class="alert" id="login-alert"></div>
-        <form id="login-form" novalidate>
-            <div class="field">
-                <label for="login-email">Email</label>
-                <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" required>
-            </div>
-            <div class="field">
-                <label for="login-password">Пароль</label>
-                <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
-            </div>
-            <div class="remember-row">
-                <input type="checkbox" id="remember-me">
-                <label for="remember-me">Запомнить меня</label>
-            </div>
-            <button type="button" class="forgot-link" id="forgot-link">Забыли пароль?</button>
-            <button type="submit" class="btn-submit" id="login-btn">Войти</button>
-        </form>
-    </div>
+        <!-- Login Form -->
+        <div class="auth-form active" id="form-login">
+            <div class="alert" id="login-alert"></div>
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+                <div class="remember-row">
+                    <div class="remember-left">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Запомнить меня</label>
+                    </div>
+                    <button type="button" class="forgot-link" id="forgot-link">Забыли пароль?</button>
+                </div>
+                <button type="submit" class="btn-submit" id="login-btn">Войти</button>
+            </form>
+        </div>
 
-    <!-- Register -->
-    <div class="form-panel" id="panel-register">
-        <div class="alert" id="register-alert"></div>
-        <form id="register-form" novalidate>
-            <div class="field">
-                <label for="reg-name">Имя</label>
-                <input type="text" id="reg-name" placeholder="Иван Иванов" autocomplete="name" required>
-            </div>
-            <div class="field">
-                <label for="reg-email">Email</label>
-                <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" required>
-            </div>
-            <div class="field">
-                <label for="reg-password">Пароль</label>
-                <input type="password" id="reg-password" placeholder="Минимум 6 символов" autocomplete="new-password" required minlength="6">
-            </div>
-            <button type="submit" class="btn-submit" id="register-btn">Зарегистрироваться</button>
-        </form>
+        <!-- Register Form -->
+        <div class="auth-form" id="form-register">
+            <div class="alert" id="register-alert"></div>
+            <form id="register-form" novalidate>
+                <div class="form-group">
+                    <label for="reg-name">Имя</label>
+                    <input type="text" id="reg-name" placeholder="Иван Иванов" autocomplete="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Пароль</label>
+                    <input type="password" id="reg-password" placeholder="Минимум 6 символов" autocomplete="new-password" required minlength="6">
+                </div>
+                <button type="submit" class="btn-submit" id="register-btn">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p>Нажимая «Войти» или «Зарегистрироваться», вы принимаете <a href="#">условия использования</a></p>
+        </div>
     </div>
 </div>
 
-<!-- Forgot password modal -->
+<!-- Forgot Password Modal -->
 <div class="modal-overlay" id="forgot-modal">
     <div class="modal">
-        <button class="modal-close" id="modal-close" aria-label="Закрыть">&times;</button>
+        <button class="modal-close" id="modal-close" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
         <h2>Восстановление пароля</h2>
         <p>Введите email, и мы пришлём инструкции по сбросу пароля.</p>
-        <div class="field">
+        <div class="form-group">
             <label for="forgot-email">Email</label>
             <input type="email" id="forgot-email" placeholder="you@example.com" autocomplete="email">
         </div>
@@ -388,147 +487,153 @@
 </div>
 
 <script>
-    const API = 'http://127.0.0.1:8000';
+const API = 'http://127.0.0.1:8000';
 
-    // Redirect if already logged in (check both storages)
-    if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
-        window.location.href = 'dashboard.html';
+// Redirect if already logged in
+if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
+    window.location.href = 'dashboard.html';
+}
+
+// Tab switching
+document.querySelectorAll('.auth-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('form-' + btn.dataset.tab).classList.add('active');
+        // Clear alerts
+        document.getElementById('login-alert').className = 'alert';
+        document.getElementById('register-alert').className = 'alert';
+    });
+});
+
+// Show alert
+function showAlert(id, message, type = 'error') {
+    const el = document.getElementById(id);
+    el.textContent = message;
+    el.className = 'alert ' + type;
+}
+
+// Set loading state
+function setLoading(btn, loading) {
+    if (loading) {
+        btn.disabled = true;
+        btn.dataset.label = btn.textContent;
+        btn.innerHTML = '<span class="spinner"></span>' + (btn.dataset.label || 'Загрузка...');
+    } else {
+        btn.disabled = false;
+        btn.textContent = btn.dataset.label || 'Войти';
+    }
+}
+
+// Forgot password modal
+const forgotModal = document.getElementById('forgot-modal');
+
+document.getElementById('forgot-link').addEventListener('click', () => {
+    document.getElementById('forgot-email').value = '';
+    document.getElementById('forgot-info').classList.remove('visible');
+    forgotModal.classList.add('open');
+    document.getElementById('forgot-email').focus();
+});
+
+document.getElementById('modal-close').addEventListener('click', () => {
+    forgotModal.classList.remove('open');
+});
+
+forgotModal.addEventListener('click', (e) => {
+    if (e.target === forgotModal) forgotModal.classList.remove('open');
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') forgotModal.classList.remove('open');
+});
+
+document.getElementById('forgot-submit').addEventListener('click', () => {
+    document.getElementById('forgot-info').classList.add('visible');
+});
+
+// Store original button labels
+document.getElementById('login-btn').dataset.label = 'Войти';
+document.getElementById('register-btn').dataset.label = 'Зарегистрироваться';
+
+// Login
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+
+    if (!email || !password) {
+        showAlert('login-alert', 'Заполните все поля.');
+        return;
     }
 
-    // Tab switching
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    setLoading(btn, true);
+
+    try {
+        const res = await fetch(`${API}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
-    });
 
-    function showAlert(id, message, type = 'error') {
-        const el = document.getElementById(id);
-        el.textContent = message;
-        el.className = 'alert ' + type;
-    }
+        const data = await res.json();
 
-    function setLoading(btn, loading) {
-        if (loading) {
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span>' + btn.dataset.label;
+        if (!res.ok) {
+            showAlert('login-alert', data.detail || 'Неверный email или пароль.');
         } else {
-            btn.disabled = false;
-            btn.textContent = btn.dataset.label;
+            const remember = document.getElementById('remember-me').checked;
+            const storage = remember ? localStorage : sessionStorage;
+            storage.setItem('token', data.access_token);
+            window.location.href = 'dashboard.html';
         }
+    } catch {
+        showAlert('login-alert', 'Не удалось подключиться к серверу.');
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+// Register
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const btn = document.getElementById('register-btn');
+
+    if (!name || !email || !password) {
+        showAlert('register-alert', 'Заполните все поля.');
+        return;
+    }
+    if (password.length < 6) {
+        showAlert('register-alert', 'Пароль должен содержать минимум 6 символов.');
+        return;
     }
 
-    // Forgot password modal
-    const forgotModal = document.getElementById('forgot-modal');
+    setLoading(btn, true);
 
-    document.getElementById('forgot-link').addEventListener('click', () => {
-        document.getElementById('forgot-email').value = '';
-        document.getElementById('forgot-info').classList.remove('visible');
-        forgotModal.classList.add('open');
-        document.getElementById('forgot-email').focus();
-    });
+    try {
+        const res = await fetch(`${API}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
 
-    document.getElementById('modal-close').addEventListener('click', () => {
-        forgotModal.classList.remove('open');
-    });
+        const data = await res.json();
 
-    forgotModal.addEventListener('click', (e) => {
-        if (e.target === forgotModal) forgotModal.classList.remove('open');
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') forgotModal.classList.remove('open');
-    });
-
-    document.getElementById('forgot-submit').addEventListener('click', () => {
-        document.getElementById('forgot-info').classList.add('visible');
-    });
-
-    // Store original labels
-    document.getElementById('login-btn').dataset.label = 'Войти';
-    document.getElementById('register-btn').dataset.label = 'Зарегистрироваться';
-
-    // Login
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value;
-        const btn = document.getElementById('login-btn');
-
-        if (!email || !password) {
-            showAlert('login-alert', 'Заполните все поля.');
-            return;
+        if (!res.ok) {
+            showAlert('register-alert', data.detail || 'Ошибка регистрации.');
+        } else {
+            localStorage.setItem('token', data.access_token);
+            window.location.href = 'dashboard.html';
         }
-
-        setLoading(btn, true);
-
-        try {
-            const res = await fetch(`${API}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                showAlert('login-alert', data.detail || 'Неверный email или пароль.');
-            } else {
-                const remember = document.getElementById('remember-me').checked;
-                const storage = remember ? localStorage : sessionStorage;
-                storage.setItem('token', data.access_token);
-                window.location.href = 'dashboard.html';
-            }
-        } catch {
-            showAlert('login-alert', 'Не удалось подключиться к серверу.');
-        } finally {
-            setLoading(btn, false);
-        }
-    });
-
-    // Register
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('reg-name').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const password = document.getElementById('reg-password').value;
-        const btn = document.getElementById('register-btn');
-
-        if (!name || !email || !password) {
-            showAlert('register-alert', 'Заполните все поля.');
-            return;
-        }
-        if (password.length < 6) {
-            showAlert('register-alert', 'Пароль должен содержать минимум 6 символов.');
-            return;
-        }
-
-        setLoading(btn, true);
-
-        try {
-            const res = await fetch(`${API}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                showAlert('register-alert', data.detail || 'Ошибка регистрации.');
-            } else {
-                localStorage.setItem('token', data.access_token);
-                window.location.href = 'dashboard.html';
-            }
-        } catch {
-            showAlert('register-alert', 'Не удалось подключиться к серверу.');
-        } finally {
-            setLoading(btn, false);
-        }
-    });
+    } catch {
+        showAlert('register-alert', 'Не удалось подключиться к серверу.');
+    } finally {
+        setLoading(btn, false);
+    }
+});
 </script>
 </body>
 </html>

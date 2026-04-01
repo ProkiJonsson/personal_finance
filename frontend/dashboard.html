@@ -5,328 +5,873 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Главная</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
-            --blue:       #1a6dff;
-            --blue-dark:  #1558d6;
-            --blue-light: #eff4ff;
-            --sidebar-w:  240px;
-            --header-h:   64px;
-            --text:       #111827;
-            --text-muted: #6b7280;
-            --border:     #e5e7eb;
-            --bg:         #f5f7fb;
-            --white:      #ffffff;
+            /* Colors from mockup */
+            --primary: #1a6dff;
+            --primary-dark: #1558d6;
+            --primary-light: #eff4ff;
+            --bg-body: #f5f7fb;
+            --bg-card-dark: #1e293b;
+            --bg-card-light: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            
+            /* Layout */
+            --sidebar-w: 80px;
+            --sidebar-w-expanded: 260px;
+            --header-h: 64px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
             min-height: 100vh;
+            display: flex;
         }
 
-        /* ── Sidebar ─────────────────────────────────── */
+        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: var(--sidebar-w);
             height: 100vh;
-            background: var(--white);
+            background: #ffffff;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            z-index: 50;
+            align-items: center;
+            padding: 16px 12px;
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.expanded {
+            width: var(--sidebar-w-expanded);
+            padding: 16px 20px;
+            align-items: flex-start;
+        }
+
+        .sidebar-toggle {
+            width: 100%;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            padding: 0;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .sidebar-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s;
+        }
+
+        .sidebar:not(.expanded) .sidebar-toggle svg {
+            transform: rotate(180deg);
         }
 
         .sidebar-logo {
-            height: var(--header-h);
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+            width: 100%;
             flex-shrink: 0;
         }
-
         .sidebar-logo-icon {
-            width: 34px; height: 34px;
-            background: var(--blue);
-            border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
-
-        .sidebar-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-
-        .sidebar-logo span {
+        .sidebar-logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .sidebar-logo-text {
+            display: none;
             font-size: 15px;
             font-weight: 700;
-            color: var(--text);
-            line-height: 1.2;
+            color: var(--text-primary);
+            white-space: nowrap;
         }
+        .sidebar.expanded .sidebar-logo-text { display: block; }
 
         .sidebar-nav {
             flex: 1;
-            padding: 12px 10px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
 
         .nav-item {
+            width: 100%;
+            height: 48px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 11px;
-            padding: 10px 12px;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-decoration: none;
+            justify-content: center;
             cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            position: relative;
+            gap: 12px;
+            padding: 0 12px;
         }
 
-        .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+        .sidebar:not(.expanded) .nav-item {
+            justify-content: center;
+        }
+
+        .sidebar.expanded .nav-item {
+            justify-content: flex-start;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
 
         .nav-item.active {
-            background: var(--blue-light);
-            color: var(--blue);
-            font-weight: 600;
+            background: var(--primary);
+            color: #fff;
         }
 
-        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
 
-        .nav-section {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.07em;
-            color: #9ca3af;
-            text-transform: uppercase;
-            padding: 16px 12px 6px;
+        .nav-item-text {
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .sidebar.expanded .nav-item-text {
+            display: block;
+        }
+
+        .nav-item .nav-tooltip {
+            position: absolute;
+            left: calc(100% + 12px);
+            background: var(--text-primary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.expanded .nav-item .nav-tooltip {
+            display: none;
+        }
+
+        .sidebar:not(.expanded) .nav-item:hover .nav-tooltip {
+            opacity: 1;
         }
 
         .sidebar-bottom {
-            padding: 10px;
-            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
 
-        /* ── Header ──────────────────────────────────── */
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        body.sidebar-expanded .main-content {
+            margin-left: var(--sidebar-w-expanded);
+        }
+
+        /* ========== HEADER ========== */
         .header {
-            position: fixed;
-            top: 0;
-            left: var(--sidebar-w);
-            right: 0;
             height: var(--header-h);
-            background: var(--white);
+            background: #ffffff;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 28px;
-            gap: 14px;
-            z-index: 40;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
         .header-title {
-            font-size: 17px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
-        .header-spacer { flex: 1; }
-
-        .header-user {
+        .header-nav {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .header-nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .header-nav-item.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-icon-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .header-icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .header-icon-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: var(--bg-body);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover {
+            background: var(--primary-light);
         }
 
         .user-avatar {
-            width: 34px; height: 34px;
-            background: var(--blue-light);
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 14px;
-            font-weight: 700;
-            color: var(--blue);
-            flex-shrink: 0;
+            font-weight: 600;
+            color: #fff;
         }
 
         .user-name {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text);
-            text-decoration: none;
-        }
-        .user-name:hover { color: var(--blue); }
-
-        .btn-logout {
-            padding: 7px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            background: none;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
+            color: var(--text-primary);
         }
 
-        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
-
-        /* ── Main content ─────────────────────────────── */
-        .content {
-            margin-left: var(--sidebar-w);
-            padding-top: var(--header-h);
-            min-height: 100vh;
-        }
-
+        /* ========== PAGE CONTENT ========== */
         .page {
-            padding: 28px 28px 40px;
-            max-width: 1100px;
+            padding: 32px;
+            max-width: 1400px;
         }
 
-        .page-header {
-            margin-bottom: 24px;
+        /* Accounts Section */
+        .accounts-section {
+            margin-bottom: 32px;
         }
-
-        .page-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .page-header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 3px;
-        }
-
-        /* ── Section ──────────────────────────────────── */
-        .section { margin-bottom: 32px; }
 
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
         }
 
         .section-title {
-            font-size: 15px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .section-link {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--blue);
-            text-decoration: none;
+        .section-title .refresh-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
 
-        .section-link:hover { color: var(--blue-dark); }
+        .section-title .refresh-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
 
-        /* ── Fund cards ───────────────────────────────── */
-        .funds-row {
+        .section-title .refresh-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .accounts-row {
             display: flex;
             gap: 16px;
             overflow-x: auto;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
         }
 
-        .funds-row::-webkit-scrollbar { height: 4px; }
-        .funds-row::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+        .accounts-row::-webkit-scrollbar {
+            height: 6px;
+        }
 
-        .fund-card {
+        .accounts-row::-webkit-scrollbar-track {
+            background: var(--bg-body);
+            border-radius: 3px;
+        }
+
+        .accounts-row::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .account-card {
             flex-shrink: 0;
-            width: 210px;
-            background: var(--white);
-            border-radius: 14px;
-            padding: 20px 20px 18px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: box-shadow 0.2s;
-        }
-
-        .fund-card:hover { box-shadow: 0 4px 16px rgba(26,109,255,0.10); }
-
-        .fund-card-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .fund-icon {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .fund-icon svg { width: 18px; height: 18px; }
-
-        .fund-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 8px;
+            min-width: 240px;
+            max-width: 280px;
+            background: var(--bg-card-light);
             border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
         }
 
-        .fund-name {
-            font-size: 13px;
-            font-weight: 600;
+        .account-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .account-card.selected {
+            border-color: var(--primary);
+        }
+
+        .account-card-dark {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #fff;
+        }
+
+        .account-card-dark .account-name {
             color: var(--text-muted);
         }
 
-        .fund-balance {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text);
+        .account-card-dark .account-change {
+            color: var(--success);
+        }
+
+        .account-card-dark .account-balance {
+            color: #fff;
+        }
+
+        .account-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .account-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .account-change {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .account-balance {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
             letter-spacing: -0.5px;
         }
 
-        .fund-currency {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: -6px;
+        .account-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
         }
 
-        .fund-card-empty {
-            flex-shrink: 0;
-            width: 210px;
-            background: #fafafa;
-            border-radius: 14px;
-            padding: 20px;
-            border: 1.5px dashed var(--border);
+        .account-action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .account-card-dark .account-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .account-action-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .account-action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .account-card-add {
+            background: var(--bg-card-light);
+            border: 2px dashed var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 13px;
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-            min-height: 140px;
+            gap: 12px;
+            color: var(--text-secondary);
         }
 
-        .fund-card-empty:hover { border-color: var(--blue); color: var(--blue); }
+        .account-card-add:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: none;
+            box-shadow: none;
+        }
 
-        /* ── Transactions table ───────────────────────── */
-        .table-wrap {
-            background: var(--white);
-            border-radius: 14px;
+        .account-card-add .add-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .account-card-add .add-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+
+        .account-card-add span {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Add Payment Section */
+        .add-payment-section {
+            margin-bottom: 32px;
+        }
+
+        .add-payment-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .add-payment-form {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: #fafafa;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group .input-icon {
+            position: relative;
+        }
+
+        .form-group .input-icon svg {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .form-row-full {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row-full .form-group {
+            flex: 1;
+        }
+
+        .btn-primary {
+            padding: 14px 32px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
+        }
+
+        /* Info Card */
+        .info-card {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 16px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-card-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .info-card-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Transactions Table */
+        .transactions-section {
+            margin-top: 32px;
+        }
+
+        .table-container {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            border: 1px solid var(--border);
             overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background: #fff;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .filter-btn.active {
+            background: var(--text-primary);
+            color: #fff;
+            border-color: var(--text-primary);
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .date-filter input {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .search-filter {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-filter input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: #fff;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-filter input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-filter svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
         }
 
         table {
@@ -336,52 +881,80 @@
         }
 
         thead th {
-            background: #f9fafb;
-            padding: 12px 16px;
+            padding: 14px 20px;
             text-align: left;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            background: #fafafa;
             border-bottom: 1px solid var(--border);
         }
 
         tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background 0.12s;
+            transition: background 0.2s;
         }
 
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: #fafbff; }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--primary-light);
+        }
 
         tbody td {
-            padding: 13px 16px;
-            color: var(--text);
+            padding: 16px 20px;
+            color: var(--text-primary);
         }
 
-        .td-date { color: var(--text-muted); font-size: 13px; white-space: nowrap; }
+        .td-num {
+            color: var(--text-muted);
+            font-size: 13px;
+            width: 40px;
+        }
 
-        .td-desc { font-weight: 500; }
+        .td-date {
+            color: var(--text-secondary);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .td-desc {
+            font-weight: 500;
+        }
+
+        .td-category {
+            color: var(--text-secondary);
+        }
 
         .td-category span {
+            padding: 4px 12px;
+            background: var(--bg-body);
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            padding: 3px 9px;
-            border-radius: 20px;
-            background: #f3f4f6;
-            color: #374151;
+            color: var(--text-secondary);
         }
 
         .td-type span {
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            padding: 3px 9px;
-            border-radius: 20px;
         }
 
-        .type-income  { background: #f0fdf4; color: #16a34a; }
-        .type-expense { background: #fef2f2; color: #dc2626; }
+        .type-income {
+            background: #f0fdf4;
+            color: var(--success);
+        }
+
+        .type-expense {
+            background: #fef2f2;
+            color: var(--danger);
+        }
 
         .td-amount {
             font-weight: 700;
@@ -389,19 +962,102 @@
             white-space: nowrap;
         }
 
-        .amount-income  { color: #16a34a; }
-        .amount-expense { color: #dc2626; }
-
-        /* ── States ───────────────────────────────────── */
-        .state-empty, .state-error {
-            padding: 40px 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
+        .amount-income {
+            color: var(--success);
         }
 
-        .state-error { color: #dc2626; }
+        .amount-expense {
+            color: var(--danger);
+        }
 
+        .td-actions {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-body);
+            color: var(--primary);
+        }
+
+        .action-btn.delete:hover {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+        }
+
+        .table-total {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pagination button {
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover,
+        .pagination button.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Skeleton loading */
         .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
@@ -409,145 +1065,386 @@
             border-radius: 6px;
         }
 
-        @keyframes shimmer { to { background-position: -200% 0; } }
-
-        .skeleton-card {
-            flex-shrink: 0;
-            width: 210px;
-            height: 140px;
-            border-radius: 14px;
+        @keyframes shimmer {
+            to {
+                background-position: -200% 0;
+            }
         }
 
-        .skeleton-row td { padding: 14px 16px; }
-        .skeleton-row .sk { display: block; height: 14px; border-radius: 4px; }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                bottom: 0;
+                top: auto;
+                flex-direction: row;
+                padding: 12px;
+                border-right: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .main-content {
+                margin-left: 0;
+                margin-bottom: 70px;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .page {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .accounts-row {
+                flex-direction: column;
+            }
+
+            .account-card {
+                max-width: none;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- ── Sidebar ──────────────────────────────────────── -->
-<aside class="sidebar">
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
         <div class="sidebar-logo-icon">
-            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M8 4v16M8 4h5a4 4 0 0 1 0 8H8M6 12h7M6 16h7"/>
+            </svg>
         </div>
-        <span>Личные финансы</span>
+        <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
     </div>
 
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+    </button>
+
     <nav class="sidebar-nav">
-        <div class="nav-section">Меню</div>
-
-        <a class="nav-item active" href="dashboard.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Главная
-        </a>
-        <a class="nav-item" href="operations.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
-            Операции
-        </a>
-        <a class="nav-item" href="funds.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-            Фонды
-        </a>
-        <a class="nav-item" href="accounts.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-            Счета
-        </a>
-
-        <div class="nav-section">Прочее</div>
-
-        <a class="nav-item" href="categories.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
-            Справочники
-        </a>
-        <a class="nav-item" href="settings.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-            Настройки
-        </a>
-        <a class="nav-item" href="profile.html">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Профиль
-        </a>
+        <button class="nav-item active" onclick="location.href='dashboard.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span class="nav-item-text">Главная</span>
+            <span class="nav-tooltip">Главная</span>
+        </button>
+        <button class="nav-item" onclick="location.href='operations.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
+            </svg>
+            <span class="nav-item-text">Операции</span>
+            <span class="nav-tooltip">Операции</span>
+        </button>
+        <button class="nav-item" onclick="location.href='funds.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+            <span class="nav-item-text">Фонды</span>
+            <span class="nav-tooltip">Фонды</span>
+        </button>
+        <button class="nav-item" onclick="location.href='accounts.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+            </svg>
+            <span class="nav-item-text">Счета</span>
+            <span class="nav-tooltip">Счета</span>
+        </button>
     </nav>
 
     <div class="sidebar-bottom">
+        <button class="nav-item" onclick="location.href='categories.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/>
+            </svg>
+            <span class="nav-item-text">Справочники</span>
+            <span class="nav-tooltip">Справочники</span>
+        </button>
         <button class="nav-item" id="logout-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-            Выйти
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            <span class="nav-item-text">Выйти</span>
+            <span class="nav-tooltip">Выйти</span>
         </button>
     </div>
 </aside>
 
-<!-- ── Header ────────────────────────────────────────── -->
-<header class="header">
-    <span class="header-title">Главная</span>
-    <div class="header-spacer"></div>
-    <div class="header-user">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
-    </div>
-    <button class="btn-logout" id="header-logout-btn">Выйти</button>
-</header>
-
-<!-- ── Content ───────────────────────────────────────── -->
-<main class="content">
-    <div class="page">
-
-        <div class="page-header">
-            <h1>Обзор</h1>
-            <p id="today-date"></p>
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="header-title">Личные финансы</h1>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item active">Главная</a>
+                <a href="operations.html" class="header-nav-item">Операции</a>
+                <a href="funds.html" class="header-nav-item">Фонды</a>
+                <a href="accounts.html" class="header-nav-item">Счета</a>
+            </nav>
         </div>
-
-        <!-- Funds -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Мои фонды</span>
-                <a class="section-link" href="funds.html">Все фонды →</a>
+        <div class="header-right">
+            <button class="header-icon-btn" aria-label="Поиск">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </button>
+            <button class="header-icon-btn" aria-label="Уведомления">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span class="user-name" id="user-name">Загрузка...</span>
             </div>
-            <div class="funds-row" id="funds-container">
-                <!-- skeleton -->
-                <div class="skeleton skeleton-card"></div>
-                <div class="skeleton skeleton-card"></div>
-                <div class="skeleton skeleton-card"></div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page">
+        <!-- Accounts Section -->
+        <section class="accounts-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Мои счета
+                    <button class="refresh-btn" aria-label="Обновить">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6"/>
+                            <path d="M1 20v-6h6"/>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                        </svg>
+                    </button>
+                </h2>
+            </div>
+            <div class="accounts-row" id="accounts-container">
+                <!-- Skeleton -->
+                <div class="account-card account-card-dark skeleton" style="height: 160px;"></div>
+                <div class="account-card skeleton" style="height: 160px;"></div>
+                <div class="account-card skeleton" style="height: 160px;"></div>
+                
+                <!-- Add Account Card (will be inserted by JS) -->
             </div>
         </section>
 
-        <!-- Transactions -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Последние операции</span>
-                <a class="section-link" href="operations.html">Все операции →</a>
+        <!-- Add Payment Section -->
+        <section class="add-payment-section">
+            <h3 class="add-payment-title">Добавьте первую операцию</h3>
+            <div class="add-payment-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Дата</label>
+                        <div class="input-icon">
+                            <input type="date" id="tx-date">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Счёт</label>
+                        <select id="tx-account">
+                            <option value="">Выбрать счёт</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Категория</label>
+                        <select id="tx-category">
+                            <option value="">Выбрать категорию</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Сумма</label>
+                        <input type="number" id="tx-amount" placeholder="0 ₽" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row-full">
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <input type="text" id="tx-description" placeholder="Оплата...">
+                    </div>
+                    <div class="form-group">
+                        <label>Комментарий</label>
+                        <input type="text" id="tx-comment" placeholder="Учесть...">
+                    </div>
+                </div>
+                <button type="button" class="btn-primary" id="add-tx-btn">Добавить</button>
             </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>Описание</th>
-                            <th>Категория</th>
-                            <th>Тип</th>
-                            <th style="text-align:right">Сумма</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tx-tbody">
-                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:160px"></span></td><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
-                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:130px"></span></td><td><span class="skeleton sk" style="width:70px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
-                        <tr class="skeleton-row"><td><span class="skeleton sk" style="width:80px"></span></td><td><span class="skeleton sk" style="width:150px"></span></td><td><span class="skeleton sk" style="width:90px"></span></td><td><span class="skeleton sk" style="width:60px"></span></td><td><span class="skeleton sk" style="width:70px;margin-left:auto"></span></td></tr>
-                    </tbody>
-                </table>
+
+            <!-- Info Card -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="info-card-title">Что такое счёт?</h4>
+                        <p class="info-card-text">
+                            Банковский счёт, карта или наличка. На счета мы принимаем деньги, оплачиваем расходы.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
+        <!-- Transactions Section -->
+        <section class="transactions-section">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Все операции</h3>
+                    <div class="table-actions">
+                        <button class="btn-secondary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Экспорт
+                        </button>
+                        <button class="btn-secondary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="4" y1="21" x2="4" y2="14"/>
+                                <line x1="4" y1="10" x2="4" y2="3"/>
+                                <line x1="12" y1="21" x2="12" y2="12"/>
+                                <line x1="12" y1="8" x2="12" y2="3"/>
+                                <line x1="20" y1="21" x2="20" y2="16"/>
+                                <line x1="20" y1="12" x2="20" y2="3"/>
+                                <line x1="1" y1="14" x2="7" y2="14"/>
+                                <line x1="9" y1="8" x2="15" y2="8"/>
+                                <line x1="17" y1="16" x2="23" y2="16"/>
+                            </svg>
+                            Фильтры
+                        </button>
+                        <button class="btn-primary" id="add-operation-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            Добавить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-btn active">Все</button>
+                        <button class="filter-btn">Приход</button>
+                        <button class="filter-btn">Расход</button>
+                    </div>
+                    <div class="date-filter">
+                        <input type="date" id="filter-date-from">
+                        <span style="color: var(--text-muted);">—</span>
+                        <input type="date" id="filter-date-to">
+                    </div>
+                    <div class="search-filter">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <input type="text" placeholder="Поиск по операциям...">
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn-secondary" style="padding: 8px 12px;">Найти</button>
+                        <button class="btn-secondary" style="padding: 8px 12px;">Сбросить</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">№</th>
+                                <th>Дата</th>
+                                <th>Описание</th>
+                                <th>Категория</th>
+                                <th>Тип</th>
+                                <th style="text-align: right;">Сумма</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-tbody">
+                            <!-- Skeleton rows -->
+                            <tr>
+                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 200px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 100px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 100px; height: 14px; margin-left: auto;"></span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 180px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 90px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 90px; height: 14px; margin-left: auto;"></span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 220px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 110px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
+                                <td><span class="skeleton" style="width: 100px; height: 14px; margin-left: auto;"></span></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <div class="table-total" id="table-total">0 ₽</div>
+                    <div class="pagination">
+                        <button disabled>&lt;</button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>...</button>
+                        <button>105</button>
+                        <button>&gt;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </main>
 
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// ── Auth guard ──────────────────────────────────────
+// Auth guard
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (!token) { window.location.href = 'index.html'; }
 
-// ── Decode JWT payload (no verification — display only) ──
+// Decode JWT
 function parseJwt(t) {
     try {
         const payload = t.split('.')[1];
@@ -561,35 +1458,34 @@ const displayName = jwt.name || jwt.email || 'Пользователь';
 document.getElementById('user-name').textContent = displayName;
 document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
 
-// ── Date ────────────────────────────────────────────
-document.getElementById('today-date').textContent =
-    new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-// ── Logout ──────────────────────────────────────────
+// Logout
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
 document.getElementById('logout-btn').addEventListener('click', logout);
-document.getElementById('header-logout-btn').addEventListener('click', logout);
 
-// ── Auth fetch helper ───────────────────────────────
-async function apiFetch(path) {
+// API fetch
+async function apiFetch(path, options = {}) {
     const res = await fetch(API + path, {
-        headers: { 'Authorization': 'Bearer ' + token }
+        ...options,
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            ...(options.headers || {}),
+        },
     });
     if (res.status === 401) { logout(); }
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || 'HTTP ' + res.status);
+    }
+    if (res.status === 204) return null;
     return res.json();
 }
 
-// ── Formatters ──────────────────────────────────────
-const CATEGORY_LABELS = {
-    food: 'Еда', transport: 'Транспорт', salary: 'Зарплата',
-    entertainment: 'Развлечения', other: 'Другое',
-};
-
+// Formatters
 function fmt(amount, currency = 'RUB') {
     return new Intl.NumberFormat('ru-RU', {
         style: 'currency', currency,
@@ -604,91 +1500,6 @@ function fmtDate(iso) {
     });
 }
 
-// ── Fund color palette ──────────────────────────────
-const FUND_COLORS = [
-    { bg: '#eff4ff', color: '#1a6dff' },
-    { bg: '#f0fdf4', color: '#16a34a' },
-    { bg: '#fff7ed', color: '#ea580c' },
-    { bg: '#fdf4ff', color: '#9333ea' },
-    { bg: '#fef2f2', color: '#dc2626' },
-];
-
-// ── Load funds ──────────────────────────────────────
-async function loadFunds() {
-    const container = document.getElementById('funds-container');
-    try {
-        const funds = await apiFetch('/funds');
-        container.innerHTML = '';
-
-        if (!funds.length) {
-            container.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:4px 0">Фонды не найдены</p>';
-            return;
-        }
-
-        funds.forEach((fund, i) => {
-            const c = FUND_COLORS[i % FUND_COLORS.length];
-            const card = document.createElement('div');
-            card.className = 'fund-card';
-            card.innerHTML = `
-                <div class="fund-card-top">
-                    <div class="fund-icon" style="background:${c.bg}">
-                        <svg viewBox="0 0 24 24" fill="${c.color}"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-                    </div>
-                    <span class="fund-badge" style="background:${c.bg};color:${c.color}">${fund.currency || 'RUB'}</span>
-                </div>
-                <div class="fund-name">${escHtml(fund.name)}</div>
-                <div class="fund-balance">${fmt(fund.balance ?? 0, fund.currency || 'RUB')}</div>
-            `;
-            container.appendChild(card);
-        });
-
-        // "Add fund" placeholder
-        const add = document.createElement('div');
-        add.className = 'fund-card-empty';
-        add.innerHTML = `
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Добавить фонд</span>
-        `;
-        container.appendChild(add);
-
-    } catch (err) {
-        container.innerHTML = `<p class="state-error">Ошибка загрузки фондов</p>`;
-    }
-}
-
-// ── Load transactions ───────────────────────────────
-async function loadTransactions() {
-    const tbody = document.getElementById('tx-tbody');
-    try {
-        const all = await apiFetch('/transactions');
-        const txs = all.slice(0, 10);
-        tbody.innerHTML = '';
-
-        if (!txs.length) {
-            tbody.innerHTML = `<tr><td colspan="5" class="state-empty">Операций пока нет</td></tr>`;
-            return;
-        }
-
-        txs.forEach(tx => {
-            const isIncome = tx.type === 'income';
-            const sign = isIncome ? '+' : '−';
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="td-date">${fmtDate(tx.created_at)}</td>
-                <td class="td-desc">${escHtml(tx.description)}</td>
-                <td class="td-category"><span>${escHtml(CATEGORY_LABELS[tx.category] ?? tx.category)}</span></td>
-                <td class="td-type"><span class="${isIncome ? 'type-income' : 'type-expense'}">${isIncome ? 'Доход' : 'Расход'}</span></td>
-                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${sign}${fmt(tx.amount)}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-    } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" class="state-error">Ошибка загрузки операций</td></tr>`;
-    }
-}
-
-// ── XSS guard ───────────────────────────────────────
 function escHtml(str) {
     return String(str)
         .replace(/&/g, '&amp;')
@@ -697,9 +1508,164 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
-// ── Init ─────────────────────────────────────────────
-loadFunds();
-loadTransactions();
+// Load accounts
+async function loadAccounts() {
+    const container = document.getElementById('accounts-container');
+    try {
+        const [accounts, funds] = await Promise.all([
+            apiFetch('/accounts'),
+            apiFetch('/funds')
+        ]);
+        container.innerHTML = '';
+
+        // Combined balance
+        const totalBalance = (accounts.reduce((s, a) => s + a.balance, 0) + 
+                             funds.reduce((s, f) => s + (f.balance || 0), 0));
+
+        // "All accounts" card (dark)
+        const allCard = document.createElement('div');
+        allCard.className = 'account-card account-card-dark selected';
+        allCard.innerHTML = `
+            <div class="account-header">
+                <div>
+                    <div class="account-name">Все счета</div>
+                    <div class="account-balance">${fmt(totalBalance)}</div>
+                </div>
+            </div>
+        `;
+        container.appendChild(allCard);
+
+        // Individual accounts
+        accounts.forEach(acc => {
+            const card = document.createElement('div');
+            card.className = 'account-card';
+            card.innerHTML = `
+                <div class="account-header">
+                    <div>
+                        <div class="account-name">${escHtml(acc.name)}</div>
+                        <div class="account-balance">${fmt(acc.balance)}</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // Add fund cards
+        funds.forEach(fund => {
+            const card = document.createElement('div');
+            card.className = 'account-card';
+            card.innerHTML = `
+                <div class="account-header">
+                    <div>
+                        <div class="account-name">${escHtml(fund.name)} (Фонд)</div>
+                        <div class="account-balance">${fmt(fund.balance || 0)}</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // Add account card
+        const addCard = document.createElement('div');
+        addCard.className = 'account-card account-card-add';
+        addCard.innerHTML = `
+            <div class="add-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+            </div>
+            <span>Добавить счёт</span>
+        `;
+        addCard.addEventListener('click', () => {
+            window.location.href = 'accounts.html';
+        });
+        container.appendChild(addCard);
+
+    } catch (err) {
+        console.error('Error loading accounts:', err);
+        container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Ошибка загрузки счетов</p>';
+    }
+}
+
+// Load transactions
+async function loadTransactions() {
+    const tbody = document.getElementById('transactions-tbody');
+    try {
+        const all = await apiFetch('/transactions');
+        const txs = all.slice(0, 10);
+        tbody.innerHTML = '';
+
+        if (!txs.length) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">Операций пока нет</td></tr>`;
+            return;
+        }
+
+        let total = 0;
+        txs.forEach((tx, i) => {
+            const isIncome = tx.type === 'income';
+            total += isIncome ? tx.amount : -tx.amount;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="td-num">#${String(i + 1).padStart(5, '0')}</td>
+                <td class="td-date">${fmtDate(tx.created_at)}</td>
+                <td class="td-desc">${escHtml(tx.comment || 'Без описания')}</td>
+                <td class="td-category"><span>Категория</span></td>
+                <td><span class="${isIncome ? 'type-income' : 'type-expense'}">${isIncome ? 'Доход' : 'Расход'}</span></td>
+                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${isIncome ? '+' : '-'}${fmt(tx.amount)}</td>
+                <td class="td-actions">
+                    <div class="action-btns">
+                        <button class="action-btn" aria-label="Редактировать">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete" aria-label="Удалить">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('table-total').textContent = `Итого: ${fmt(total)}`;
+
+    } catch (err) {
+        console.error('Error loading transactions:', err);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--danger);">Ошибка загрузки операций</td></tr>`;
+    }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    // Set today's date
+    document.getElementById('tx-date').valueAsDate = new Date();
+    loadAccounts();
+    loadTransactions();
+    
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const SIDEBAR_STATE_KEY = 'sidebar_expanded';
+    
+    // Restore sidebar state from localStorage
+    const isExpanded = localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
+    if (isExpanded) {
+        sidebar.classList.add('expanded');
+        document.body.classList.add('sidebar-expanded');
+    }
+    
+    // Toggle sidebar
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('expanded');
+        document.body.classList.toggle('sidebar-expanded');
+        localStorage.setItem(SIDEBAR_STATE_KEY, sidebar.classList.contains('expanded'));
+    });
+});
 </script>
 </body>
 </html>

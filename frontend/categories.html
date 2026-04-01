@@ -1,1892 +1,1579 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личные финансы — Справочники</title>
     <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      :root {
-        --blue: #1a6dff;
-        --blue-dark: #1558d6;
-        --blue-light: #eff4ff;
-        --sidebar-w: 240px;
-        --header-h: 64px;
-        --text: #111827;
-        --text-muted: #6b7280;
-        --border: #e5e7eb;
-        --bg: #f5f7fb;
-        --white: #ffffff;
-      }
-
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-      }
-
-      /* ── Sidebar ─────────────────────────────────── */
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: var(--sidebar-w);
-        height: 100vh;
-        background: var(--white);
-        border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        z-index: 50;
-      }
-      .sidebar-logo {
-        height: var(--header-h);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0 20px;
-        border-bottom: 1px solid var(--border);
-        flex-shrink: 0;
-      }
-      .sidebar-logo-icon {
-        width: 34px;
-        height: 34px;
-        background: var(--blue);
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-      .sidebar-logo-icon svg {
-        width: 18px;
-        height: 18px;
-        fill: #fff;
-      }
-      .sidebar-logo span {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--text);
-      }
-      .sidebar-nav {
-        flex: 1;
-        padding: 12px 10px;
-        overflow-y: auto;
-      }
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        padding: 10px 12px;
-        border-radius: 9px;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-muted);
-        text-decoration: none;
-        cursor: pointer;
-        transition:
-          background 0.15s,
-          color 0.15s;
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-      }
-      .nav-item:hover {
-        background: var(--blue-light);
-        color: var(--blue);
-      }
-      .nav-item.active {
-        background: var(--blue-light);
-        color: var(--blue);
-        font-weight: 600;
-      }
-      .nav-item svg {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-      }
-      .nav-section {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.07em;
-        color: #9ca3af;
-        text-transform: uppercase;
-        padding: 16px 12px 6px;
-      }
-      .sidebar-bottom {
-        padding: 10px;
-        border-top: 1px solid var(--border);
-      }
-
-      /* ── Header ──────────────────────────────────── */
-      .header {
-        position: fixed;
-        top: 0;
-        left: var(--sidebar-w);
-        right: 0;
-        height: var(--header-h);
-        background: var(--white);
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        padding: 0 28px;
-        gap: 14px;
-        z-index: 40;
-      }
-      .header-title {
-        font-size: 17px;
-        font-weight: 700;
-        color: var(--text);
-      }
-      .header-spacer {
-        flex: 1;
-      }
-      .header-user {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .user-avatar {
-        width: 34px;
-        height: 34px;
-        background: var(--blue-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--blue);
-        flex-shrink: 0;
-      }
-      .user-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-        text-decoration: none;
-      }
-      .user-name:hover {
-        color: var(--blue);
-      }
-      .btn-logout {
-        padding: 7px 16px;
-        border: 1.5px solid var(--border);
-        border-radius: 8px;
-        background: none;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition:
-          border-color 0.2s,
-          color 0.2s;
-      }
-      .btn-logout:hover {
-        border-color: #ef4444;
-        color: #ef4444;
-      }
-
-      /* ── Content ──────────────────────────────────── */
-      .content {
-        margin-left: var(--sidebar-w);
-        padding-top: var(--header-h);
-        min-height: 100vh;
-      }
-      .page {
-        padding: 28px 28px 40px;
-        max-width: 1200px;
-      }
-
-      .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 24px;
-      }
-      .page-header h1 {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text);
-      }
-
-      /* ── Section header ───────────────────────────── */
-      .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 14px;
-      }
-      .section-title {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--text);
-      }
-
-      /* ── Buttons ──────────────────────────────────── */
-      .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 8px 16px;
-        background: var(--blue);
-        color: #fff;
-        border: none;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-        font-family: inherit;
-      }
-      .btn-primary:hover {
-        background: var(--blue-dark);
-      }
-      .btn-primary:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      .btn-primary svg {
-        width: 15px;
-        height: 15px;
-        fill: #fff;
-      }
-
-      .btn-secondary {
-        padding: 9px 18px;
-        border: 1.5px solid var(--border);
-        border-radius: 9px;
-        background: none;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition:
-          border-color 0.2s,
-          color 0.2s;
-        font-family: inherit;
-      }
-      .btn-secondary:hover {
-        border-color: #9ca3af;
-        color: var(--text);
-      }
-
-      .btn-danger {
-        padding: 9px 18px;
-        background: #dc2626;
-        color: #fff;
-        border: none;
-        border-radius: 9px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-        font-family: inherit;
-      }
-      .btn-danger:hover {
-        background: #b91c1c;
-      }
-
-      .btn-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 7px;
-        border: 1.5px solid var(--border);
-        background: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition:
-          background 0.15s,
-          border-color 0.15s,
-          color 0.15s;
-        flex-shrink: 0;
-      }
-      .btn-icon svg {
-        width: 14px;
-        height: 14px;
-        fill: currentColor;
-      }
-      .btn-icon:hover {
-        background: var(--blue-light);
-        border-color: var(--blue);
-        color: var(--blue);
-      }
-      .btn-icon:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .btn-icon-del:hover {
-        background: #fef2f2;
-        border-color: #fca5a5;
-        color: #dc2626;
-      }
-
-      /* ── Table ────────────────────────────────────── */
-      .table-wrap {
-        background: var(--white);
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-        overflow: hidden;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-      }
-      thead th {
-        background: #f9fafb;
-        padding: 11px 16px;
-        text-align: left;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        border-bottom: 1px solid var(--border);
-        white-space: nowrap;
-      }
-      tbody tr {
-        border-bottom: 1px solid var(--border);
-        transition: background 0.12s;
-      }
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-      tbody tr:hover {
-        background: #fafbff;
-      }
-      tbody td {
-        padding: 12px 16px;
-        color: var(--text);
-        vertical-align: middle;
-      }
-      .td-name {
-        font-weight: 500;
-      }
-      .td-actions {
-        white-space: nowrap;
-      }
-      .td-actions-inner {
-        display: flex;
-        gap: 6px;
-      }
-
-      /* ── Badges ───────────────────────────────────── */
-      .badge {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 9px;
-        border-radius: 20px;
-      }
-      .badge-income {
-        background: #f0fdf4;
-        color: #16a34a;
-      }
-      .badge-expense {
-        background: #fef2f2;
-        color: #dc2626;
-      }
-      .badge-neutral {
-        background: #f3f4f6;
-        color: #6b7280;
-      }
-
-      /* ── Tree view ────────────────────────────────── */
-      .tree-wrap {
-        background: var(--white);
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-        overflow: hidden;
-        padding: 8px;
-      }
-
-      .tree-node {
-        display: flex;
-        align-items: center;
-        min-height: 40px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: background 0.1s;
-      }
-
-      .tree-node:hover {
-        background: #fafbff;
-      }
-      .tree-node.dragging {
-        opacity: 0.4;
-      }
-      .tree-node.drag-over-top {
-        border-top: 2px solid var(--blue);
-      }
-      .tree-node.drag-over-bottom {
-        border-bottom: 2px solid var(--blue);
-      }
-      .drag-handle {
-        cursor: grab;
-        color: var(--text-muted);
-        padding: 0 4px;
-        border: none;
-        background: none;
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-        opacity: 0;
-        transition: opacity 0.15s;
-      }
-      .drag-handle svg {
-        width: 14px;
-        height: 14px;
-      }
-      .tree-node:hover .drag-handle {
-        opacity: 1;
-      }
-
-      /* ── Income / Expense section headers in tree ─ */
-      .type-section-header {
-        display: flex;
-        align-items: center;
-        padding: 4px 12px;
-        margin: 4px 0 2px;
-      }
-      .type-section-label {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        padding: 2px 10px;
-        border-radius: 20px;
-      }
-      .type-section-header.type-section-income .type-section-label {
-        background: #f0fdf4;
-        color: #16a34a;
-      }
-      .type-section-header.type-section-expense .type-section-label {
-        background: #fef2f2;
-        color: #dc2626;
-      }
-
-      .tree-toggle {
-        width: 24px;
-        height: 24px;
-        padding: 0;
-        border: none;
-        background: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.15s;
-        color: var(--text-muted);
-      }
-
-      .tree-toggle:hover {
-        color: var(--blue);
-      }
-
-      /* ── States ───────────────────────────────────── */
-      .state-empty {
-        padding: 50px 20px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 14px;
-      }
-
-      .state-error {
-        padding: 50px 20px;
-        text-align: center;
-        color: #dc2626;
-        font-size: 14px;
-      }
-
-      /* ── Skeleton ─────────────────────────────────── */
-      .skeleton {
-        background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
-        );
-        background-size: 200% 100%;
-        animation: shimmer 1.4s infinite;
-        border-radius: 4px;
-        display: inline-block;
-      }
-      @keyframes shimmer {
-        to {
-          background-position: -200% 0;
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-      }
-      .sk-row td {
-        padding: 13px 16px;
-      }
-      .sk {
-        display: block;
-        height: 14px;
-        border-radius: 4px;
-      }
 
-      /* ── Modal ────────────────────────────────────── */
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 200;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
-      }
-      .modal-overlay.open {
-        opacity: 1;
-        pointer-events: all;
-      }
-      .modal {
-        background: var(--white);
-        border-radius: 16px;
-        padding: 28px;
-        width: 100%;
-        max-width: 420px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-        transform: translateY(12px);
-        transition: transform 0.2s;
-      }
-      .modal-overlay.open .modal {
-        transform: translateY(0);
-      }
-      .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-      .modal-title {
-        font-size: 17px;
-        font-weight: 700;
-        color: var(--text);
-      }
-      .modal-close {
-        width: 30px;
-        height: 30px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        border-radius: 7px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        transition: background 0.15s;
-      }
-      .modal-close:hover {
-        background: #f3f4f6;
-      }
-      .modal-close svg {
-        width: 16px;
-        height: 16px;
-        fill: currentColor;
-      }
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 14px;
-      }
-      .form-group label {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text);
-      }
-      .form-group input,
-      .form-group select {
-        padding: 10px 13px;
-        border: 1.5px solid var(--border);
-        border-radius: 9px;
-        font-size: 14px;
-        color: var(--text);
-        background: var(--white);
-        outline: none;
-        transition: border-color 0.2s;
-        font-family: inherit;
-      }
-      .form-group input:focus,
-      .form-group select:focus {
-        border-color: var(--blue);
-      }
-      .form-group input.invalid,
-      .form-group select.invalid {
-        border-color: #dc2626;
-      }
-      .form-error {
-        font-size: 12px;
-        color: #dc2626;
-        min-height: 16px;
-      }
-      .modal-footer {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        margin-top: 20px;
-      }
+        :root {
+            --primary: #1a6dff;
+            --primary-dark: #1558d6;
+            --primary-light: #eff4ff;
+            --bg-body: #f5f7fb;
+            --bg-card-light: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            
+            --sidebar-w: 80px;
+            --sidebar-w-expanded: 260px;
+            --header-h: 64px;
+        }
 
-      /* ── Confirm ──────────────────────────────────── */
-      .confirm-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 300;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
-      }
-      .confirm-overlay.open {
-        opacity: 1;
-        pointer-events: all;
-      }
-      .confirm-box {
-        background: var(--white);
-        border-radius: 16px;
-        padding: 28px;
-        width: 100%;
-        max-width: 360px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-        transform: translateY(12px);
-        transition: transform 0.2s;
-      }
-      .confirm-overlay.open .confirm-box {
-        transform: translateY(0);
-      }
-      .confirm-box h3 {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 10px;
-      }
-      .confirm-box p {
-        font-size: 14px;
-        color: var(--text-muted);
-        margin-bottom: 22px;
-        line-height: 1.5;
-      }
-      .confirm-footer {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-      }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 12px;
+            z-index: 100;
+            transition: width 0.3s ease, padding 0.3s ease;
+        }
+
+        .sidebar.expanded {
+            width: var(--sidebar-w-expanded);
+            padding: 16px 20px;
+            align-items: flex-start;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .sidebar-logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .sidebar-logo-text {
+            display: none;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        .sidebar.expanded .sidebar-logo-text { display: block; }
+
+        .sidebar-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .nav-item {
+            width: 100%; height: 48px;
+            border: none; background: transparent;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            position: relative;
+            gap: 12px;
+            padding: 0 12px;
+        }
+
+        .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: #fff; }
+        .nav-item svg { width: 22px; height: 22px; }
+
+        .nav-item .nav-tooltip {
+            position: absolute;
+            left: calc(100% + 12px);
+            background: var(--text-primary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-item:hover .nav-tooltip { opacity: 1; }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-h);
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .header-nav-item.active { color: var(--primary); background: var(--primary-light); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-icon-btn {
+            width: 40px; height: 40px;
+            border: none; background: transparent;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .header-icon-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .header-icon-btn svg { width: 20px; height: 20px; }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: var(--bg-body);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover { background: var(--primary-light); }
+
+        .user-avatar {
+            width: 32px; height: 32px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 600; color: #fff;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Page */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-width: 0;
+        }
+
+        body.sidebar-expanded .main-content {
+            margin-left: var(--sidebar-w-expanded);
+            transition: margin-left 0.3s ease;
+        }
+
+        .page {
+            padding: 32px;
+            max-width: 1400px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn svg { width: 18px; height: 18px; }
+
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .help-btn {
+            width: 24px; height: 24px;
+            border: none; background: var(--primary-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .section-title .help-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            background: #fafafa;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--primary-light); }
+
+        tbody td {
+            padding: 16px 20px;
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .td-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .td-name-icon {
+            width: 36px; height: 36px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .td-name-icon svg {
+            width: 18px; height: 18px;
+            color: var(--primary);
+        }
+
+        .td-type span {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .type-income { background: #f0fdf4; color: var(--success); }
+        .type-expense { background: #fef2f2; color: var(--danger); }
+        .type-neutral { background: #f3f4f6; color: var(--text-secondary); }
+
+        .td-level {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .td-actions {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .td-actions-inner {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            width: 34px; height: 34px;
+            border: none;
+            background: var(--bg-body);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .action-btn.delete:hover {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .action-btn svg { width: 16px; height: 16px; }
+
+        /* Tree View */
+        .tree-container {
+            background: var(--bg-card-light);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 16px;
+        }
+
+        .tree-node {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            transition: background 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .tree-node:hover {
+            background: var(--primary-light);
+        }
+
+        .tree-node.dragging {
+            opacity: 0.4;
+        }
+
+        .tree-node-children {
+            margin-left: 32px;
+        }
+
+        .tree-toggle {
+            width: 28px; height: 28px;
+            border: none; background: transparent;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+        .tree-toggle:hover {
+            background: var(--bg-body);
+            color: var(--primary);
+        }
+
+        .tree-toggle svg {
+            width: 16px; height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .tree-toggle.expanded svg {
+            transform: rotate(90deg);
+        }
+
+        .tree-icon {
+            width: 36px; height: 36px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .tree-icon svg {
+            width: 18px; height: 18px;
+            color: var(--primary);
+        }
+
+        .tree-icon.income { background: #f0fdf4; }
+        .tree-icon.income svg { color: var(--success); }
+        .tree-icon.expense { background: #fef2f2; }
+        .tree-icon.expense svg { color: var(--danger); }
+
+        .tree-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tree-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tree-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .tree-actions {
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tree-node:hover .tree-actions {
+            opacity: 1;
+        }
+
+        .tree-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: 12px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px; height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer {
+            to { background-position: -200% 0; }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: 36px; height: 36px;
+            border: none; background: transparent;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover { background: var(--bg-body); color: var(--text-primary); }
+        .modal-close svg { width: 18px; height: 18px; }
+
+        .modal-body { padding: 24px; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: #fafafa;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: var(--danger);
+            min-height: 16px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Confirm Modal */
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .confirm-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .confirm-box {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .confirm-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .confirm-box p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .confirm-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* Info Panel */
+        .info-panel {
+            background: var(--primary-light);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .info-panel-icon {
+            width: 44px; height: 44px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-panel-icon svg {
+            width: 22px; height: 22px;
+            color: var(--primary);
+        }
+
+        .info-panel-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .info-panel-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .info-panel-content ul {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .info-panel-content li {
+            margin-bottom: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                bottom: 0; top: auto;
+                flex-direction: row;
+                padding: 12px;
+                border-right: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .main-content { margin-left: 0; margin-bottom: 70px; }
+
+            .header { padding: 0 16px; }
+            .header-nav { display: none; }
+            .page { padding: 16px; }
+            .tree-node-children { margin-left: 20px; }
+        }
+    
+        .sidebar-toggle {
+            width: 100%;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            padding: 0;
+        }
+        .sidebar-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .sidebar-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s;
+        }
+        .sidebar:not(.expanded) .sidebar-toggle svg {
+            transform: rotate(180deg);
+        }
+        .nav-item-text {
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .sidebar.expanded .nav-item-text {
+            display: block;
+        }
+        .sidebar:not(.expanded) .nav-item {
+            justify-content: center;
+        }
+        .sidebar.expanded .nav-item {
+            justify-content: flex-start;
+        }
+        .sidebar.expanded .nav-item .nav-tooltip {
+            display: none;
+        }
+        .sidebar:not(.expanded) .nav-item:hover .nav-tooltip {
+            opacity: 1;
+        }
+
     </style>
-  </head>
-  <body>
-    <div
-      id="drag-level-hint"
-      style="
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        background: #1a6dff;
-        color: #fff;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        pointer-events: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      "
-    ></div>
-    <!-- ── Sidebar ──────────────────────────────────────── -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-            />
-          </svg>
-        </div>
-        <span>Личные финансы</span>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-section">Меню</div>
-        <a class="nav-item" href="dashboard.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-          </svg>
-          Главная
-        </a>
-        <a class="nav-item" href="operations.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2H6z"
-            />
-          </svg>
-          Операции
-        </a>
-        <a class="nav-item" href="funds.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-            />
-          </svg>
-          Фонды
-        </a>
-        <a class="nav-item" href="accounts.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"
-            />
-          </svg>
-          Счета
-        </a>
-        <div class="nav-section">Прочее</div>
-        <a class="nav-item active" href="categories.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"
-            />
-          </svg>
-          Справочники
-        </a>
-        <a class="nav-item" href="settings.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
-            />
-          </svg>
-          Настройки
-        </a>
-        <a class="nav-item" href="profile.html">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-            />
-          </svg>
-          Профиль
-        </a>
-      </nav>
-      <div class="sidebar-bottom">
-        <button class="nav-item" id="logout-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-            />
-          </svg>
-          Выйти
-        </button>
-      </div>
-    </aside>
+</head>
+<body>
 
-    <!-- ── Header ────────────────────────────────────────── -->
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 4v16M8 4h5a4 4 0 0 1 0 8H8M6 12h7M6 16h7"/>
+            </svg>
+        </div>
+        <span class="sidebar-logo-text">МОЯ ПРИБЫЛЬ</span>
+    </div>
+
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Развернуть/свернуть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+    </button>
+
+    <nav class="sidebar-nav">
+        <button class="nav-item" onclick="location.href='dashboard.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span class="nav-item-text">Главная</span>
+            <span class="nav-tooltip">Главная</span>
+        </button>
+        <button class="nav-item" onclick="location.href='operations.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
+            </svg>
+            <span class="nav-item-text">Операции</span>
+            <span class="nav-tooltip">Операции</span>
+        </button>
+        <button class="nav-item" onclick="location.href='funds.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+            <span class="nav-item-text">Фонды</span>
+            <span class="nav-tooltip">Фонды</span>
+        </button>
+        <button class="nav-item" onclick="location.href='accounts.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+            </svg>
+            <span class="nav-item-text">Счета</span>
+            <span class="nav-tooltip">Счета</span>
+        </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <button class="nav-item active" onclick="location.href='categories.html'">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/>
+            </svg>
+            <span class="nav-item-text">Справочники</span>
+            <span class="nav-tooltip">Справочники</span>
+        </button>
+        <button class="nav-item" id="logout-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            <span class="nav-item-text">Выйти</span>
+            <span class="nav-tooltip">Выйти</span>
+        </button>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
     <header class="header">
-      <span class="header-title">Справочники</span>
-      <div class="header-spacer"></div>
-      <div class="header-user">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <a class="user-name" href="profile.html" id="user-name">Загрузка...</a>
-      </div>
-      <button class="btn-logout" id="header-logout-btn">Выйти</button>
+        <div class="header-left">
+            <h1 class="header-title">Справочники</h1>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Главная</a>
+                <a href="operations.html" class="header-nav-item">Операции</a>
+                <a href="funds.html" class="header-nav-item">Фонды</a>
+                <a href="accounts.html" class="header-nav-item">Счета</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <button class="header-icon-btn" aria-label="Поиск">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </button>
+            <button class="header-icon-btn" aria-label="Уведомления">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <span class="user-name" id="user-name">Загрузка...</span>
+            </div>
+        </div>
     </header>
 
-    <!-- ── Content ───────────────────────────────────────── -->
-    <main class="content">
-      <div class="page">
+    <!-- Page Content -->
+    <div class="page">
         <div class="page-header">
-          <h1>Справочники</h1>
+            <h1>Справочники</h1>
         </div>
 
-        <!-- Section 1: Activities Reference -->
-        <div id="activities-section">
-          <div class="section-header">
-            <span class="section-title">Виды деятельности</span>
-            <button class="btn-primary" id="add-activity-btn">
-              <svg viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-              </svg>
-              Добавить
-            </button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="activities-tbody">
-                <tr class="sk-row">
-                  <td>
-                    <span class="skeleton sk" style="width: 160px"></span>
-                  </td>
-                  <td></td>
-                </tr>
-                <tr class="sk-row">
-                  <td>
-                    <span class="skeleton sk" style="width: 130px"></span>
-                  </td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Section 2: Main Hierarchy Tree -->
-        <div id="hierarchy-section" style="margin-top: 32px">
-          <div class="section-header">
-            <span class="section-title">Структура категорий</span>
-            <button class="btn-primary" id="add-group-root-btn">
-              <svg viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-              </svg>
-              Добавить группу
-            </button>
-          </div>
-          <div class="tree-wrap" id="main-tree">
-            <div class="tree-node">
-              <span class="skeleton sk" style="width: 200px"></span>
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <div class="info-panel-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 16v-4"/>
+                    <path d="M12 8h.01"/>
+                </svg>
             </div>
-            <div style="padding-left: 24px" class="tree-node">
-              <span class="skeleton sk" style="width: 160px"></span>
+            <div class="info-panel-content">
+                <h3>Иерархия категорий</h3>
+                <p>Категории организованы в 4 уровня для удобной группировки операций:</p>
+                <ul>
+                    <li><strong>Уровень 4:</strong> Вид деятельности (корневая категория)</li>
+                    <li><strong>Уровень 3:</strong> Тип операции (Доходы / Расходы)</li>
+                    <li><strong>Уровень 2:</strong> Группа категорий</li>
+                    <li><strong>Уровень 1:</strong> Конкретная статья</li>
+                </ul>
             </div>
-          </div>
         </div>
-      </div>
-    </main>
 
-    <!-- ── Modal: Category (Universal) ────────────────────────── -->
-    <div class="modal-overlay" id="category-modal">
-      <div class="modal" role="dialog" aria-modal="true">
+        <!-- Section 1: Activities (Level 4) -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Виды деятельности
+                    <button class="help-btn" title="Корневые категории">?</button>
+                </h2>
+                <button class="btn btn-primary" id="add-activity-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Добавить вид
+                </button>
+            </div>
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Уровень</th>
+                                <th>Тип</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="activities-tbody">
+                            <!-- Skeleton -->
+                            <tr>
+                                <td><span class="skeleton" style="width: 200px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 60px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 80px; height: 24px;"></span></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><span class="skeleton" style="width: 180px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 60px; height: 14px;"></span></td>
+                                <td><span class="skeleton" style="width: 80px; height: 24px;"></span></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Category Tree -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Структура категорий</h2>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" id="expand-all-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                        Развернуть все
+                    </button>
+                    <button class="btn btn-primary" id="add-category-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Добавить категорию
+                    </button>
+                </div>
+            </div>
+            <div class="tree-container" id="category-tree">
+                <!-- Skeleton -->
+                <div class="tree-node">
+                    <button class="tree-toggle">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5l8 7-8 7V5z"/>
+                        </svg>
+                    </button>
+                    <div class="tree-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="tree-content">
+                        <div class="tree-name"><span class="skeleton" style="width: 180px; height: 14px;"></span></div>
+                        <div class="tree-meta"><span class="skeleton" style="width: 100px; height: 12px;"></span></div>
+                    </div>
+                </div>
+                <div class="tree-node-children">
+                    <div class="tree-node">
+                        <div class="tree-icon income">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <div class="tree-content">
+                            <div class="tree-name"><span class="skeleton" style="width: 140px; height: 14px;"></span></div>
+                            <div class="tree-meta"><span class="skeleton" style="width: 80px; height: 12px;"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal-overlay" id="category-modal">
+    <div class="modal">
         <div class="modal-header">
-          <span class="modal-title" id="category-modal-title">Добавить</span>
-          <button class="modal-close js-close-category" aria-label="Закрыть">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-              />
-            </svg>
-          </button>
+            <h3 class="modal-title" id="modal-title">Добавить категорию</h3>
+            <button class="modal-close" id="modal-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
-        <form id="category-form" novalidate>
-          <div class="form-group">
-            <label for="category-name">Название</label>
-            <input
-              type="text"
-              id="category-name"
-              placeholder="Введите название"
-              maxlength="100"
-              autocomplete="off"
-            />
-            <span class="form-error" id="category-err-name"></span>
-          </div>
-
-          <div
-            class="form-group"
-            id="category-type-group"
-            style="display: none"
-          >
-            <label>Тип</label>
-            <div style="display: flex; gap: 10px">
-              <button
-                type="button"
-                class="btn-type-toggle"
-                data-type="income"
-                style="
-                  flex: 1;
-                  padding: 9px;
-                  border: 1.5px solid var(--border);
-                  background: none;
-                  border-radius: 9px;
-                  font-weight: 600;
-                  cursor: pointer;
-                  font-size: 14px;
-                  transition: all 0.2s;
-                  color: var(--text-muted);
-                "
-              >
-                💚 Доход
-              </button>
-              <button
-                type="button"
-                class="btn-type-toggle"
-                data-type="expense"
-                style="
-                  flex: 1;
-                  padding: 9px;
-                  border: 1.5px solid var(--border);
-                  background: none;
-                  border-radius: 9px;
-                  font-weight: 600;
-                  cursor: pointer;
-                  font-size: 14px;
-                  transition: all 0.2s;
-                  color: var(--text-muted);
-                "
-              >
-                ❌ Расход
-              </button>
+        <form id="category-form">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="category-name">Название</label>
+                    <input type="text" id="category-name" placeholder="Например: Продукты" maxlength="100" required>
+                    <span class="form-error" id="err-name"></span>
+                </div>
+                <div class="form-group">
+                    <label for="category-type">Тип</label>
+                    <select id="category-type" required>
+                        <option value="">Выбрать тип</option>
+                        <option value="income">Доход</option>
+                        <option value="expense">Расход</option>
+                    </select>
+                    <span class="form-error" id="err-type"></span>
+                </div>
+                <div class="form-group">
+                    <label for="category-parent">Родительская категория</label>
+                    <select id="category-parent">
+                        <option value="">Без родителя (корневая)</option>
+                    </select>
+                    <span class="form-hint">Оставьте пустым для создания категории верхнего уровня</span>
+                    <span class="form-error" id="err-parent"></span>
+                </div>
+                <div class="form-group">
+                    <label for="category-level">Уровень</label>
+                    <select id="category-level" disabled>
+                        <option value="4">Уровень 4 (Вид деятельности)</option>
+                        <option value="3">Уровень 3 (Тип операции)</option>
+                        <option value="2">Уровень 2 (Группа)</option>
+                        <option value="1">Уровень 1 (Статья)</option>
+                    </select>
+                    <span class="form-hint">Уровень определяется автоматически на основе родителя</span>
+                </div>
+                <span class="form-error" id="err-global"></span>
             </div>
-            <input type="hidden" id="category-type" />
-          </div>
-
-          <div
-            class="form-group"
-            id="category-parent-group"
-            style="display: none"
-          >
-            <label for="category-parent">Родительская категория</label>
-            <select id="category-parent">
-              <option value="">— Выберите —</option>
-            </select>
-            <span class="form-error" id="category-err-parent"></span>
-          </div>
-
-          <span class="form-error" id="category-err-global"></span>
-          <div class="modal-footer">
-            <button type="button" class="btn-secondary js-close-category">
-              Отмена
-            </button>
-            <button type="submit" class="btn-primary" id="category-submit">
-              Добавить
-            </button>
-          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-cancel">Отмена</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
         </form>
-      </div>
     </div>
+</div>
 
-    <!-- ── Confirm dialog ─────────────────────────────────── -->
-    <div class="confirm-overlay" id="confirm-overlay">
-      <div class="confirm-box" role="dialog" aria-modal="true">
-        <h3 id="confirm-title">Удалить?</h3>
-        <p id="confirm-text">Это действие нельзя отменить.</p>
+<!-- Confirm Delete Modal -->
+<div class="confirm-overlay" id="confirm-modal">
+    <div class="confirm-box">
+        <h3>Удалить категорию?</h3>
+        <p>Это действие нельзя отменить. Все дочерние категории также будут удалены.</p>
         <div class="confirm-footer">
-          <button class="btn-secondary" id="confirm-cancel">Отмена</button>
-          <button class="btn-danger" id="confirm-ok">Удалить</button>
+            <button class="btn btn-secondary" id="confirm-cancel">Отмена</button>
+            <button class="btn btn-danger" id="confirm-ok">Удалить</button>
         </div>
-      </div>
     </div>
+</div>
 
-    <script>
-      const API = "http://127.0.0.1:8000";
+<script>
+const API = 'http://127.0.0.1:8000';
 
-      // ── Auth guard ──────────────────────────────────────
-      const token =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
-      if (!token) {
-        window.location.href = "index.html";
-      }
+// Auth guard
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) { window.location.href = 'index.html'; }
 
-      function parseJwt(t) {
-        try {
-          return JSON.parse(
-            atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
-          );
-        } catch {
-          return {};
-        }
-      }
-      const jwtPayload = parseJwt(token);
-      const displayName = jwtPayload.name || jwtPayload.email || "Пользователь";
-      document.getElementById("user-name").textContent = displayName;
-      document.getElementById("user-avatar").textContent = displayName
-        .charAt(0)
-        .toUpperCase();
+// Decode JWT
+function parseJwt(t) {
+    try {
+        const payload = t.split('.')[1];
+        const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+        return JSON.parse(json);
+    } catch { return {}; }
+}
 
-      // ── Logout ──────────────────────────────────────────
-      function logout() {
-        localStorage.removeItem("token");
-        sessionStorage.removeItem("token");
-        window.location.href = "index.html";
-      }
-      document.getElementById("logout-btn").addEventListener("click", logout);
-      document
-        .getElementById("header-logout-btn")
-        .addEventListener("click", logout);
+const jwt = parseJwt(token);
+const displayName = jwt.name || jwt.email || 'Пользователь';
+document.getElementById('user-name').textContent = displayName;
+document.getElementById('user-avatar').textContent = displayName.charAt(0).toUpperCase();
 
-      // ── API helper ──────────────────────────────────────
-      async function apiFetch(path, options = {}) {
-        const res = await fetch(API + path, {
-          ...options,
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
+// Logout
+function logout() {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    window.location.href = 'index.html';
+}
+document.getElementById('logout-btn').addEventListener('click', logout);
+
+// API fetch
+async function apiFetch(path, options = {}) {
+    const res = await fetch(API + path, {
+        ...options,
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
             ...(options.headers || {}),
-          },
-        });
-        if (res.status === 401) logout();
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.detail || "HTTP " + res.status);
-        }
-        if (res.status === 204) return null;
-        return res.json();
-      }
+        },
+    });
+    if (res.status === 401) { logout(); }
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || 'HTTP ' + res.status);
+    }
+    if (res.status === 204) return null;
+    return res.json();
+}
 
-      function escHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
+// Formatters
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
 
-      function typeBadge(type) {
-        if (type === "income")
-          return `<span class="badge badge-income">Доходы</span>`;
-        if (type === "expense")
-          return `<span class="badge badge-expense">Расходы</span>`;
-        return `<span class="badge badge-neutral">—</span>`;
-      }
+const TYPE_LABELS = { income: 'Доход', expense: 'Расход', null: '—' };
+const TYPE_CSS = { income: 'type-income', expense: 'type-expense', null: 'type-neutral' };
+const LEVEL_LABELS = { 1: 'Статья', 2: 'Группа', 3: 'Тип', 4: 'Вид' };
 
-      // ── State ───────────────────────────────────────────
-      let allCategories = [];
-      let expandedNodes = new Set();
-      let editingNodeId = null;
-      let editingNodeParent = null;
-      let draggedId = null;
-      let dragStartX = 0;
-
-      const LEVEL_NAMES = { 4: "Вид деятельности", 3: "Группа", 2: "Статья" };
-
-      // ── Load all ────────────────────────────────────────
-      async function loadAll() {
-        allCategories = await apiFetch("/categories");
-      }
-
-      // ── Save sort order ─────────────────────────────────
-      async function saveSortOrder(siblings) {
-        await Promise.all(
-          siblings.map((node, i) =>
-            apiFetch(`/categories/${node.id}`, {
-              method: "PUT",
-              body: JSON.stringify({
-                name: node.name,
-                type: node.type || null,
-                sort_order: i * 10,
-              }),
-            }),
-          ),
-        );
-        siblings.forEach((node, i) => {
-          const cat = allCategories.find((c) => c.id === node.id);
-          if (cat) cat.sort_order = i * 10;
-        });
-      }
-
-      // ── Indent (вправо) / Outdent (влево) ───────────────
-      async function indentNode(node) {
-        if (node.level <= 2) {
-          alert("Нельзя углубить: уже самый глубокий уровень");
-          return;
-        }
-        const hasChildren = allCategories.some((c) => c.parent_id === node.id);
-        if (hasChildren) {
-          alert("Нельзя углубить категорию с подкатегориями");
-          return;
-        }
-        const siblings = allCategories
-          .filter(
-            (c) =>
-              (c.parent_id ?? null) === (node.parent_id ?? null) &&
-              c.level === node.level,
-          )
-          .sort(
-            (a, b) =>
-              a.sort_order - b.sort_order || a.name.localeCompare(b.name, "ru"),
-          );
-        const myIdx = siblings.findIndex((c) => c.id === node.id);
-        if (myIdx <= 0) {
-          alert("Нет предыдущего элемента: некуда вложить");
-          return;
-        }
-        const newParent = siblings[myIdx - 1];
-        const newChildren = allCategories.filter(
-          (c) => c.parent_id === newParent.id,
-        );
-        const maxSort = newChildren.reduce(
-          (m, c) => Math.max(m, c.sort_order ?? 0),
-          -10,
-        );
-        try {
-          await apiFetch(`/categories/${node.id}/move`, {
-            method: "PATCH",
-            body: JSON.stringify({
-              level: node.level - 1,
-              parent_id: newParent.id,
-              sort_order: maxSort + 10,
-            }),
-          });
-          expandedNodes.add(newParent.id);
-          await reload();
-        } catch (err) {
-          alert("Ошибка: " + err.message);
-        }
-      }
-
-      async function outdentNode(node) {
-        if (node.level >= 4) {
-          alert("Нельзя: уже верхний уровень");
-          return;
-        }
-        const parent = allCategories.find((c) => c.id === node.parent_id);
-        const newParentId = parent ? (parent.parent_id ?? null) : null;
-        const newLevel = node.level + 1;
-        const newSiblings = allCategories.filter(
-          (c) =>
-            (c.parent_id ?? null) === (newParentId ?? null) &&
-            c.level === newLevel,
-        );
-        const maxSort = newSiblings.reduce(
-          (m, c) => Math.max(m, c.sort_order ?? 0),
-          -10,
-        );
-        try {
-          await apiFetch(`/categories/${node.id}/move`, {
-            method: "PATCH",
-            body: JSON.stringify({
-              level: newLevel,
-              parent_id: newParentId,
-              sort_order: maxSort + 10,
-            }),
-          });
-          await reload();
-        } catch (err) {
-          alert("Ошибка: " + err.message);
-        }
-      }
-
-      // ── Tree building ────────────────────────────────────
-      function buildTree(categories) {
-        const byId = new Map(
-          categories.map((c) => [c.id, { ...c, children: [] }]),
-        );
-        const roots = [];
-        byId.forEach((node) => {
-          if (node.parent_id && byId.has(node.parent_id)) {
-            byId.get(node.parent_id).children.push(node);
-          } else if (!node.parent_id && node.level === 4) {
-            roots.push(node);
-          }
-        });
-        function sortNodes(arr) {
-          arr.sort(
-            (a, b) =>
-              a.sort_order - b.sort_order || a.name.localeCompare(b.name, "ru"),
-          );
-          arr.forEach((n) => sortNodes(n.children));
-        }
-        sortNodes(roots);
-        return roots;
-      }
-
-      // ── Render main tree ─────────────────────────────────
-      function renderMainTree() {
-        const container = document.getElementById("main-tree");
-        const tree = buildTree(allCategories);
-        container.innerHTML = "";
-
-        if (!tree.length) {
-          container.innerHTML = `<div class="state-empty">Нет категорий. Добавьте группу или вид деятельности.</div>`;
-          return;
-        }
-
-        function renderNode(node, level = 0) {
-          const nodeEl = document.createElement("div");
-          nodeEl.className = "tree-node";
-          nodeEl.style.paddingLeft = level * 24 + "px";
-          nodeEl.dataset.id = node.id;
-          nodeEl.dataset.level = node.level;
-          nodeEl.draggable = true;
-          const isExpanded = expandedNodes.has(node.id);
-          const hasChildren =
-            node.children && node.children.length > 0 && level < 3;
-
-          let html = `<div style="display: flex; align-items: center; gap: 8px; flex: 1;">`;
-          html += `<button class="drag-handle" draggable="false" title="Перетащить"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>`;
-
-          // Collapse/expand button
-          if (hasChildren) {
-            html += `<button class="tree-toggle" data-id="${node.id}" style="width: 24px; height: 24px; padding: 0; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: transform 0.15s;">
-              <svg style="width: 16px; height: 16px; transform: rotate(${isExpanded ? 90 : 0}deg); transition: transform 0.15s;" viewBox="0 0 24 24"><path fill="currentColor" d="M8.59 16.58L10 18l6-6-6-6-1.41 1.41L12.17 12z"/></svg>
-            </button>`;
-          } else {
-            html += `<div style="width: 24px;"></div>`;
-          }
-
-          // Level icon & name
-          const levelLabel =
-            node.level === 4
-              ? "📊"
-              : node.level === 3
-                ? "📁"
-                : node.level === 2
-                  ? "📄"
-                  : "•";
-          html += `<span style="font-weight: ${node.level === 4 ? "600" : "500"}; flex-wrap: wrap;">${levelLabel} ${escHtml(node.name)}</span>`;
-
-          html += `<div style="flex: 1;"></div>`;
-
-          // Actions menu
-          html += `<div style="display: flex; gap: 6px;">
-            <button class="btn-icon tree-edit" data-id="${node.id}" title="Редактировать">
-              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            </button>
-            <button class="btn-icon tree-add-child" data-id="${node.id}" data-level="${node.level}" ${node.level === 2 ? "disabled" : ""} title="Добавить подкатегорию">
-              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            </button>
-            ${node.level === 2 ? `<button class="btn-icon tree-copy" data-id="${node.id}" title="Копировать"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></button>` : ""}
-            <button class="btn-icon tree-delete" data-id="${node.id}" title="Удалить">
-              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-            </button>
-          </div>`;
-          html += `</div>`;
-          nodeEl.innerHTML = html;
-
-          // Attach buttons
-          nodeEl
-            .querySelector(".tree-toggle")
-            ?.addEventListener("click", (e) => {
-              e.stopPropagation();
-              if (expandedNodes.has(node.id)) {
-                expandedNodes.delete(node.id);
-              } else {
-                expandedNodes.add(node.id);
-              }
-              renderMainTree();
-            });
-
-          nodeEl.querySelector(".tree-edit")?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openEditNode(node);
-          });
-
-          nodeEl
-            .querySelector(".tree-add-child")
-            ?.addEventListener("click", (e) => {
-              e.stopPropagation();
-              openAddChild(node);
-            });
-
-          nodeEl.querySelector(".tree-copy")?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openCopyArticle(node);
-          });
-
-          nodeEl
-            .querySelector(".tree-delete")
-            ?.addEventListener("click", (e) => {
-              e.stopPropagation();
-              openConfirm(node.id, node.name, "category");
-            });
-
-          // ── Drag events ──────────────────────────────────
-          const hint = document.getElementById("drag-level-hint");
-
-          nodeEl.addEventListener("dragstart", (e) => {
-            draggedId = node.id;
-            dragStartX = e.clientX;
-            e.dataTransfer.effectAllowed = "move";
-            requestAnimationFrame(() => nodeEl.classList.add("dragging"));
-          });
-
-          nodeEl.addEventListener("dragend", () => {
-            draggedId = null;
-            hint.style.display = "none";
-            document
-              .querySelectorAll(".tree-node")
-              .forEach((el) =>
-                el.classList.remove(
-                  "dragging",
-                  "drag-over-top",
-                  "drag-over-bottom",
-                ),
-              );
-          });
-
-          nodeEl.addEventListener("dragover", (e) => {
-            if (!draggedId) return;
-            const dragged = allCategories.find((c) => c.id === draggedId);
-            if (!dragged) return;
-
-            const deltaX = e.clientX - dragStartX;
-
-            if (Math.abs(deltaX) > 30) {
-              // Горизонтальное перетаскивание → смена уровня
-              const newLevel =
-                deltaX > 0 ? dragged.level - 1 : dragged.level + 1;
-              const name = LEVEL_NAMES[newLevel];
-              if (name) {
-                hint.textContent = (deltaX > 0 ? "→ " : "← ") + name;
-                hint.style.display = "block";
-                hint.style.left = e.clientX + 14 + "px";
-                hint.style.top = e.clientY - 12 + "px";
-              } else {
-                hint.style.display = "none";
-              }
-              document
-                .querySelectorAll(".tree-node")
-                .forEach((el) =>
-                  el.classList.remove("drag-over-top", "drag-over-bottom"),
-                );
-              e.preventDefault();
-              return;
-            }
-
-            hint.style.display = "none";
-            // Вертикальное перетаскивание — разрешаем любой узел того же уровня
-            if (draggedId === node.id) return;
-            if (dragged.level !== node.level) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-            const rect = nodeEl.getBoundingClientRect();
-            document
-              .querySelectorAll(".tree-node")
-              .forEach((el) =>
-                el.classList.remove("drag-over-top", "drag-over-bottom"),
-              );
-            nodeEl.classList.add(
-              e.clientY < rect.top + rect.height / 2
-                ? "drag-over-top"
-                : "drag-over-bottom",
-            );
-          });
-
-          nodeEl.addEventListener("dragleave", () => {
-            nodeEl.classList.remove("drag-over-top", "drag-over-bottom");
-          });
-
-          nodeEl.addEventListener("drop", async (e) => {
-            e.preventDefault();
-            nodeEl.classList.remove("drag-over-top", "drag-over-bottom");
-            hint.style.display = "none";
-            if (!draggedId) return;
-            const dragged = allCategories.find((c) => c.id === draggedId);
-            if (!dragged) return;
-
-            const deltaX = e.clientX - dragStartX;
-
-            // Горизонтальное перетаскивание → indent / outdent
-            if (Math.abs(deltaX) > 30) {
-              if (deltaX > 0) await indentNode(dragged);
-              else await outdentNode(dragged);
-              return;
-            }
-
-            // Вертикальное — требуется одинаковый уровень
-            if (draggedId === node.id) return;
-            if (dragged.level !== node.level) return;
-
-            const fromParentId = dragged.parent_id ?? null;
-            const toParentId = node.parent_id ?? null;
-            const rect = nodeEl.getBoundingClientRect();
-            const insertAfter = e.clientY >= rect.top + rect.height / 2;
-
-            if (fromParentId === toParentId) {
-              // Тот же родитель — только переупорядочиваем
-              const siblings = allCategories
-                .filter(
-                  (c) =>
-                    (c.parent_id ?? null) === toParentId &&
-                    c.level === node.level,
-                )
-                .sort(
-                  (a, b) =>
-                    a.sort_order - b.sort_order ||
-                    a.name.localeCompare(b.name, "ru"),
-                );
-              const fromIdx = siblings.findIndex((c) => c.id === draggedId);
-              siblings.splice(fromIdx, 1);
-              let toIdx = siblings.findIndex((c) => c.id === node.id);
-              if (insertAfter) toIdx += 1;
-              siblings.splice(toIdx, 0, dragged);
-              try {
-                await saveSortOrder(siblings);
-              } catch (err) {
-                alert("Ошибка сохранения порядка: " + err.message);
-              }
-              renderActivitiesReference();
-              renderMainTree();
-            } else {
-              // Другой родитель — меняем parent_id через /move
-              const newSiblings = allCategories
-                .filter(
-                  (c) =>
-                    (c.parent_id ?? null) === toParentId &&
-                    c.level === node.level &&
-                    c.id !== dragged.id,
-                )
-                .sort(
-                  (a, b) =>
-                    a.sort_order - b.sort_order ||
-                    a.name.localeCompare(b.name, "ru"),
-                );
-              let toIdx = newSiblings.findIndex((c) => c.id === node.id);
-              if (insertAfter) toIdx += 1;
-              newSiblings.splice(toIdx, 0, dragged);
-              try {
-                await apiFetch(`/categories/${dragged.id}/move`, {
-                  method: "PATCH",
-                  body: JSON.stringify({
-                    level: dragged.level,
-                    parent_id: toParentId,
-                    sort_order: toIdx * 10,
-                  }),
-                });
-                dragged.parent_id = toParentId;
-                dragged.sort_order = toIdx * 10;
-                await saveSortOrder(newSiblings);
-              } catch (err) {
-                alert("Ошибка перемещения: " + err.message);
-              }
-              await reload();
-            }
-          });
-
-          container.appendChild(nodeEl);
-
-          // Render children if expanded
-          if (hasChildren && isExpanded) {
-            if (node.level === 4) {
-              // Group level-3 children by type: Доходы first, then Расходы
-              const incomeKids = node.children.filter(
-                (c) => c.type === "income",
-              );
-              const expenseKids = node.children.filter(
-                (c) => c.type === "expense",
-              );
-              const otherKids = node.children.filter((c) => !c.type);
-
-              const renderTypeHeader = (label, cls) => {
-                const hdr = document.createElement("div");
-                hdr.className = `type-section-header type-section-${cls}`;
-                hdr.style.paddingLeft = (level + 1) * 24 + 12 + "px";
-                hdr.innerHTML = `<span class="type-section-label">${label}</span>`;
-                container.appendChild(hdr);
-              };
-
-              if (incomeKids.length) {
-                renderTypeHeader("Доходы", "income");
-                incomeKids.forEach((c) => renderNode(c, level + 1));
-              }
-              if (expenseKids.length) {
-                renderTypeHeader("Расходы", "expense");
-                expenseKids.forEach((c) => renderNode(c, level + 1));
-              }
-              otherKids.forEach((c) => renderNode(c, level + 1));
-            } else {
-              node.children.forEach((child) => renderNode(child, level + 1));
-            }
-          }
-        }
-
-        tree.forEach((node) => renderNode(node));
-      }
-
-      // ── Render activities reference (справочник) ────────
-      function renderActivitiesReference() {
-        const tbody = document.getElementById("activities-tbody");
-        const activities = allCategories.filter((c) => c.level === 4);
-        tbody.innerHTML = "";
-
-        if (!activities.length) {
-          tbody.innerHTML = `<tr><td colspan="2" class="state-empty">Видов деятельности пока нет</td></tr>`;
-          return;
-        }
-
-        activities.forEach((a) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="td-name">${escHtml(a.name)}</td>
-            <td class="td-actions">
-              <div class="td-actions-inner">
-                <button class="btn-icon btn-icon-edit act-edit" data-id="${a.id}" title="Редактировать">
-                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                </button>
-                <button class="btn-icon btn-icon-del act-delete" data-id="${a.id}" title="Удалить">
-                  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                </button>
-              </div>
+// Render activities (Level 4 categories)
+function renderActivities(categories) {
+    const tbody = document.getElementById('activities-tbody');
+    const level4 = categories.filter(c => c.level === 4);
+    
+    tbody.innerHTML = '';
+    
+    if (!level4.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    <div class="empty-state">
+                        <h3>Виды деятельности не созданы</h3>
+                        <p>Добавьте первый вид деятельности для начала работы</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    level4.forEach(cat => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <div class="td-name">
+                    <div class="td-name-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <span>${escHtml(cat.name)}</span>
+                </div>
             </td>
-          `;
-          tr.querySelector(".act-edit").addEventListener("click", () => {
-            openEditNode(a);
-          });
-          tr.querySelector(".act-delete").addEventListener("click", () => {
-            openConfirm(a.id, a.name, "category");
-          });
-          tbody.appendChild(tr);
+            <td class="td-level">${LEVEL_LABELS[cat.level]}</td>
+            <td><span class="${TYPE_CSS[cat.type]}">${TYPE_LABELS[cat.type] || '—'}</span></td>
+            <td class="td-actions">
+                <div class="td-actions-inner">
+                    <button class="action-btn" onclick="editCategory(${cat.id})" aria-label="Редактировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                    </button>
+                    <button class="action-btn delete" onclick="deleteCategory(${cat.id})" aria-label="Удалить">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Build tree structure
+function buildTree(categories, parentId = null, level = 4) {
+    return categories
+        .filter(c => c.parent_id === parentId && c.level === level)
+        .map(node => ({
+            ...node,
+            children: buildTree(categories, node.id, level - 1)
+        }));
+}
+
+// Render tree node
+function renderTreeNode(node, depth = 0) {
+    const hasChildren = node.children && node.children.length > 0;
+    const typeClass = node.type === 'income' ? 'income' : node.type === 'expense' ? 'expense' : '';
+    
+    let html = `
+        <div class="tree-node" data-id="${node.id}">
+            ${hasChildren ? `
+                <button class="tree-toggle" onclick="toggleNode(this)">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5l8 7-8 7V5z"/>
+                    </svg>
+                </button>
+            ` : '<div style="width: 28px; margin-right: 8px;"></div>'}
+            <div class="tree-icon ${typeClass}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    ${node.type === 'income' ? `
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    ` : node.type === 'expense' ? `
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    ` : `
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    `}
+                </svg>
+            </div>
+            <div class="tree-content">
+                <div class="tree-name">${escHtml(node.name)}</div>
+                <div class="tree-meta">Уровень ${node.level} • ${LEVEL_LABELS[node.level]}</div>
+            </div>
+            ${node.type ? `<span class="tree-badge ${TYPE_CSS[node.type]}">${TYPE_LABELS[node.type]}</span>` : ''}
+            <div class="tree-actions">
+                <button class="action-btn" onclick="editCategory(${node.id})" aria-label="Редактировать">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </button>
+                <button class="action-btn delete" onclick="deleteCategory(${node.id})" aria-label="Удалить">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    if (hasChildren) {
+        html += `<div class="tree-node-children">`;
+        node.children.forEach(child => {
+            html += renderTreeNode(child, depth + 1);
         });
-      }
+        html += `</div>`;
+    }
+    
+    return html;
+}
 
-      async function reload() {
-        try {
-          await loadAll();
-          renderActivitiesReference();
-          renderMainTree();
-        } catch (err) {
-          alert("Ошибка загрузки: " + err.message);
-        }
-      }
+// Render category tree
+function renderTree(categories) {
+    const container = document.getElementById('category-tree');
+    const trees = buildTree(categories);
+    
+    if (!trees.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>Категорий пока нет</h3>
+                <p>Добавьте первую категорию для начала работы</p>
+                <button class="btn btn-primary" onclick="openModal()">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Добавить категорию
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = '';
+    trees.forEach(tree => {
+        container.innerHTML += renderTreeNode(tree);
+    });
+}
 
-      // ── Modal helpers ───────────────────────────────────
-      function openOverlay(id) {
-        document.getElementById(id).classList.add("open");
-      }
-      function closeOverlay(id) {
-        document.getElementById(id).classList.remove("open");
-      }
+// Toggle tree node
+function toggleNode(btn) {
+    btn.classList.toggle('expanded');
+    const node = btn.closest('.tree-node');
+    const children = node.nextElementSibling;
+    if (children && children.classList.contains('tree-node-children')) {
+        children.style.display = children.style.display === 'none' ? 'block' : 'none';
+    }
+}
 
-      function populateSelect(selectEl, items, valueFn, labelFn) {
-        while (selectEl.options.length > 1) selectEl.remove(1);
-        items.forEach((item) => {
-          const opt = document.createElement("option");
-          opt.value = valueFn(item);
-          opt.textContent = labelFn(item);
-          selectEl.appendChild(opt);
-        });
-      }
+// Modal handling
+const categoryModal = document.getElementById('category-modal');
+let editingId = null;
 
-      // Type toggle buttons
-      document.querySelectorAll(".btn-type-toggle").forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
-            b.style.background = "none";
-            b.style.color = "var(--text-muted)";
-          });
-          this.style.background =
-            this.dataset.type === "income" ? "#f0fdf4" : "#fef2f2";
-          this.style.color =
-            this.dataset.type === "income" ? "#16a34a" : "#dc2626";
-          this.style.borderColor =
-            this.dataset.type === "income" ? "#86efac" : "#fca5a5";
-          document.getElementById("category-type").value = this.dataset.type;
-        });
-      });
+function openModal(edit = false) {
+    editingId = edit ? null : null;
+    document.getElementById('modal-title').textContent = edit ? 'Редактировать категорию' : 'Добавить категорию';
+    document.getElementById('category-name').value = '';
+    document.getElementById('category-type').value = '';
+    document.getElementById('category-parent').value = '';
+    document.getElementById('category-level').value = '4';
+    document.getElementById('err-name').textContent = '';
+    document.getElementById('err-type').textContent = '';
+    document.getElementById('err-parent').textContent = '';
+    document.getElementById('err-global').textContent = '';
+    categoryModal.classList.add('open');
+}
 
-      // Close buttons
-      document
-        .querySelectorAll(".js-close-category")
-        .forEach((el) =>
-          el.addEventListener("click", () => closeOverlay("category-modal")),
-        );
+function closeModal() {
+    categoryModal.classList.remove('open');
+    editingId = null;
+}
 
-      // Закрытие category-modal по клику вне окна намеренно отключено
+document.getElementById('add-activity-btn').addEventListener('click', () => openModal());
+document.getElementById('add-category-btn').addEventListener('click', () => openModal());
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+categoryModal.addEventListener('click', (e) => {
+    if (e.target === categoryModal) closeModal();
+});
 
-      // ── Category modal ──────────────────────────────────
-      function openAddActivity() {
-        editingNodeId = null;
-        editingNodeParent = null;
-        document.getElementById("category-modal-title").textContent =
-          "Добавить вид деятельности";
-        document.getElementById("category-name").value = "";
-        document.getElementById("category-name").placeholder =
-          "Например: Операционная";
-        document.getElementById("category-type-group").style.display = "none";
-        document.getElementById("category-parent-group").style.display = "none";
-        document.getElementById("category-err-name").textContent = "";
-        document.getElementById("category-err-global").textContent = "";
-        document.getElementById("category-submit").textContent = "Добавить";
-        openOverlay("category-modal");
-        document.getElementById("category-name").focus();
-      }
+// Form submit
+document.getElementById('category-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('category-name').value.trim();
+    const type = document.getElementById('category-type').value || null;
+    const parentId = document.getElementById('category-parent').value ? parseInt(document.getElementById('category-parent').value) : null;
+    const level = parseInt(document.getElementById('category-level').value);
 
-      function openEditNode(node) {
-        editingNodeId = node.id;
-        editingNodeParent = node.parent_id;
-        const levelLabels = {
-          4: "вид деятельности",
-          3: "группу",
-          2: "статью",
-        };
-        document.getElementById("category-modal-title").textContent =
-          "Редактировать " + levelLabels[node.level];
-        document.getElementById("category-name").value = node.name;
-        document.getElementById("category-err-name").textContent = "";
-        document.getElementById("category-err-global").textContent = "";
+    if (!name) {
+        document.getElementById('err-name').textContent = 'Введите название';
+        return;
+    }
 
-        if (node.level >= 3) {
-          document.getElementById("category-type-group").style.display =
-            "block";
-          document.getElementById("category-type").value = node.type || "";
-          // Reset button styles and set the correct one
-          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
-            b.style.background = "none";
-            b.style.color = "var(--text-muted)";
-            b.style.borderColor = "var(--border)";
-            if (b.dataset.type === (node.type || "")) {
-              b.style.background =
-                node.type === "income" ? "#f0fdf4" : "#fef2f2";
-              b.style.color = node.type === "income" ? "#16a34a" : "#dc2626";
-              b.style.borderColor =
-                node.type === "income" ? "#86efac" : "#fca5a5";
-            }
-          });
-        } else {
-          document.getElementById("category-type-group").style.display = "none";
-        }
-        document.getElementById("category-parent-group").style.display = "none";
-        document.getElementById("category-submit").textContent = "Сохранить";
-        openOverlay("category-modal");
-        document.getElementById("category-name").focus();
-      }
-
-      function openCopyArticle(article) {
-        editingNodeId = null;
-        editingNodeParent = article.parent_id;
-        document.getElementById("category-modal-title").textContent =
-          "Копировать статью";
-        document.getElementById("category-name").value =
-          "Копия — " + article.name;
-        document.getElementById("category-err-name").textContent = "";
-        document.getElementById("category-err-global").textContent = "";
-        document.getElementById("category-type-group").style.display = "none";
-        document.getElementById("category-parent-group").style.display = "none";
-        document.getElementById("category-submit").textContent =
-          "Создать копию";
-        openOverlay("category-modal");
-        document.getElementById("category-name").focus();
-      }
-
-      function openAddChild(parentNode) {
-        editingNodeId = null;
-        editingNodeParent = parentNode.id;
-        const nextLevel = parentNode.level - 1;
-        const levelLabels = { 3: "группу", 2: "статью" };
-        document.getElementById("category-modal-title").textContent =
-          "Добавить " +
-          levelLabels[nextLevel] +
-          " к " +
-          escHtml(parentNode.name);
-        document.getElementById("category-name").value = "";
-        document.getElementById("category-name").placeholder =
-          nextLevel === 3 ? "Например: Выручка" : "Например: Продажи товаров";
-        document.getElementById("category-err-name").textContent = "";
-        document.getElementById("category-err-global").textContent = "";
-
-        if (nextLevel === 3) {
-          // Adding group
-          document.getElementById("category-type-group").style.display =
-            "block";
-          document.getElementById("category-type").value = "";
-          // Reset button styles
-          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
-            b.style.background = "none";
-            b.style.color = "var(--text-muted)";
-            b.style.borderColor = "var(--border)";
-          });
-          document.getElementById("category-parent-group").style.display =
-            "none";
-        } else if (nextLevel === 2) {
-          // Adding article
-          document.getElementById("category-type-group").style.display = "none";
-          document.getElementById("category-parent-group").style.display =
-            "block";
-          const groups = allCategories.filter((c) => c.level === 3);
-          populateSelect(
-            document.getElementById("category-parent"),
-            groups,
-            (g) => g.id,
-            (g) =>
-              g.name +
-              (g.type
-                ? ` (${g.type === "income" ? "Доходы" : "Расходы"})`
-                : ""),
-          );
-          document.getElementById("category-parent").value = "";
-        }
-        document.getElementById("category-submit").textContent = "Добавить";
-        openOverlay("category-modal");
-        document.getElementById("category-name").focus();
-      }
-
-      document
-        .getElementById("add-activity-btn")
-        .addEventListener("click", openAddActivity);
-
-      document
-        .getElementById("add-group-root-btn")
-        .addEventListener("click", () => {
-          editingNodeId = null;
-          editingNodeParent = null;
-          document.getElementById("category-modal-title").textContent =
-            "Добавить группу";
-          document.getElementById("category-name").value = "";
-          document.getElementById("category-name").placeholder =
-            "Например: Выручка";
-          document.getElementById("category-err-name").textContent = "";
-          document.getElementById("category-err-global").textContent = "";
-          document.getElementById("category-type-group").style.display =
-            "block";
-          // Reset button styles
-          document.querySelectorAll(".btn-type-toggle").forEach((b) => {
-            b.style.background = "none";
-            b.style.color = "var(--text-muted)";
-            b.style.borderColor = "var(--border)";
-          });
-          document.getElementById("category-type").value = "";
-          document.getElementById("category-parent-group").style.display =
-            "block";
-          const activities = allCategories.filter((c) => c.level === 4);
-          populateSelect(
-            document.getElementById("category-parent"),
-            activities,
-            (a) => a.id,
-            (a) => a.name,
-          );
-          document.getElementById("category-parent").value = "";
-          document.getElementById("category-submit").textContent = "Добавить";
-          openOverlay("category-modal");
-          document.getElementById("category-name").focus();
-        });
-
-      document
-        .getElementById("category-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("category-name").value.trim();
-          const type = document.getElementById("category-type").value || null;
-          const parentVal = document.getElementById("category-parent").value;
-          const parentId = parentVal ? Number(parentVal) : editingNodeParent;
-          const errName = document.getElementById("category-err-name");
-          const errParent = document.getElementById("category-err-parent");
-          const errGlobal = document.getElementById("category-err-global");
-          const btn = document.getElementById("category-submit");
-
-          errName.textContent = "";
-          errParent.textContent = "";
-          errGlobal.textContent = "";
-
-          if (!name) {
-            errName.textContent = "Введите название";
-            return;
-          }
-
-          btn.disabled = true;
-          btn.textContent = "Сохранение…";
-          try {
-            if (editingNodeId !== null) {
-              // Edit
-              await apiFetch(`/categories/${editingNodeId}`, {
-                method: "PUT",
+    try {
+        if (editingId) {
+            await apiFetch(`/categories/${editingId}`, {
+                method: 'PUT',
                 body: JSON.stringify({ name, type }),
-              });
-            } else {
-              // Create
-              let level;
-              if (editingNodeParent === null) {
-                // New activity
-                level = 4;
-              } else {
-                // Find parent and determine level
-                const parent = allCategories.find(
-                  (c) => c.id === editingNodeParent,
-                );
-                level = parent ? parent.level - 1 : 3;
-              }
-              await apiFetch("/categories", {
-                method: "POST",
-                body: JSON.stringify({
-                  name,
-                  level,
-                  type: level < 4 ? type : null,
-                  parent_id: editingNodeParent,
-                  sort_order:
-                    allCategories
-                      .filter(
-                        (c) =>
-                          (c.parent_id ?? null) ===
-                            (editingNodeParent ?? null) && c.level === level,
-                      )
-                      .reduce((m, c) => Math.max(m, c.sort_order ?? 0), -10) +
-                    10,
-                }),
-              });
-            }
-            closeOverlay("category-modal");
-            await reload();
-          } catch (err) {
-            errGlobal.textContent = err.message;
-          } finally {
-            btn.disabled = false;
-            btn.textContent = editingNodeId ? "Сохранить" : "Добавить";
-          }
-        });
-
-      // ── Confirm delete ──────────────────────────────────
-      let pendingDeleteId = null;
-
-      function openConfirm(id, name) {
-        pendingDeleteId = id;
-        document.getElementById("confirm-title").textContent = "Удалить?";
-        document.getElementById("confirm-text").textContent =
-          `«${escHtml(name)}» будет удалён. Если есть подкатегории — удалите их сначала.`;
-        openOverlay("confirm-overlay");
-      }
-
-      document
-        .getElementById("confirm-cancel")
-        .addEventListener("click", () => closeOverlay("confirm-overlay"));
-      document
-        .getElementById("confirm-overlay")
-        .addEventListener("click", (e) => {
-          if (e.target === e.currentTarget) closeOverlay("confirm-overlay");
-        });
-
-      document
-        .getElementById("confirm-ok")
-        .addEventListener("click", async () => {
-          if (!pendingDeleteId) return;
-          const id = pendingDeleteId;
-          closeOverlay("confirm-overlay");
-          try {
-            await apiFetch(`/categories/${id}`, { method: "DELETE" });
-            await reload();
-          } catch (err) {
-            alert("Ошибка удаления: " + err.message);
-          }
-          pendingDeleteId = null;
-        });
-
-      // ── Keyboard ────────────────────────────────────────
-      document.addEventListener("keydown", (e) => {
-        if (e.key !== "Escape") return;
-        ["confirm-overlay", "category-modal"].forEach((id) => {
-          if (document.getElementById(id).classList.contains("open"))
-            closeOverlay(id);
-        });
-      });
-
-      // ── Init ─────────────────────────────────────────────
-      (async () => {
-        try {
-          await loadAll();
-          renderActivitiesReference();
-          renderMainTree();
-        } catch (err) {
-          document.getElementById("activities-tbody").innerHTML =
-            `<tr><td colspan="2" class="state-error">Ошибка загрузки: ${escHtml(err.message)}</td></tr>`;
-          document.getElementById("main-tree").innerHTML =
-            `<div class="state-error">Ошибка загрузки: ${escHtml(err.message)}</div>`;
+            });
+        } else {
+            await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name, type, parent_id: parentId, level }),
+            });
         }
-      })();
-    </script>
-  </body>
+        closeModal();
+        loadCategories();
+    } catch (err) {
+        document.getElementById('err-global').textContent = err.message;
+    }
+});
+
+// Delete confirmation
+const confirmModal = document.getElementById('confirm-modal');
+let deleteId = null;
+
+function showConfirm(id) {
+    deleteId = id;
+    confirmModal.classList.add('open');
+}
+
+function hideConfirm() {
+    confirmModal.classList.remove('open');
+    deleteId = null;
+}
+
+document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
+confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) hideConfirm();
+});
+
+document.getElementById('confirm-ok').addEventListener('click', async () => {
+    if (!deleteId) return;
+    try {
+        await apiFetch(`/categories/${deleteId}`, { method: 'DELETE' });
+        hideConfirm();
+        loadCategories();
+    } catch (err) {
+        alert('Ошибка удаления: ' + err.message);
+    }
+});
+
+// Load categories
+async function loadCategories() {
+    try {
+        const categories = await apiFetch('/categories');
+        renderActivities(categories);
+        renderTree(categories);
+        
+        // Populate parent select
+        const parentSelect = document.getElementById('category-parent');
+        parentSelect.innerHTML = '<option value="">Без родителя (корневая)</option>';
+        categories.filter(c => c.level === 4).forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            parentSelect.appendChild(opt);
+        });
+    } catch (err) {
+        console.error('Error loading categories:', err);
+    }
+}
+
+// Expand all
+document.getElementById('expand-all-btn').addEventListener('click', () => {
+    document.querySelectorAll('.tree-toggle').forEach(btn => {
+        btn.classList.add('expanded');
+    });
+    document.querySelectorAll('.tree-node-children').forEach(el => {
+        el.style.display = 'block';
+    });
+});
+
+// Placeholder functions
+function editCategory(id) {
+    console.log('Edit category:', id);
+    // TODO: Load category data and open modal
+}
+
+function deleteCategory(id) {
+    showConfirm(id);
+}
+
+// Init
+loadCategories();
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebar && sidebarToggle) {
+        const SIDEBAR_STATE_KEY = 'sidebar_expanded';
+        const isExpanded = localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
+        if (isExpanded) {
+            sidebar.classList.add('expanded');
+            document.body.classList.add('sidebar-expanded');
+        }
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('expanded');
+            document.body.classList.toggle('sidebar-expanded');
+            localStorage.setItem(SIDEBAR_STATE_KEY, sidebar.classList.contains('expanded'));
+        });
+    }
+</script>
+</body>
 </html>
