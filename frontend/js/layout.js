@@ -20,9 +20,14 @@
     if (!document.getElementById('sidebar-init-style')) {
         var initStyle = document.createElement('style');
         initStyle.id = 'sidebar-init-style';
-        initStyle.textContent =
+        var initCss =
             '.main-content{opacity:0!important;transition:none!important}' +
             '.sidebar{transition:none!important}';
+        // Сразу скрываем fund-пункты если кеш говорит что фонды выключены
+        if (localStorage.getItem('fundAccountingEnabled') === '0') {
+            initCss += '[data-fund-feature]{display:none!important}';
+        }
+        initStyle.textContent = initCss;
         document.head.appendChild(initStyle);
     }
 
@@ -224,6 +229,7 @@
         document.querySelectorAll('[data-fund-feature]').forEach(function (el) {
             el.style.display = visible ? '' : 'none';
         });
+        localStorage.setItem('fundAccountingEnabled', visible ? '1' : '0');
         // Редирект если пользователь на fund-странице (но НЕ на settings)
         if (!visible && FUND_PAGES_REDIRECT.indexOf(currentPage) !== -1) {
             window.location.replace('dashboard.html');
@@ -233,7 +239,13 @@
     // Глобальная функция — вызывается из settings.html после сохранения
     window.setFundFeaturesVisible = setFundFeaturesVisible;
 
-    // Async проверка настроек (не блокирует рендер)
+    // Сразу применяем кешированное значение (до рендера) — предотвращает прыжок
+    var cachedFundEnabled = localStorage.getItem('fundAccountingEnabled');
+    if (cachedFundEnabled === '0') {
+        setFundFeaturesVisible(false);
+    }
+
+    // Async проверка настроек — обновляет кеш и корректирует если изменилось
     if (token) {
         var apiBase = 'http://127.0.0.1:8000';
         fetch(apiBase + '/settings', {
@@ -242,11 +254,9 @@
             if (res.ok) return res.json();
             return null;
         }).then(function (settings) {
-            if (settings && !settings.fund_accounting_enabled) {
-                setFundFeaturesVisible(false);
+            if (settings) {
+                setFundFeaturesVisible(!!settings.fund_accounting_enabled);
             }
-            // Если settings === null (нет записи), пункты остаются видимыми —
-            // пользователь сначала увидит всё, затем может выключить в настройках
         }).catch(function () {
             // Ошибка сети — не скрываем, чтобы не ломать навигацию
         });

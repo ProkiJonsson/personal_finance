@@ -141,7 +141,7 @@
             </div>
 
             <div class="section-title" style="margin-top:24px">Правила отщепления</div>
-            <div class="rule-labels"><span>Триггер</span><span>Фонд-получатель</span><span>%</span><span></span></div>
+            <div class="rule-labels"><span>Принцип</span><span>Фонд-получатель</span><span>%</span><span></span></div>
             <div id="cm-rules"></div>
             <div class="form-row-rule">
                 <select id="cm-new-trigger">
@@ -243,8 +243,8 @@ function renderActive(cascade) {
     if (cascade.split_rules.length) {
         html += '<div class="section-title">Правила отщепления</div><div class="rules-list">';
         cascade.split_rules.forEach(r => {
-            const trigger = r.trigger_position === null ? 'От каждого рубля' : r.trigger_position === -1 ? 'После всех позиций' : `После позиции ${r.trigger_position + 1}`;
-            html += `<div class="rule-chip"><span class="trigger">${trigger}</span> → <span class="pct">${Math.round(r.percentage * 100)}%</span> в ${escHtml(r.target_fund_name)}</div>`;
+            const principle = r.trigger_position === null ? 'От каждого рубля' : r.trigger_position === -1 ? 'После всех позиций' : `После позиции ${r.trigger_position + 1}`;
+            html += `<div class="rule-chip"><span class="trigger">${principle}</span> → <span class="pct">${Math.round(r.percentage * 100)}%</span> в ${escHtml(r.target_fund_name)}</div>`;
         });
         html += '</div>';
     }
@@ -306,7 +306,6 @@ function openCascadeModal(cascade) {
 }
 
 function closeCascadeModal() { cascadeModal.classList.remove('open'); }
-cascadeModal.addEventListener('click', e => { if (e.target === cascadeModal) closeCascadeModal(); });
 
 function renderModalSlots() {
     const el = document.getElementById('cm-slots');
@@ -320,8 +319,8 @@ function renderModalRules() {
     const el = document.getElementById('cm-rules');
     el.innerHTML = modalRules.map((r, i) => {
         const fname = allFunds.find(f => f.id === r.target_fund_id);
-        const trigger = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position + 1}`;
-        return `<div class="form-row-rule"><span style="padding:8px">${trigger}</span><span style="padding:8px">${fname ? escHtml(fname.name) : '#' + r.target_fund_id}</span><span style="padding:8px;font-weight:700">${Math.round(r.percentage * 100)}%</span><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="modalRules.splice(${i},1);renderModalRules()">✕</button></div>`;
+        const principle = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position + 1}`;
+        return `<div class="form-row-rule"><span style="padding:8px">${principle}</span><span style="padding:8px">${fname ? escHtml(fname.name) : '#' + r.target_fund_id}</span><span style="padding:8px;font-weight:700">${Math.round(r.percentage * 100)}%</span><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="modalRules.splice(${i},1);renderModalRules()">✕</button></div>`;
     }).join('');
 }
 
@@ -336,16 +335,43 @@ function addSlotRow() {
     populateFundDropdowns();
 }
 
+function getTriggerTotalPct(trigger_position) {
+    return modalRules.filter(r =>
+        r.trigger_position === trigger_position
+    ).reduce((sum, r) => sum + r.percentage, 0);
+}
+
 function addRuleRow() {
     const triggerVal = document.getElementById('cm-new-trigger').value;
     const fundId = parseInt(document.getElementById('cm-new-rule-fund').value);
-    const pct = parseInt(document.getElementById('cm-new-pct').value);
-    if (!fundId || !pct) return;
+    const pct = parseFloat(document.getElementById('cm-new-pct').value);
+    if (!fundId) { document.getElementById('cm-error').textContent = 'Выберите фонд-получатель для правила'; return; }
+    if (!pct || pct <= 0 || pct > 100) { document.getElementById('cm-error').textContent = 'Укажите процент от 1 до 100'; return; }
     const trigger_position = triggerVal === '' ? null : parseInt(triggerVal);
+    const currentTotal = getTriggerTotalPct(trigger_position);
+    if (currentTotal + pct / 100 > 1.0001) {
+        const available = Math.round((1 - currentTotal) * 100);
+        document.getElementById('cm-error').textContent = `Сумма % для этого принципа превысит 100%. Доступно: ${available}%`;
+        return;
+    }
+    document.getElementById('cm-error').textContent = '';
     modalRules.push({ trigger_position, target_fund_id: fundId, percentage: pct / 100 });
     document.getElementById('cm-new-rule-fund').value = '';
     document.getElementById('cm-new-pct').value = '';
     renderModalRules();
+}
+
+function tryAddPendingRule() {
+    const fundId = parseInt(document.getElementById('cm-new-rule-fund').value);
+    const pct = parseFloat(document.getElementById('cm-new-pct').value);
+    if (fundId && pct > 0 && pct <= 100) {
+        const triggerVal = document.getElementById('cm-new-trigger').value;
+        const trigger_position = triggerVal === '' ? null : parseInt(triggerVal);
+        const currentTotal = getTriggerTotalPct(trigger_position);
+        if (currentTotal + pct / 100 <= 1.0001) {
+            modalRules.push({ trigger_position, target_fund_id: fundId, percentage: pct / 100 });
+        }
+    }
 }
 
 document.getElementById('cm-save').addEventListener('click', async () => {
@@ -353,6 +379,7 @@ document.getElementById('cm-save').addEventListener('click', async () => {
     if (!effective_from) { document.getElementById('cm-error').textContent = 'Укажите дату'; return; }
     if (!modalSlots.length) { document.getElementById('cm-error').textContent = 'Добавьте хотя бы одну позицию'; return; }
 
+    tryAddPendingRule();
     const body = { effective_from, slots: modalSlots.map((s, i) => ({ ...s, sort_order: i })), split_rules: modalRules };
 
     try {
@@ -406,8 +433,8 @@ async function viewHistoryCascade(id) {
         if (c.split_rules.length) {
             html += '<div style="margin-top:8px">';
             c.split_rules.forEach(r => {
-                const trigger = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position+1}`;
-                html += `<span class="rule-chip" style="margin:4px">${trigger} → ${Math.round(r.percentage*100)}% в ${escHtml(r.target_fund_name)}</span>`;
+                const principle = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position+1}`;
+                html += `<span class="rule-chip" style="margin:4px">${principle} → ${Math.round(r.percentage*100)}% в ${escHtml(r.target_fund_name)}</span>`;
             });
             html += '</div>';
         }

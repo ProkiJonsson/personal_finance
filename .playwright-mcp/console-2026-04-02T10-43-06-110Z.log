@@ -1,0 +1,30 @@
+[   30770ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  167669ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  169737ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  171072ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  173315ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  175743ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  178193ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  179345ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  180679ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  182007ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  182981ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  184033ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  187632ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  189304ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  190566ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35

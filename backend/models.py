@@ -64,6 +64,7 @@ class User(Base):
     tax_settings = relationship("TaxSetting", back_populates="user", cascade="all, delete-orphan")
     app_setting = relationship("AppSetting", back_populates="user", uselist=False, cascade="all, delete-orphan")
     attachments = relationship("Attachment", back_populates="user", cascade="all, delete-orphan")
+    distribution_logs = relationship("DistributionLog", back_populates="user", cascade="all, delete-orphan")
 
 
 # ──── Контрагенты и договоры ─────────────────
@@ -263,6 +264,38 @@ class SplitRule(Base):
 
     cascade = relationship("Cascade", back_populates="split_rules")
     target_fund = relationship("Fund", back_populates="split_rules_target")
+
+
+# ──── История распределений ─────────────────
+
+class DistributionLog(Base):
+    """Лог одного распределения дохода."""
+    __tablename__ = "distribution_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    amount = Column(Float, nullable=False)
+    is_deposit_income = Column(Boolean, nullable=False, default=False)
+    month = Column(String(7), nullable=False)  # YYYY-MM
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    user = relationship("User", back_populates="distribution_logs")
+    items = relationship("DistributionLogItem", back_populates="distribution_log", cascade="all, delete-orphan")
+
+
+class DistributionLogItem(Base):
+    """Строка распределения: сколько выделено конкретному фонду."""
+    __tablename__ = "distribution_log_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    log_id = Column(Integer, ForeignKey("distribution_logs.id", ondelete="CASCADE"), nullable=False, index=True)
+    fund_id = Column(Integer, ForeignKey("funds.id", ondelete="SET NULL"), nullable=True, index=True)
+    fund_name = Column(String(255), nullable=False)
+    allocated = Column(Float, nullable=False)
+    source = Column(String(100), nullable=False, default="cascade")  # cascade, split, tax
+
+    distribution_log = relationship("DistributionLog", back_populates="items")
+    fund = relationship("Fund")
 
 
 # ──── Настройки НДФЛ ────────────────────────

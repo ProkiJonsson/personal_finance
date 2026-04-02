@@ -50,13 +50,12 @@
         }
 
         .account-card:hover {
-            transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
         }
 
         .account-card.selected {
             border-color: var(--primary);
-            background: var(--primary-light);
         }
 
         .account-card-dark {
@@ -1336,12 +1335,8 @@ function closeModal() {
 }
 
 document.getElementById('add-operation-btn').addEventListener('click', () => openModal(false));
-document.getElementById('add-btn').addEventListener('click', () => openModal(false));
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-});
 
 // Type segmented control
 document.querySelectorAll('.type-segmented button').forEach(btn => {

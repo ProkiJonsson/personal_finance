@@ -1,0 +1,27 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+    - heading "Личные финансы" [level=1] [ref=e8]
+    - paragraph [ref=e9]: Управляйте своими финансами просто
+  - generic [ref=e10]:
+    - button "Войти" [ref=e11] [cursor=pointer]
+    - button "Регистрация" [ref=e12] [cursor=pointer]
+  - generic [ref=e13]:
+    - generic [ref=e27]: Неверный email или пароль
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: Email
+        - textbox "Email" [ref=e17]:
+          - /placeholder: you@example.com
+          - text: test@example.com
+      - generic [ref=e18]:
+        - generic [ref=e19]: Пароль
+        - textbox "Пароль" [ref=e20]:
+          - /placeholder: ••••••••
+          - text: "123456"
+      - button "Забыли пароль?" [ref=e22] [cursor=pointer]
+      - button "Войти" [ref=e23] [cursor=pointer]
+  - paragraph [ref=e25]:
+    - text: Нажимая «Войти» или «Зарегистрироваться», вы принимаете
+    - link "условия использования" [ref=e26] [cursor=pointer]:
+      - /url: "#"

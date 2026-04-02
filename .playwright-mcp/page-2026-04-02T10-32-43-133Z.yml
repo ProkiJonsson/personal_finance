@@ -1,0 +1,131 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Счета" [ref=e18] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e20]: Счета
+      - generic [ref=e21]:
+        - link "Статьи учёта" [ref=e22] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e24]: Статьи учёта
+        - link "Настройки" [ref=e25] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e27]: Настройки
+        - button "Выйти" [ref=e28] [cursor=pointer]:
+          - generic [ref=e30]: Выйти
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "Личные финансы" [level=1] [ref=e34]
+        - navigation [ref=e35]:
+          - link "Главная" [ref=e36] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e37] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e38] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e39]:
+        - button "Поиск" [ref=e40] [cursor=pointer]:
+          - img [ref=e41]
+        - button "Уведомления" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]
+        - generic [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Т
+          - generic [ref=e50]: Тест
+    - generic [ref=e51]:
+      - heading "Справочники" [level=1] [ref=e53]
+      - generic [ref=e54]:
+        - button "Справочник" [ref=e55] [cursor=pointer]
+        - button "Настройки" [ref=e56] [cursor=pointer]
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - button "Скрыть" [ref=e59] [cursor=pointer]:
+            - img [ref=e60]
+          - img [ref=e64]
+          - generic [ref=e65]:
+            - heading "Справочник статей доходов и расходов" [level=3] [ref=e66]
+            - paragraph [ref=e67]: "Учет операций организован в несколько уровней:"
+            - list [ref=e68]:
+              - listitem [ref=e69]:
+                - strong [ref=e70]: "Уровень 1:"
+                - text: Тип операции (Доходы / Расходы)
+              - listitem [ref=e71]:
+                - strong [ref=e72]: "Уровень 2:"
+                - text: Группа статей операций
+              - listitem [ref=e73]:
+                - strong [ref=e74]: "Уровень 3:"
+                - text: Конкретная статья
+        - generic [ref=e75]:
+          - generic [ref=e76]:
+            - heading "Статьи доходов и расходов" [level=2] [ref=e77]
+            - button "Свернуть все" [ref=e78] [cursor=pointer]:
+              - img [ref=e79]
+              - generic [ref=e81]: Свернуть все
+          - generic [ref=e84]:
+            - generic [ref=e85]:
+              - generic [ref=e86]:
+                - generic [ref=e87]: Доходы
+                - button "Группу" [ref=e88] [cursor=pointer]:
+                  - img [ref=e89]
+                  - text: Группу
+              - generic [ref=e91]:
+                - generic:
+                  - generic:
+                    - generic: Нет групп — нажмите + Группу
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: Расходы
+                - button "Группу" [ref=e95] [cursor=pointer]:
+                  - img [ref=e96]
+                  - text: Группу
+              - generic [ref=e98]:
+                - generic:
+                  - generic:
+                    - generic: Нет групп — нажмите + Группу
+  - generic:
+    - generic:
+      - generic:
+        - heading "Добавить статью" [level=3]
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Что добавляем
+          - generic:
+            - generic: Название статьи
+            - textbox "Название статьи":
+              - /placeholder: Введите название
+        - generic:
+          - generic:
+            - checkbox "Добавить ещё"
+            - generic: Добавить ещё
+          - generic:
+            - button "Отмена"
+            - button "Сохранить"
+  - generic:
+    - generic:
+      - heading "Удалить категорию?" [level=3]
+      - paragraph: Это действие нельзя отменить. Все дочерние категории также будут удалены.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"
+  - generic:
+    - generic:
+      - heading "Сменить режим учёта?" [level=3]
+      - paragraph: Все группы статей и статьи будут удалены. Виды деятельности и типы операций сохранятся. Данные придётся заполнить заново.
+      - generic:
+        - button "Отмена"
+        - button "Сменить и очистить"

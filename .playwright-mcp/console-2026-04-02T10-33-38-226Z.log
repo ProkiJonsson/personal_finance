@@ -1,0 +1,24 @@
+[  345131ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  346459ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  347530ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  349082ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  350311ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  352232ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  361294ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  362455ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  365072ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  368040ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  369174ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35
+[  370275ms] TypeError: Cannot read properties of null (reading 'addEventListener')
+    at http://localhost:5500/operations.html:1339:35

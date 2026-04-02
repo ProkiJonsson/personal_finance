@@ -27,6 +27,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Personal Finance API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.middleware("http")
 async def log_exceptions(request: Request, call_next):
@@ -51,13 +59,6 @@ app.include_router(counterparties_router.router)
 app.include_router(cascades_router.router)
 app.include_router(settings_router.router)
 app.include_router(attachments_router.router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.get("/")

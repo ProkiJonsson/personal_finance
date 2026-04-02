@@ -294,7 +294,6 @@ const cpModal = document.getElementById('cp-modal');
 function openCpModal() { editingCpId = null; document.getElementById('cp-modal-title').textContent = 'Добавить контрагента'; document.getElementById('cp-name').value = ''; document.getElementById('cp-desc').value = ''; document.getElementById('cp-error').textContent = ''; cpModal.classList.add('open'); }
 function openEditCp(id) { const cp = allCps.find(x => x.id === id); if (!cp) return; editingCpId = id; document.getElementById('cp-modal-title').textContent = 'Редактировать'; document.getElementById('cp-name').value = cp.name; document.getElementById('cp-desc').value = cp.description || ''; cpModal.classList.add('open'); }
 function closeCpModal() { cpModal.classList.remove('open'); }
-cpModal.addEventListener('click', e => { if (e.target === cpModal) closeCpModal(); });
 
 document.getElementById('add-cp-btn').addEventListener('click', openCpModal);
 document.getElementById('cp-form').addEventListener('submit', async e => {
@@ -314,7 +313,6 @@ let editingContractId = null;
 function openContractModal(cpId) { editingContractId = null; addContractCpId = cpId; document.getElementById('ct-name').value = ''; document.getElementById('ct-desc').value = ''; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.modal-title').textContent = 'Добавить договор'; contractModal.classList.add('open'); }
 function openEditContract(ctId, name, desc) { editingContractId = ctId; document.getElementById('ct-name').value = name; document.getElementById('ct-desc').value = desc; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.modal-title').textContent = 'Редактировать договор'; contractModal.classList.add('open'); }
 function closeContractModal() { contractModal.classList.remove('open'); editingContractId = null; }
-contractModal.addEventListener('click', e => { if (e.target === contractModal) closeContractModal(); });
 
 document.getElementById('contract-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -337,7 +335,6 @@ const confirmModal = document.getElementById('confirm-modal');
 let confirmAction = null;
 function showConfirm(title, text, action) { document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-text').textContent = text; confirmAction = action; confirmModal.classList.add('open'); }
 function hideConfirm() { confirmModal.classList.remove('open'); confirmAction = null; }
-confirmModal.addEventListener('click', e => { if (e.target === confirmModal) hideConfirm(); });
 document.getElementById('confirm-ok').addEventListener('click', async () => { if (confirmAction) { try { await confirmAction(); } catch (e) { alert(e.message); } } hideConfirm(); });
 
 function confirmDeleteCp(id) { showConfirm('Удалить контрагента?', 'Все договоры будут удалены.', async () => { await apiFetch(`/counterparties/${id}`, { method: 'DELETE' }); expandedCpId = null; loadCps(); }); }

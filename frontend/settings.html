@@ -235,7 +235,6 @@ function openTaxModal() {
     taxModal.classList.add('open');
 }
 function closeTaxModal() { taxModal.classList.remove('open'); }
-taxModal.addEventListener('click', e => { if (e.target === taxModal) closeTaxModal(); });
 
 document.getElementById('add-tax-btn').addEventListener('click', openTaxModal);
 document.getElementById('tax-form').addEventListener('submit', async e => {

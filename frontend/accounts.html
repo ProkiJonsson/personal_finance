@@ -735,17 +735,6 @@ document.getElementById('account-modal-cancel').addEventListener('click', closeA
 document.getElementById('ib-modal-cancel').addEventListener('click', closeAllModals);
 document.getElementById('confirm-cancel').addEventListener('click', closeAllModals);
 
-accountModal.addEventListener('click', (e) => {
-    if (e.target === accountModal) closeAllModals();
-});
-
-initialBalancesModal.addEventListener('click', (e) => {
-    if (e.target === initialBalancesModal) closeAllModals();
-});
-
-confirmModal.addEventListener('click', (e) => {
-    if (e.target === confirmModal) closeAllModals();
-});
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAllModals();

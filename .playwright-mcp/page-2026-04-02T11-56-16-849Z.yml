@@ -1,0 +1,280 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+        - button "Развернуть/свернуть" [ref=e9] [cursor=pointer]
+        - navigation [ref=e10]:
+          - link "Главная" [ref=e11] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic: Главная
+          - link "Операции" [ref=e13] [cursor=pointer]:
+            - /url: operations.html
+            - generic: Операции
+          - link "Фонды" [ref=e15] [cursor=pointer]:
+            - /url: funds.html
+            - generic: Фонды
+          - link "Счета" [ref=e17] [cursor=pointer]:
+            - /url: accounts.html
+            - generic: Счета
+      - generic [ref=e19]:
+        - link "Каскад Фондов" [ref=e20] [cursor=pointer]:
+          - /url: cascade.html
+          - generic: Каскад Фондов
+        - link "Контрагенты" [ref=e22] [cursor=pointer]:
+          - /url: counterparties.html
+          - generic: Контрагенты
+        - link "Статьи учёта" [ref=e24] [cursor=pointer]:
+          - /url: categories.html
+          - generic: Статьи учёта
+        - link "Настройки" [ref=e26] [cursor=pointer]:
+          - /url: settings.html
+          - generic: Настройки
+        - button "Выйти" [ref=e28] [cursor=pointer]:
+          - generic: Выйти
+  - main [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - heading "Личные финансы" [level=1] [ref=e33]
+        - navigation [ref=e34]:
+          - link "Главная" [ref=e35] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e36] [cursor=pointer]:
+            - /url: operations.html
+          - link "Фонды" [ref=e37] [cursor=pointer]:
+            - /url: funds.html
+          - link "Счета" [ref=e38] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e39]:
+        - button "Поиск" [ref=e40] [cursor=pointer]:
+          - img [ref=e41]
+        - button "Уведомления" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]
+        - generic [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Р
+          - generic [ref=e50]: Рашид Низамеев
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - heading "Мои счета Обновить" [level=2] [ref=e54]:
+          - text: Мои счета
+          - button "Обновить" [ref=e55] [cursor=pointer]:
+            - img [ref=e56]
+        - generic [ref=e60]:
+          - generic [ref=e63] [cursor=pointer]:
+            - generic [ref=e64]: Все счета
+            - generic [ref=e65]: 0,00 ₽
+          - generic [ref=e66] [cursor=pointer]:
+            - img [ref=e68]
+            - generic [ref=e70]: Добавить счёт
+      - generic [ref=e71]:
+        - heading "Добавьте первую операцию" [level=3] [ref=e72]
+        - generic [ref=e73]:
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - generic [ref=e76]: Дата
+              - generic [ref=e77]:
+                - textbox [ref=e78]: 2026-04-02
+                - img
+            - generic [ref=e79]:
+              - generic [ref=e80]: Счёт
+              - combobox [ref=e81]:
+                - option "Выбрать счёт" [selected]
+            - generic [ref=e82]:
+              - generic [ref=e83]: Категория
+              - combobox [ref=e84]:
+                - option "Выбрать категорию" [selected]
+            - generic [ref=e85]:
+              - generic [ref=e86]: Сумма
+              - spinbutton [ref=e87]
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - generic [ref=e90]: Описание
+              - textbox "Оплата..." [ref=e91]
+            - generic [ref=e92]:
+              - generic [ref=e93]: Комментарий
+              - textbox "Учесть..." [ref=e94]
+          - button "Добавить" [ref=e95] [cursor=pointer]
+        - generic [ref=e97]:
+          - img [ref=e99]
+          - generic [ref=e101]:
+            - heading "Что такое счёт?" [level=4] [ref=e102]
+            - paragraph [ref=e103]: Банковский счёт, карта или наличка. На счета мы принимаем деньги, оплачиваем расходы.
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - heading "Все операции" [level=3] [ref=e107]
+          - generic [ref=e108]:
+            - button "Экспорт" [ref=e109] [cursor=pointer]:
+              - img [ref=e110]
+              - text: Экспорт
+            - button "Фильтры" [ref=e113] [cursor=pointer]:
+              - img [ref=e114]
+              - text: Фильтры
+            - button "Добавить" [ref=e115] [cursor=pointer]:
+              - img [ref=e116]
+              - text: Добавить
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - button "Все" [ref=e120] [cursor=pointer]
+            - button "Приход" [ref=e121] [cursor=pointer]
+            - button "Расход" [ref=e122] [cursor=pointer]
+          - generic [ref=e123]:
+            - textbox [ref=e124]
+            - generic [ref=e125]: —
+            - textbox [ref=e126]
+          - generic [ref=e127]:
+            - img
+            - textbox "Поиск по операциям..." [ref=e128]
+          - generic [ref=e129]:
+            - button "Найти" [ref=e130] [cursor=pointer]
+            - button "Сбросить" [ref=e131] [cursor=pointer]
+        - table [ref=e133]:
+          - rowgroup [ref=e134]:
+            - row "№ Дата Описание Категория Тип Сумма" [ref=e135]:
+              - columnheader "№" [ref=e136]
+              - columnheader "Дата" [ref=e137]
+              - columnheader "Описание" [ref=e138]
+              - columnheader "Категория" [ref=e139]
+              - columnheader "Тип" [ref=e140]
+              - columnheader "Сумма" [ref=e141]
+              - columnheader [ref=e142]
+          - rowgroup [ref=e143]:
+            - row "#00001 02.04.2026, 08:50 Без описания Другое Доход 1 500,00 ₽" [ref=e144]:
+              - cell "#00001" [ref=e145]
+              - cell "02.04.2026, 08:50" [ref=e146]
+              - cell "Без описания" [ref=e147]
+              - cell "Другое" [ref=e148]
+              - cell "Доход" [ref=e149]
+              - cell "1 500,00 ₽" [ref=e150]
+              - cell [ref=e151]:
+                - generic [ref=e152]:
+                  - button "Редактировать" [ref=e153] [cursor=pointer]:
+                    - img [ref=e154]
+                  - button "Удалить" [ref=e157] [cursor=pointer]:
+                    - img [ref=e158]
+            - row "#00002 02.04.2026, 08:50 Без описания Другое Доход 13 500,00 ₽" [ref=e160]:
+              - cell "#00002" [ref=e161]
+              - cell "02.04.2026, 08:50" [ref=e162]
+              - cell "Без описания" [ref=e163]
+              - cell "Другое" [ref=e164]
+              - cell "Доход" [ref=e165]
+              - cell "13 500,00 ₽" [ref=e166]
+              - cell [ref=e167]:
+                - generic [ref=e168]:
+                  - button "Редактировать" [ref=e169] [cursor=pointer]:
+                    - img [ref=e170]
+                  - button "Удалить" [ref=e173] [cursor=pointer]:
+                    - img [ref=e174]
+            - row "#00003 02.04.2026, 08:48 Без описания Другое Доход 25 000,00 ₽" [ref=e176]:
+              - cell "#00003" [ref=e177]
+              - cell "02.04.2026, 08:48" [ref=e178]
+              - cell "Без описания" [ref=e179]
+              - cell "Другое" [ref=e180]
+              - cell "Доход" [ref=e181]
+              - cell "25 000,00 ₽" [ref=e182]
+              - cell [ref=e183]:
+                - generic [ref=e184]:
+                  - button "Редактировать" [ref=e185] [cursor=pointer]:
+                    - img [ref=e186]
+                  - button "Удалить" [ref=e189] [cursor=pointer]:
+                    - img [ref=e190]
+            - row "#00004 02.04.2026, 08:48 Без описания Другое Доход 100 000,00 ₽" [ref=e192]:
+              - cell "#00004" [ref=e193]
+              - cell "02.04.2026, 08:48" [ref=e194]
+              - cell "Без описания" [ref=e195]
+              - cell "Другое" [ref=e196]
+              - cell "Доход" [ref=e197]
+              - cell "100 000,00 ₽" [ref=e198]
+              - cell [ref=e199]:
+                - generic [ref=e200]:
+                  - button "Редактировать" [ref=e201] [cursor=pointer]:
+                    - img [ref=e202]
+                  - button "Удалить" [ref=e205] [cursor=pointer]:
+                    - img [ref=e206]
+            - row "#00005 02.04.2026, 08:48 Без описания Другое Доход 25 000,00 ₽" [ref=e208]:
+              - cell "#00005" [ref=e209]
+              - cell "02.04.2026, 08:48" [ref=e210]
+              - cell "Без описания" [ref=e211]
+              - cell "Другое" [ref=e212]
+              - cell "Доход" [ref=e213]
+              - cell "25 000,00 ₽" [ref=e214]
+              - cell [ref=e215]:
+                - generic [ref=e216]:
+                  - button "Редактировать" [ref=e217] [cursor=pointer]:
+                    - img [ref=e218]
+                  - button "Удалить" [ref=e221] [cursor=pointer]:
+                    - img [ref=e222]
+            - row "#00006 02.04.2026, 08:48 Без описания Другое Доход 30 000,00 ₽" [ref=e224]:
+              - cell "#00006" [ref=e225]
+              - cell "02.04.2026, 08:48" [ref=e226]
+              - cell "Без описания" [ref=e227]
+              - cell "Другое" [ref=e228]
+              - cell "Доход" [ref=e229]
+              - cell "30 000,00 ₽" [ref=e230]
+              - cell [ref=e231]:
+                - generic [ref=e232]:
+                  - button "Редактировать" [ref=e233] [cursor=pointer]:
+                    - img [ref=e234]
+                  - button "Удалить" [ref=e237] [cursor=pointer]:
+                    - img [ref=e238]
+            - row "#00007 02.04.2026, 08:48 Без описания Другое Доход 70 000,00 ₽" [ref=e240]:
+              - cell "#00007" [ref=e241]
+              - cell "02.04.2026, 08:48" [ref=e242]
+              - cell "Без описания" [ref=e243]
+              - cell "Другое" [ref=e244]
+              - cell "Доход" [ref=e245]
+              - cell "70 000,00 ₽" [ref=e246]
+              - cell [ref=e247]:
+                - generic [ref=e248]:
+                  - button "Редактировать" [ref=e249] [cursor=pointer]:
+                    - img [ref=e250]
+                  - button "Удалить" [ref=e253] [cursor=pointer]:
+                    - img [ref=e254]
+            - row "#00008 02.04.2026, 08:48 Без описания Другое Доход 15 000,00 ₽" [ref=e256]:
+              - cell "#00008" [ref=e257]
+              - cell "02.04.2026, 08:48" [ref=e258]
+              - cell "Без описания" [ref=e259]
+              - cell "Другое" [ref=e260]
+              - cell "Доход" [ref=e261]
+              - cell "15 000,00 ₽" [ref=e262]
+              - cell [ref=e263]:
+                - generic [ref=e264]:
+                  - button "Редактировать" [ref=e265] [cursor=pointer]:
+                    - img [ref=e266]
+                  - button "Удалить" [ref=e269] [cursor=pointer]:
+                    - img [ref=e270]
+            - row "#00009 02.04.2026, 08:48 Без описания Другое Доход 135 000,00 ₽" [ref=e272]:
+              - cell "#00009" [ref=e273]
+              - cell "02.04.2026, 08:48" [ref=e274]
+              - cell "Без описания" [ref=e275]
+              - cell "Другое" [ref=e276]
+              - cell "Доход" [ref=e277]
+              - cell "135 000,00 ₽" [ref=e278]
+              - cell [ref=e279]:
+                - generic [ref=e280]:
+                  - button "Редактировать" [ref=e281] [cursor=pointer]:
+                    - img [ref=e282]
+                  - button "Удалить" [ref=e285] [cursor=pointer]:
+                    - img [ref=e286]
+            - row "#00010 02.04.2026, 10:22 Без описания Другое Доход 1 545,40 ₽" [ref=e288]:
+              - cell "#00010" [ref=e289]
+              - cell "02.04.2026, 10:22" [ref=e290]
+              - cell "Без описания" [ref=e291]
+              - cell "Другое" [ref=e292]
+              - cell "Доход" [ref=e293]
+              - cell "1 545,40 ₽" [ref=e294]
+              - cell [ref=e295]:
+                - generic [ref=e296]:
+                  - button "Редактировать" [ref=e297] [cursor=pointer]:
+                    - img [ref=e298]
+                  - button "Удалить" [ref=e301] [cursor=pointer]:
+                    - img [ref=e302]
+        - generic [ref=e304]:
+          - generic [ref=e305]: 416 545,40 ₽
+          - generic [ref=e306]:
+            - button "<" [disabled] [ref=e307] [cursor=pointer]
+            - button "1" [ref=e308] [cursor=pointer]
+            - button "2" [ref=e309] [cursor=pointer]
+            - button "3" [ref=e310] [cursor=pointer]
+            - button "..." [ref=e311] [cursor=pointer]
+            - button "105" [ref=e312] [cursor=pointer]
+            - button ">" [ref=e313] [cursor=pointer]

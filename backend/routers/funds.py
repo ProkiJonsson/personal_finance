@@ -109,6 +109,39 @@ class DistributeResponse(BaseModel):
     total_distributed: float
 
 
+class DistributeConfirmItem(BaseModel):
+    fund_id: int
+    amount: float
+    source: str = "cascade"
+
+
+class DistributeConfirmRequest(BaseModel):
+    amount: float
+    is_deposit_income: bool = False
+    month: Optional[str] = None
+    items: list[DistributeConfirmItem]
+
+
+class DistLogItemResponse(BaseModel):
+    fund_id: Optional[int]
+    fund_name: str
+    allocated: float
+    source: str
+
+    model_config = {"from_attributes": True}
+
+
+class DistLogResponse(BaseModel):
+    id: int
+    amount: float
+    is_deposit_income: bool
+    month: str
+    items: list[DistLogItemResponse]
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 # ──────────────────────────────────────────────
 # Вспомогательные функции
 # ──────────────────────────────────────────────
@@ -235,56 +268,9 @@ def create_fund(
     return _fund_to_response(fund, {})
 
 
-@router.put("/{fund_id}", response_model=FundResponse, summary="Обновить фонд")
-def update_fund(
-    fund_id: int,
-    data: FundUpdate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
-) -> FundResponse:
-    fund = _get_fund_or_404(fund_id, current_user.id, db)
-    updates = data.model_dump(exclude_none=True)
-
-    if "contract_id" in updates and updates["contract_id"] is not None:
-        contract = db.query(models.Contract).join(models.Counterparty).filter(
-            models.Contract.id == updates["contract_id"],
-            models.Counterparty.user_id == current_user.id,
-        ).first()
-        if not contract:
-            raise HTTPException(status_code=404, detail="Договор не найден")
-
-    for field, value in updates.items():
-        setattr(fund, field, value)
-
-    db.commit()
-    db.refresh(fund)
-    balances = _calc_balances(current_user.id, db)
-    return _fund_to_response(fund, balances)
-
-
-@router.delete("/{fund_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Удалить фонд")
-def delete_fund(
-    fund_id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
-) -> None:
-    fund = _get_fund_or_404(fund_id, current_user.id, db)
-    if fund.is_system:
-        raise HTTPException(status_code=409, detail="Нельзя удалить системный фонд")
-    # Явная проверка связанных транзакций (надёжнее чем ловить IntegrityError)
-    tx_count = db.query(models.Transaction).filter(models.Transaction.fund_id == fund_id).count()
-    if tx_count > 0:
-        raise HTTPException(status_code=409, detail="Нельзя удалить фонд: есть связанные операции")
-    try:
-        db.delete(fund)
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=409, detail="Нельзя удалить фонд: есть связанные данные")
-
-
 # ──────────────────────────────────────────────
 # Distribute — полуавтомат распределения дохода
+# (регистрируется ДО /{fund_id})
 # ──────────────────────────────────────────────
 
 @router.post("/distribute", response_model=DistributeResponse, summary="Рассчитать распределение дохода")
@@ -322,7 +308,6 @@ def distribute_income(
         .first()
     )
     if not cascade:
-        # Нет каскада — всё в один allocation item
         return DistributeResponse(
             tax_deduction=tax_deduction,
             items=[],
@@ -330,10 +315,9 @@ def distribute_income(
             total_distributed=data.amount,
         )
 
-    slots = cascade.slots  # уже отсортированы по sort_order
+    slots = cascade.slots
     split_rules = cascade.split_rules
 
-    # Индексируем правила по trigger_position
     rules_by_pos: dict[Optional[int], list[models.SplitRule]] = {}
     for rule in split_rules:
         rules_by_pos.setdefault(rule.trigger_position, []).append(rule)
@@ -412,6 +396,123 @@ def distribute_income(
         investment_items=investment_items,
         total_distributed=data.amount,
     )
+
+
+@router.post("/distribute/confirm", response_model=DistLogResponse,
+             status_code=status.HTTP_201_CREATED, summary="Подтвердить распределение")
+def confirm_distribution(
+    data: DistributeConfirmRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> DistLogResponse:
+    today = date.today()
+    month_str = data.month or f"{today.year}-{today.month:02d}"
+
+    log = models.DistributionLog(
+        user_id=current_user.id,
+        amount=data.amount,
+        is_deposit_income=data.is_deposit_income,
+        month=month_str,
+    )
+    db.add(log)
+    db.flush()
+
+    for item in data.items:
+        if item.amount <= 0:
+            continue
+        fund = db.query(models.Fund).filter(
+            models.Fund.id == item.fund_id,
+            models.Fund.user_id == current_user.id,
+        ).first()
+        db.add(models.DistributionLogItem(
+            log_id=log.id,
+            fund_id=item.fund_id,
+            fund_name=fund.name if fund else f"Fund {item.fund_id}",
+            allocated=item.amount,
+            source=item.source,
+        ))
+
+    db.commit()
+    db.refresh(log)
+    return _dist_log_to_response(log)
+
+
+@router.get("/distributions", response_model=list[DistLogResponse],
+            summary="История распределений")
+def list_distributions(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> list[DistLogResponse]:
+    logs = (
+        db.query(models.DistributionLog)
+        .options(joinedload(models.DistributionLog.items))
+        .filter(models.DistributionLog.user_id == current_user.id)
+        .order_by(models.DistributionLog.created_at.desc())
+        .all()
+    )
+    return [_dist_log_to_response(log) for log in logs]
+
+
+def _dist_log_to_response(log: models.DistributionLog) -> DistLogResponse:
+    return DistLogResponse(
+        id=log.id,
+        amount=log.amount,
+        is_deposit_income=log.is_deposit_income,
+        month=log.month,
+        items=[DistLogItemResponse(
+            fund_id=i.fund_id, fund_name=i.fund_name,
+            allocated=i.allocated, source=i.source,
+        ) for i in log.items],
+        created_at=log.created_at,
+    )
+
+
+@router.put("/{fund_id}", response_model=FundResponse, summary="Обновить фонд")
+def update_fund(
+    fund_id: int,
+    data: FundUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> FundResponse:
+    fund = _get_fund_or_404(fund_id, current_user.id, db)
+    updates = data.model_dump(exclude_none=True)
+
+    if "contract_id" in updates and updates["contract_id"] is not None:
+        contract = db.query(models.Contract).join(models.Counterparty).filter(
+            models.Contract.id == updates["contract_id"],
+            models.Counterparty.user_id == current_user.id,
+        ).first()
+        if not contract:
+            raise HTTPException(status_code=404, detail="Договор не найден")
+
+    for field, value in updates.items():
+        setattr(fund, field, value)
+
+    db.commit()
+    db.refresh(fund)
+    balances = _calc_balances(current_user.id, db)
+    return _fund_to_response(fund, balances)
+
+
+@router.delete("/{fund_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Удалить фонд")
+def delete_fund(
+    fund_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> None:
+    fund = _get_fund_or_404(fund_id, current_user.id, db)
+    if fund.is_system:
+        raise HTTPException(status_code=409, detail="Нельзя удалить системный фонд")
+    # Явная проверка связанных транзакций (надёжнее чем ловить IntegrityError)
+    tx_count = db.query(models.Transaction).filter(models.Transaction.fund_id == fund_id).count()
+    if tx_count > 0:
+        raise HTTPException(status_code=409, detail="Нельзя удалить фонд: есть связанные операции")
+    try:
+        db.delete(fund)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Нельзя удалить фонд: есть связанные данные")
 
 
 def _calc_tax_deduction(user_id: int, amount: float, year: int, db: Session) -> Optional[TaxDeduction]:

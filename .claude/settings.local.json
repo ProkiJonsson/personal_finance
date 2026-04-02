@@ -30,7 +30,19 @@
       "Bash(python -m http.server 5500 --directory frontend)",
       "Bash(curl -s http://localhost:5500/settings.html)",
       "Bash(curl -s http://localhost:5500/js/layout.js)",
-      "Bash(python -m pytest tests/ -q --tb=short)"
+      "Bash(python -m pytest tests/ -q --tb=short)",
+      "Bash(python -m http.server 5500)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_hover",
+      "mcp__sqlite__read_query",
+      "mcp__sqlite__write_query",
+      "Read(//c/Users/samsung/.claude/projects/c--Users-samsung-dev-finance/memory/**)",
+      "Bash(curl -s http://localhost:8000/docs -o /dev/null -w \"%{http_code}\")"
     ]
   }
 }

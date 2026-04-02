@@ -1,0 +1,108 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Счета" [ref=e18] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e20]: Счета
+      - generic [ref=e21]:
+        - link "Статьи учёта" [ref=e22] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e24]: Статьи учёта
+        - link "Настройки" [ref=e25] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e27]: Настройки
+        - button "Выйти" [ref=e28] [cursor=pointer]:
+          - generic [ref=e30]: Выйти
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "Личные финансы" [level=1] [ref=e34]
+        - navigation [ref=e35]:
+          - link "Главная" [ref=e36] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e37] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e38] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e39]:
+        - button "Поиск" [ref=e40] [cursor=pointer]:
+          - img [ref=e41]
+        - button "Уведомления" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]
+        - generic [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Т
+          - generic [ref=e50]: Тест
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - heading "Счета" [level=1] [ref=e53]
+        - generic [ref=e54]:
+          - button "Начальные остатки" [ref=e55] [cursor=pointer]:
+            - img [ref=e56]
+            - text: Начальные остатки
+          - button "Добавить счёт" [ref=e58] [cursor=pointer]:
+            - img [ref=e59]
+            - text: Добавить счёт
+      - table [ref=e63]:
+        - rowgroup [ref=e64]:
+          - row "Название Баланс Дата открытия" [ref=e65]:
+            - columnheader "Название" [ref=e66]
+            - columnheader "Баланс" [ref=e67]
+            - columnheader "Дата открытия" [ref=e68]
+            - columnheader [ref=e69]
+        - rowgroup [ref=e70]:
+          - row "Нет счетов Добавьте первый счёт, чтобы начать учёт" [ref=e71]:
+            - cell "Нет счетов Добавьте первый счёт, чтобы начать учёт" [ref=e72]:
+              - img [ref=e73]
+              - heading "Нет счетов" [level=3] [ref=e75]
+              - paragraph [ref=e76]: Добавьте первый счёт, чтобы начать учёт
+  - generic:
+    - generic:
+      - generic:
+        - heading "Новый счёт" [level=2]
+        - button "Закрыть":
+          - img
+      - generic:
+        - generic:
+          - generic: Название счёта
+          - textbox "Название счёта":
+            - /placeholder: "Например: Тинькофф"
+          - generic: Можете указать банк или тип счёта
+      - generic:
+        - button "Отмена"
+        - button "Сохранить"
+  - generic:
+    - generic:
+      - generic:
+        - heading "Начальные остатки" [level=2]
+        - button "Закрыть":
+          - img
+      - generic:
+        - paragraph: Введите начальные балансы всех ваших счетов. Это поможет системе правильно рассчитывать общую сумму.
+        - table:
+          - rowgroup:
+            - row "Счёт Начальный баланс (₽)":
+              - columnheader "Счёт"
+              - columnheader "Начальный баланс (₽)"
+          - rowgroup
+      - generic:
+        - button "Отмена"
+        - button "Сохранить"
+  - generic:
+    - generic:
+      - heading "Удалить счёт?" [level=3]
+      - paragraph: Это действие нельзя отменить. Все связанные операции будут удалены.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"

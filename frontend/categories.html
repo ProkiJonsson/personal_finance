@@ -1132,9 +1132,6 @@ const activitySwitchModal = document.getElementById('activity-switch-modal');
 document.getElementById('activity-switch-cancel').addEventListener('click', () => {
     activitySwitchModal.classList.remove('open');
 });
-activitySwitchModal.addEventListener('click', e => {
-    if (e.target === activitySwitchModal) activitySwitchModal.classList.remove('open');
-});
 document.getElementById('activity-switch-ok').addEventListener('click', async () => {
     activitySwitchModal.classList.remove('open');
     try {
@@ -1765,7 +1762,6 @@ function closeModal() {
 
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
-categoryModal.addEventListener('click', e => { if (e.target === categoryModal) closeModal(); });
 
 // ── Form submit ───────────────────────────────────────────────────────────────
 document.getElementById('category-form').addEventListener('submit', async (e) => {
@@ -1835,7 +1831,6 @@ function showConfirm(id) { deleteId = id; confirmModal.classList.add('open'); }
 function hideConfirm()   { confirmModal.classList.remove('open'); deleteId = null; }
 
 document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
-confirmModal.addEventListener('click', e => { if (e.target === confirmModal) hideConfirm(); });
 document.getElementById('confirm-ok').addEventListener('click', async () => {
     if (!deleteId) return;
     try {

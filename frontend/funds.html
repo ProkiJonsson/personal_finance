@@ -153,15 +153,35 @@
         .confirm-footer { display: flex; gap: 12px; justify-content: center; }
 
         /* Distribute panel */
-        .distribute-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-        .distribute-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 8px; text-align: left; border-bottom: 2px solid var(--border); }
-        .distribute-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .distribute-table input[type="number"] { width: 120px; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; text-align: right; }
-        .distribute-table .tax-row { background: #fffbeb; font-weight: 600; }
-        .distribute-table .split-row { background: #f0fdf4; }
-        .distribute-total { font-size: 16px; font-weight: 700; text-align: right; margin-top: 12px; }
+        .dist-input-section { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 20px; }
+        .dist-input-section .form-group { flex: 1; margin-bottom: 0; }
+        .dist-input-section .form-group input { font-size: 18px; padding: 12px 16px; font-weight: 600; }
+        .dist-options { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .btn-calc { background: linear-gradient(135deg, var(--primary), var(--primary-dark, #3b5dcc)); color: #fff; border: none; padding: 12px 28px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(74,107,223,0.3); }
+        .btn-calc:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(74,107,223,0.4); }
+        .btn-calc:active { transform: translateY(0); }
+        .btn-calc svg { width: 20px; height: 20px; }
 
-        .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .distribute-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .distribute-table th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .distribute-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .distribute-table input[type="number"] { width: 130px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; text-align: right; font-weight: 600; background: #fafafa; transition: all 0.2s; }
+        .distribute-table input[type="number"]:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); outline: none; }
+        .distribute-table .tax-row { background: #fffbeb; }
+        .distribute-table .tax-row td:first-child { font-weight: 600; color: #92400e; }
+        .distribute-table .split-row { background: #f0fdf4; }
+        .distribute-table .split-row td:first-child { color: #166534; }
+        .distribute-total { font-size: 18px; font-weight: 700; text-align: right; margin-top: 16px; padding: 12px 16px; background: var(--primary-light); border-radius: 12px; color: var(--primary); }
+
+        .dist-history-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; }
+        .dist-history-section h4 { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; }
+        .dist-history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #fafafa; border-radius: 10px; margin-bottom: 6px; font-size: 13px; cursor: pointer; transition: background 0.15s; }
+        .dist-history-item:hover { background: var(--primary-light); }
+        .dist-history-item .amount { font-weight: 700; }
+        .dist-history-item .meta { color: var(--text-muted); }
+        .dist-history-detail { padding: 10px 14px; background: #fff; border: 1px solid var(--border); border-radius: 0 0 10px 10px; margin-top: -7px; margin-bottom: 6px; font-size: 13px; display: none; }
+
+        .checkbox-row { display: flex; align-items: center; gap: 8px; }
         .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
         .checkbox-row label { font-size: 14px; color: var(--text-primary); cursor: pointer; }
 
@@ -277,28 +297,39 @@
 <div class="modal-overlay" id="distribute-modal">
     <div class="modal modal-wide">
         <div class="modal-header">
-            <h3 class="modal-title">Распределить доход</h3>
+            <h3 class="modal-title">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--primary)" stroke-width="2" style="vertical-align:middle;margin-right:8px"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
+                Распределить доход
+            </h3>
             <button class="modal-close" onclick="closeDistribute()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <div class="modal-body">
-            <div class="form-row">
+            <div class="dist-input-section">
                 <div class="form-group">
-                    <label>Сумма дохода</label>
-                    <input type="number" id="dist-amount" placeholder="0" min="1" step="0.01" required>
+                    <label>Сумма дохода (руб.)</label>
+                    <input type="number" id="dist-amount" placeholder="100 000" min="1" step="0.01" required>
                 </div>
-                <div class="form-group" style="justify-content:flex-end">
-                    <div class="checkbox-row">
-                        <input type="checkbox" id="dist-deposit">
-                        <label for="dist-deposit">Доход от вкладов</label>
-                    </div>
-                    <button type="button" class="btn btn-primary btn-sm" id="dist-calc">Рассчитать</button>
+                <div class="form-group">
+                    <label>Дата</label>
+                    <input type="date" id="dist-date" style="font-size:15px;padding:12px 16px">
                 </div>
             </div>
+            <div class="dist-options">
+                <div class="checkbox-row">
+                    <input type="checkbox" id="dist-deposit">
+                    <label for="dist-deposit">Доход от вкладов (НДФЛ)</label>
+                </div>
+                <button type="button" class="btn-calc" id="dist-calc">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M17 14v6M14 17h6"/></svg>
+                    Рассчитать
+                </button>
+            </div>
             <div id="dist-preview"></div>
+            <div id="dist-history"></div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" onclick="closeDistribute()">Отмена</button>
-            <button type="button" class="btn btn-primary" id="dist-confirm" disabled>Подтвердить</button>
+            <button type="button" class="btn btn-primary" id="dist-confirm" disabled>Подтвердить распределение</button>
         </div>
     </div>
 </div>
@@ -579,7 +610,6 @@ function closeModal() { modal.classList.remove('open'); editingId = null; }
 document.getElementById('add-fund-btn').addEventListener('click', () => openModal());
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
-modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
 document.getElementById('fund-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -630,7 +660,6 @@ function deleteFund(id) { deleteId = id; confirmModal.classList.add('open'); }
 function hideConfirm() { confirmModal.classList.remove('open'); deleteId = null; }
 
 document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
-confirmModal.addEventListener('click', e => { if (e.target === confirmModal) hideConfirm(); });
 document.getElementById('confirm-ok').addEventListener('click', async () => {
     if (!deleteId) return;
     try {
@@ -644,27 +673,53 @@ document.getElementById('confirm-ok').addEventListener('click', async () => {
 const distModal = document.getElementById('distribute-modal');
 let distData = null;
 
+function fmtDateRu(d) {
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}.${mm}.${d.getFullYear()}`;
+}
+
+function getDistDate() {
+    return document.getElementById('dist-date').value; // YYYY-MM-DD
+}
+
+function getDistMonthStr() {
+    const val = getDistDate();
+    if (!val) return null;
+    return val.substring(0, 7); // YYYY-MM
+}
+
 document.getElementById('distribute-btn').addEventListener('click', () => {
     document.getElementById('dist-amount').value = '';
     document.getElementById('dist-deposit').checked = false;
     document.getElementById('dist-preview').innerHTML = '';
     document.getElementById('dist-confirm').disabled = true;
+    document.getElementById('dist-date').value = new Date().toISOString().split('T')[0];
     distData = null;
     distModal.classList.add('open');
+    loadDistHistory();
 });
 
 function closeDistribute() { distModal.classList.remove('open'); distData = null; }
-distModal.addEventListener('click', e => { if (e.target === distModal) closeDistribute(); });
 
 document.getElementById('dist-calc').addEventListener('click', async () => {
-    const amount = parseFloat(document.getElementById('dist-amount').value);
-    if (!amount || amount <= 0) return;
+    const amountVal = document.getElementById('dist-amount').value;
+    const amount = parseFloat(amountVal);
+    if (!amount || amount <= 0) {
+        document.getElementById('dist-preview').innerHTML = '<div style="color:var(--danger)">Введите сумму дохода</div>';
+        return;
+    }
     const isDeposit = document.getElementById('dist-deposit').checked;
+    const month = getDistMonthStr();
+
+    document.getElementById('dist-preview').innerHTML = '<div style="color:var(--text-muted)">Расчёт...</div>';
 
     try {
+        const body = { amount, is_deposit_income: isDeposit };
+        if (month) body.month = month;
         distData = await apiFetch('/funds/distribute', {
             method: 'POST',
-            body: JSON.stringify({ amount, is_deposit_income: isDeposit }),
+            body: JSON.stringify(body),
         });
         renderDistPreview(distData);
         document.getElementById('dist-confirm').disabled = false;
@@ -674,47 +729,100 @@ document.getElementById('dist-calc').addEventListener('click', async () => {
 });
 
 function renderDistPreview(data) {
-    let html = '<table class="distribute-table"><thead><tr><th>Фонд</th><th>Уже за месяц</th><th>Цель</th><th>Выделяется</th></tr></thead><tbody>';
+    let html = '<table class="distribute-table"><thead><tr><th>Фонд</th><th>За месяц</th><th>Цель</th><th>Выделяется</th></tr></thead><tbody>';
 
     if (data.tax_deduction) {
         const td = data.tax_deduction;
-        html += `<tr class="tax-row"><td>${escHtml(td.fund_name)} (НДФЛ ${td.tax_rate_applied})</td><td>YTD: ${fmt(td.ytd_deposit_income)}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${td.fund_id}" data-source="tax" value="${td.amount}" step="0.01"></td></tr>`;
+        html += `<tr class="tax-row"><td>${escHtml(td.fund_name)} (НДФЛ ${td.tax_rate_applied})</td><td style="font-size:12px;color:#92400e">Доход с начала года: ${fmt(td.ytd_deposit_income)}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${td.fund_id}" data-source="tax" value="${td.amount}" step="0.01"></td></tr>`;
     }
 
     data.items.forEach(item => {
-        html += `<tr><td>${escHtml(item.fund_name)}</td><td>${fmt(item.current_month_income)}</td><td>${item.target_amount ? fmt(item.target_amount) : '—'}</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="cascade" value="${item.allocated}" step="0.01"></td></tr>`;
+        const pct = item.target_amount > 0 ? Math.round(((item.current_month_income) / item.target_amount) * 100) : 0;
+        const barHtml = item.target_amount > 0 ? `<div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;background:${pct >= 100 ? 'var(--success)' : 'var(--primary)'};border-radius:2px;width:${Math.min(pct,100)}%"></div></div>` : '';
+        html += `<tr><td>${escHtml(item.fund_name)}</td><td>${fmt(item.current_month_income)}${barHtml}</td><td>${item.target_amount ? fmt(item.target_amount) : '—'}</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="cascade" value="${item.allocated}" step="0.01"></td></tr>`;
     });
 
     data.investment_items.forEach(item => {
-        html += `<tr class="split-row"><td>${escHtml(item.fund_name)}</td><td>${item.source || ''}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="split" value="${item.allocated}" step="0.01"></td></tr>`;
+        html += `<tr class="split-row"><td>${escHtml(item.fund_name)}</td><td style="font-size:12px;color:#166534">${item.source || ''}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="split" value="${item.allocated}" step="0.01"></td></tr>`;
     });
 
     html += '</tbody></table>';
-    html += `<div class="distribute-total">Итого: ${fmt(data.total_distributed)}</div>`;
+    html += `<div class="distribute-total">Итого к распределению: ${fmt(data.total_distributed)}</div>`;
     document.getElementById('dist-preview').innerHTML = html;
 }
 
 document.getElementById('dist-confirm').addEventListener('click', async () => {
     const inputs = document.querySelectorAll('.dist-amount-input');
-    const txDate = new Date().toISOString();
-    let created = 0;
+    const txDate = getDistDate() ? new Date(getDistDate()).toISOString() : new Date().toISOString();
+    const confirmItems = [];
 
     for (const input of inputs) {
         const amount = parseFloat(input.value);
         if (!amount || amount <= 0) continue;
         const fundId = parseInt(input.dataset.fund);
-        try {
-            await apiFetch('/transactions', {
-                method: 'POST',
-                body: JSON.stringify({ date: txDate, amount, type: 'income', fund_id: fundId }),
-            });
-            created++;
-        } catch (err) { console.error('Ошибка создания транзакции:', err); }
+        const source = input.dataset.source || 'cascade';
+        confirmItems.push({ fund_id: fundId, amount, source });
     }
 
-    closeDistribute();
-    if (created > 0) loadAll();
+    if (!confirmItems.length) return;
+
+    try {
+        // Сохраняем в историю
+        await apiFetch('/funds/distribute/confirm', {
+            method: 'POST',
+            body: JSON.stringify({
+                amount: distData ? distData.total_distributed : confirmItems.reduce((s, i) => s + i.amount, 0),
+                is_deposit_income: document.getElementById('dist-deposit').checked,
+                month: getDistMonthStr(),
+                items: confirmItems,
+            }),
+        });
+
+        // Создаём транзакции
+        for (const item of confirmItems) {
+            try {
+                await apiFetch('/transactions', {
+                    method: 'POST',
+                    body: JSON.stringify({ date: txDate, amount: item.amount, type: 'income', fund_id: item.fund_id }),
+                });
+            } catch (err) { console.error('Ошибка создания транзакции:', err); }
+        }
+
+        closeDistribute();
+        loadAll();
+    } catch (err) {
+        alert('Ошибка сохранения: ' + err.message);
+    }
 });
+
+async function loadDistHistory() {
+    try {
+        const logs = await apiFetch('/funds/distributions');
+        const el = document.getElementById('dist-history');
+        if (!logs.length) { el.innerHTML = ''; return; }
+
+        let html = '<div class="dist-history-section"><h4>История распределений</h4>';
+        logs.slice(0, 10).forEach(log => {
+            const d = new Date(log.created_at);
+            const dateStr = fmtDateRu(d);
+            const timeStr = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            html += `<div class="dist-history-item" onclick="toggleDistDetail(${log.id})"><span>${dateStr} ${timeStr} <span class="meta">${log.month}${log.is_deposit_income ? ' (вклады)' : ''}</span></span><span class="amount">${fmt(log.amount)}</span></div>`;
+            html += `<div class="dist-history-detail" id="dist-detail-${log.id}">`;
+            log.items.forEach(i => {
+                html += `<div style="display:flex;justify-content:space-between;padding:3px 0"><span>${escHtml(i.fund_name)} <span style="color:var(--text-muted);font-size:11px">${i.source}</span></span><span style="font-weight:600">${fmt(i.allocated)}</span></div>`;
+            });
+            html += '</div>';
+        });
+        html += '</div>';
+        el.innerHTML = html;
+    } catch (e) { console.error(e); }
+}
+
+function toggleDistDetail(id) {
+    const el = document.getElementById('dist-detail-' + id);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' || !el.style.display ? 'block' : 'none';
+}
 
 // ── Init ──
 setView(currentView);
