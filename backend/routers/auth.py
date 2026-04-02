@@ -45,7 +45,7 @@ class TokenResponse(BaseModel):
     """Ответ с JWT-токеном после успешной авторизации"""
     access_token: str
     token_type: str = "bearer"
-    user_id: int
+    user_id: str
     name: str
     email: str
 

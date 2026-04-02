@@ -42,7 +42,21 @@
       "mcp__sqlite__read_query",
       "mcp__sqlite__write_query",
       "Read(//c/Users/samsung/.claude/projects/c--Users-samsung-dev-finance/memory/**)",
-      "Bash(curl -s http://localhost:8000/docs -o /dev/null -w \"%{http_code}\")"
+      "Bash(curl -s http://localhost:8000/docs -o /dev/null -w \"%{http_code}\")",
+      "Bash(taskkill //PID 20060 //F)",
+      "Bash(rm /c/Users/samsung/dev/finance/backend/finance.db)",
+      "Bash(uvicorn main:app --reload)",
+      "Bash(python -m pytest tests/test_settings.py -v)",
+      "Bash(python -m pytest tests/test_settings.py tests/test_distribute.py -v)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(curl -s -X POST http://localhost:8000/auth/register -H \"Content-Type: application/json\" -d '{\"name\":\"Рашид Низамеев\",\"email\":\"r@r.ru\",\"password\":\"123456\"}')",
+      "Bash(curl -s -X POST http://localhost:8000/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"r@r.ru\",\"password\":\"123456\"}')",
+      "Bash(python -m json.tool)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 21704 //F)",
+      "Bash(taskkill //PID 4352 //F)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(taskkill //IM python.exe //F)"
     ]
   }
 }

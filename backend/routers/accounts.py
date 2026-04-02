@@ -48,7 +48,7 @@ class AccountUpdate(BaseModel):
 class AccountResponse(BaseModel):
     """Ответ с данными счёта"""
     id: int
-    user_id: int
+    user_id: str
     name: str
     balance: float
     created_at: datetime
@@ -60,7 +60,7 @@ class AccountResponse(BaseModel):
 # Вспомогательные функции
 # ──────────────────────────────────────────────
 
-def _get_account_or_404(account_id: int, user_id: int, db: Session) -> models.Account:
+def _get_account_or_404(account_id: int, user_id: str, db: Session) -> models.Account:
     """Возвращает счёт пользователя или выбрасывает 404."""
     account = db.query(models.Account).filter(
         models.Account.id == account_id,

@@ -55,7 +55,7 @@ class TransactionUpdate(BaseModel):
 class TransactionResponse(BaseModel):
     """Ответ с данными транзакции"""
     id: int
-    user_id: int
+    user_id: str
     date: datetime
     amount: float
     type: models.TransactionType
@@ -91,7 +91,7 @@ class InitialBalancesRequest(BaseModel):
 # Вспомогательные функции
 # ──────────────────────────────────────────────
 
-def _get_transaction_or_404(transaction_id: int, user_id: int, db: Session) -> models.Transaction:
+def _get_transaction_or_404(transaction_id: int, user_id: str, db: Session) -> models.Transaction:
     """Возвращает транзакцию пользователя или выбрасывает 404."""
     transaction = db.query(models.Transaction).filter(
         models.Transaction.id == transaction_id,
@@ -103,7 +103,7 @@ def _get_transaction_or_404(transaction_id: int, user_id: int, db: Session) -> m
 
 
 def _verify_related_objects(
-    user_id: int,
+    user_id: str,
     fund_id: Optional[int],
     category_id: Optional[int],
     account_id: Optional[int],

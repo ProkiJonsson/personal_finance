@@ -1,0 +1,11 @@
+[     170ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:8000/settings:0
+[     181ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:8000/funds:0
+[     184ms] [ERROR] Error loading accounts: Error: Не удалось подтвердить учётные данные
+    at apiFetch (http://localhost:8080/dashboard.html:1030:15)
+    at async Promise.all (index 1)
+    at async loadAccounts (http://localhost:8080/dashboard.html:1063:35) @ http://localhost:8080/dashboard.html:1137
+[     184ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:8000/accounts:0
+[     185ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:8000/transactions:0
+[     186ms] [ERROR] Error loading transactions: Error: Не удалось подтвердить учётные данные
+    at apiFetch (http://localhost:8080/dashboard.html:1030:15)
+    at async loadTransactions (http://localhost:8080/dashboard.html:1147:21) @ http://localhost:8080/dashboard.html:1202

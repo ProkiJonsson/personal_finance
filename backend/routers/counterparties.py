@@ -74,7 +74,7 @@ class ContractResponse(BaseModel):
 
 class CounterpartyResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     name: str
     description: Optional[str]
     balance: float
@@ -86,7 +86,7 @@ class CounterpartyResponse(BaseModel):
 
 class CounterpartyListItem(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     name: str
     description: Optional[str]
     balance: float
@@ -100,7 +100,7 @@ class CounterpartyListItem(BaseModel):
 # Helpers
 # ──────────────────────────────────────────────
 
-def _get_counterparty_or_404(cp_id: int, user_id: int, db: Session) -> models.Counterparty:
+def _get_counterparty_or_404(cp_id: int, user_id: str, db: Session) -> models.Counterparty:
     cp = db.query(models.Counterparty).filter(
         models.Counterparty.id == cp_id,
         models.Counterparty.user_id == user_id,
@@ -110,7 +110,7 @@ def _get_counterparty_or_404(cp_id: int, user_id: int, db: Session) -> models.Co
     return cp
 
 
-def _calc_counterparty_balances(user_id: int, db: Session) -> dict[int, float]:
+def _calc_counterparty_balances(user_id: str, db: Session) -> dict[int, float]:
     """Словарь {counterparty_id: balance} через contracts → funds → transactions."""
     rows = (
         db.query(

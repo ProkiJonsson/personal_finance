@@ -8,7 +8,7 @@
 
 **Backend:** Python 3.x + FastAPI 0.115, SQLAlchemy 2.0, SQLite (`backend/finance.db`), Uvicorn 0.30, python-jose + passlib[bcrypt], Pydantic 2.9. Документация: `/docs`.
 
-**Frontend:** Vanilla HTML5 / CSS3 / JavaScript ES6+, Fetch API, localStorage/sessionStorage. Утилиты инлайновые: `fmt()`, `fmtDateRu()`, `escHtml()`.
+**Frontend:** Vanilla HTML5 / CSS3 / JavaScript ES6+, Fetch API, localStorage/sessionStorage. Утилиты инлайновые: `fmt()`, `fmtDateRu()`, `escHtml()`. Глобальные утилиты в `js/layout.js`: `formatMoney()`, `parseMoney()`, `initMoneyInput()`.
 
 **Запуск:** `cd backend && uvicorn main:app --reload`. Frontend — статичные HTML-файлы через `file://` или HTTP-сервер.
 
@@ -20,7 +20,7 @@
 finance/
 ├── backend/
 │   ├── main.py              # FastAPI, CORS (перед роутерами), роутеры
-│   ├── models.py            # SQLAlchemy ORM-модели (14 моделей)
+│   ├── models.py            # SQLAlchemy ORM-модели (15 моделей)
 │   ├── database.py          # SQLite-соединение, сессии
 │   ├── auth.py              # JWT, get_current_user
 │   ├── init_db.sql          # Дамп схемы для развёртывания
@@ -40,11 +40,11 @@ finance/
 │   ├── dashboard.html       # Главная, карточки фондов
 │   ├── accounts.html        # CRUD счетов
 │   ├── funds.html           # CRUD фондов + распределение дохода
-│   ├── categories.html      # Статьи учёта (виды/группы/статьи)
+│   ├── categories.html      # Статьи учёта (виды/группы/статьи, без вкладок)
 │   ├── operations.html      # Транзакции с фильтрами
 │   ├── counterparties.html  # Контрагенты + договоры + вложения
 │   ├── cascade.html         # Расклад (каскады)
-│   ├── settings.html        # Настройки (фонды, НДФЛ, лимиты)
+│   ├── settings.html        # Настройки (фонды, виды деятельности, НДФЛ, лимиты)
 │   ├── css/
 │   │   ├── sidebar.css      # Стили боковой панели
 │   │   └── common.css       # Общие CSS-переменные и базовые стили
@@ -55,9 +55,9 @@ finance/
 
 ---
 
-## Таблицы БД (14 моделей)
+## Таблицы БД (15 моделей)
 
-`users` — пользователи (email, password_hash, bcrypt). CASCADE DELETE на все дочерние.
+`users` — пользователи (id: UUID v4 String(36), email, password_hash, bcrypt). CASCADE DELETE на все дочерние. Все дочерние таблицы: `user_id` String(36).
 
 `counterparties` — контрагенты (name, description). При создании авто-создаётся договор "Основной".
 
@@ -75,7 +75,7 @@ finance/
 
 `distribution_logs` + `distribution_log_items` — история распределений дохода (amount, month YYYY-MM, is_deposit_income). Items: fund_id, fund_name, allocated, source.
 
-`tax_settings` — НДФЛ на вклады по годам (прогрессивный: 0%/13%/15%).
+`tax_settings` + `tax_brackets` — НДФЛ на вклады по годам. tax_settings: year, tax_free_threshold. tax_brackets: threshold_amount (порог «до»), rate (0..1), sort_order. До 5 порогов на год. Расчёт прогрессивный: каждый порог = верхняя граница зоны, доход свыше последнего порога — по последней ставке.
 
 `app_settings` — fund_accounting_enabled, max_attachment_size_mb.
 
@@ -99,13 +99,14 @@ finance/
 - Токен: `localStorage` (remember me) или `sessionStorage`
 - `Authorization: Bearer <token>` на все защищённые запросы
 - CSS-переменные в `css/common.css`
-- `js/layout.js` — инъекция sidebar/header, скрытие `[data-fund-feature]` если fund_accounting выключен
+- `js/layout.js` — инъекция sidebar/header, скрытие `[data-fund-feature]` если fund_accounting выключен, утилиты форматирования денежных полей (`formatMoney`, `parseMoney`, `initMoneyInput`)
+- Денежные поля: `type="text" inputmode="decimal" data-money`, формат "1 600 000,00". Для динамических полей вызывать `initMoneyInput(el)` после вставки в DOM
 - Sidebar: основная секция (Главная, Операции, Фонды, Счета) + bottom (Каскад Фондов, Контрагенты, Статьи учёта, Настройки, Выход)
 - Тип фонда — кнопки `.btn-select-group`
 - Модалки **не закрываются** по клику за пределами окна
 - Каскад: "Принцип" (не "Триггер"), валидация суммы % ≤ 100 на один принцип
 
-**Тесты:** `cd backend && python -m pytest tests/ -v` (53 теста, in-memory SQLite + StaticPool)
+**Тесты:** `cd backend && python -m pytest tests/ -v` (57 тестов, in-memory SQLite + StaticPool)
 
 ---
 
@@ -139,6 +140,8 @@ finance/
 3. **Баланс фонда** — `SUM(income) - SUM(expenses)` на лету.
 4. **Каскад** — дата-версионная конфигурация. Трек обнуляется ежемесячно (`_get_month_income`). `POST /funds/distribute` — preview, confirm — сохраняет лог + создаёт транзакции.
 5. **Контрагенты → Договоры → Фонды** — Fund.contract_id через договор.
-6. **НДФЛ** — прогрессивный расчёт. Системный фонд is_system=True.
-7. **JWT** — 24-часовой токен, без refresh.
-8. **CORS** — `allow_origins=["*"]`, middleware перед роутерами.
+6. **НДФЛ** — прогрессивный расчёт по порогам «до» (до 5 штук). Каждый порог = верхняя граница зоны, свыше последнего — последняя ставка. Ставки хранятся как дробь (0.13), на фронте вводятся как целые (13%). Системный фонд is_system=True.
+7. **Модалки** — `max-height: calc(100vh - 48px)`, flex-раскладка (header/body/footer), `modal-body` со скроллом, кнопки всегда видны. Не закрываются по клику вне окна. Подтверждение удаления — кастомная модалка (не `confirm()`).
+8. **JWT** — 24-часовой токен, без refresh. Payload: `sub` (UUID строка), `name`, `exp`.
+9. **Виды деятельности** — toggle на `settings.html`, при переключении вызывает `/categories/clear-user-data` и редиректит на `categories.html`. На categories.html — подсказка со ссылкой на Настройки (скрывается когда режим включён).
+9. **CORS** — `allow_origins=["*"]`, middleware перед роутерами.

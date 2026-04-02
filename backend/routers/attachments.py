@@ -24,7 +24,7 @@ ALLOWED_MIME_TYPES = {"application/pdf", "image/jpeg", "image/png"}
 
 class AttachmentResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     entity_type: models.AttachmentEntityType
     entity_id: int
     filename: str
@@ -39,7 +39,7 @@ class AttachmentResponse(BaseModel):
 # Helpers
 # ──────────────────────────────────────────────
 
-def _get_max_size(user_id: int, db: Session) -> int:
+def _get_max_size(user_id: str, db: Session) -> int:
     setting = db.query(models.AppSetting).filter(models.AppSetting.user_id == user_id).first()
     max_mb = setting.max_attachment_size_mb if setting else 10
     return max_mb * 1024 * 1024

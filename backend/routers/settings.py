@@ -28,22 +28,35 @@ class AppSettingUpdate(BaseModel):
     max_attachment_size_mb: Optional[int] = None
 
 
+class TaxBracketSchema(BaseModel):
+    threshold_amount: float
+    rate: float
+
+
 class TaxSettingCreate(BaseModel):
     year: int
     tax_free_threshold: float
-    rate_standard: float = 0.13
-    rate_elevated: float = 0.15
-    elevated_threshold: float = 2000000.0
+    brackets: list[TaxBracketSchema] = [
+        TaxBracketSchema(threshold_amount=2400000, rate=0.13),
+        TaxBracketSchema(threshold_amount=50000000, rate=0.15),
+    ]
+
+
+class TaxBracketResponse(BaseModel):
+    id: int
+    threshold_amount: float
+    rate: float
+    sort_order: int
+
+    model_config = {"from_attributes": True}
 
 
 class TaxSettingResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     year: int
     tax_free_threshold: float
-    rate_standard: float
-    rate_elevated: float
-    elevated_threshold: float
+    brackets: list[TaxBracketResponse]
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -53,7 +66,7 @@ class TaxSettingResponse(BaseModel):
 # App Settings
 # ──────────────────────────────────────────────
 
-def _get_or_create_app_setting(user_id: int, db: Session) -> models.AppSetting:
+def _get_or_create_app_setting(user_id: str, db: Session) -> models.AppSetting:
     setting = db.query(models.AppSetting).filter(models.AppSetting.user_id == user_id).first()
     if not setting:
         setting = models.AppSetting(user_id=user_id)
@@ -110,17 +123,32 @@ def upsert_tax_setting(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ) -> models.TaxSetting:
+    if len(data.brackets) > 5:
+        raise HTTPException(status_code=400, detail="Максимум 5 порогов")
+    if len(data.brackets) < 1:
+        raise HTTPException(status_code=400, detail="Нужен хотя бы один порог")
+
     existing = db.query(models.TaxSetting).filter(
         models.TaxSetting.user_id == current_user.id,
         models.TaxSetting.year == data.year,
     ).first()
     if existing:
-        for field, value in data.model_dump().items():
-            setattr(existing, field, value)
+        existing.tax_free_threshold = data.tax_free_threshold
+        # Заменяем brackets
+        existing.brackets.clear()
+        db.flush()
+        for i, b in enumerate(data.brackets):
+            existing.brackets.append(models.TaxBracket(
+                threshold_amount=b.threshold_amount, rate=b.rate, sort_order=i,
+            ))
         db.commit()
         db.refresh(existing)
         return existing
-    ts = models.TaxSetting(user_id=current_user.id, **data.model_dump())
+    ts = models.TaxSetting(user_id=current_user.id, year=data.year, tax_free_threshold=data.tax_free_threshold)
+    for i, b in enumerate(data.brackets):
+        ts.brackets.append(models.TaxBracket(
+            threshold_amount=b.threshold_amount, rate=b.rate, sort_order=i,
+        ))
     db.add(ts)
     db.commit()
     db.refresh(ts)

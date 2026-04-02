@@ -293,4 +293,59 @@
         });
     });
 
+    // ── 13. Money input formatting (1 600 000,00) ─────────────────────────────
+    function formatMoney(value) {
+        if (value === '' || value == null) return '';
+        var num = parseFloat(String(value).replace(/\s/g, '').replace(',', '.'));
+        if (isNaN(num)) return '';
+        var parts = num.toFixed(2).split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        return parts[0] + ',' + parts[1];
+    }
+
+    function parseMoney(str) {
+        if (!str) return '';
+        var cleaned = str.replace(/\s/g, '').replace(',', '.');
+        var num = parseFloat(cleaned);
+        return isNaN(num) ? '' : num;
+    }
+
+    function initMoneyInput(input) {
+        if (input._moneyInit) return;
+        input._moneyInit = true;
+
+        input.addEventListener('focus', function () {
+            var val = parseMoney(this.value);
+            this.value = val !== '' ? String(val).replace('.', ',') : '';
+        });
+
+        input.addEventListener('blur', function () {
+            this.value = formatMoney(this.value);
+        });
+
+        input.addEventListener('input', function () {
+            var pos = this.selectionStart;
+            var raw = this.value;
+            // Allow only digits, comma, minus
+            var cleaned = raw.replace(/[^\d,\-]/g, '');
+            if (cleaned !== raw) {
+                this.value = cleaned;
+                this.selectionStart = this.selectionEnd = pos - (raw.length - cleaned.length);
+            }
+        });
+
+        // Format initial value if present
+        if (input.value) {
+            input.value = formatMoney(input.value);
+        }
+    }
+
+    // Auto-init all data-money inputs
+    document.querySelectorAll('[data-money]').forEach(initMoneyInput);
+
+    // Expose globally
+    window.formatMoney = formatMoney;
+    window.parseMoney = parseMoney;
+    window.initMoneyInput = initMoneyInput;
+
 })();

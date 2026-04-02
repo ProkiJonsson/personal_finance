@@ -125,15 +125,15 @@
         /* Modal */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
         .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
         .modal-wide { max-width: 680px; }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
         .modal-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
         .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
         .modal-close:hover { background: var(--bg-body); }
         .modal-close svg { width: 18px; height: 18px; }
-        .modal-body { padding: 24px; }
-        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
 
         .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -307,7 +307,7 @@
             <div class="dist-input-section">
                 <div class="form-group">
                     <label>Сумма дохода (руб.)</label>
-                    <input type="number" id="dist-amount" placeholder="100 000" min="1" step="0.01" required>
+                    <input type="text" inputmode="decimal" id="dist-amount" placeholder="100 000,00" data-money required>
                 </div>
                 <div class="form-group">
                     <label>Дата</label>
@@ -704,7 +704,7 @@ function closeDistribute() { distModal.classList.remove('open'); distData = null
 
 document.getElementById('dist-calc').addEventListener('click', async () => {
     const amountVal = document.getElementById('dist-amount').value;
-    const amount = parseFloat(amountVal);
+    const amount = parseMoney(amountVal);
     if (!amount || amount <= 0) {
         document.getElementById('dist-preview').innerHTML = '<div style="color:var(--danger)">Введите сумму дохода</div>';
         return;
@@ -733,22 +733,23 @@ function renderDistPreview(data) {
 
     if (data.tax_deduction) {
         const td = data.tax_deduction;
-        html += `<tr class="tax-row"><td>${escHtml(td.fund_name)} (НДФЛ ${td.tax_rate_applied})</td><td style="font-size:12px;color:#92400e">Доход с начала года: ${fmt(td.ytd_deposit_income)}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${td.fund_id}" data-source="tax" value="${td.amount}" step="0.01"></td></tr>`;
+        html += `<tr class="tax-row"><td>${escHtml(td.fund_name)} (НДФЛ ${td.tax_rate_applied})</td><td style="font-size:12px;color:#92400e">Доход с начала года: ${fmt(td.ytd_deposit_income)}</td><td>—</td><td><input type="text" inputmode="decimal" class="dist-amount-input" data-money data-fund="${td.fund_id}" data-source="tax" value="${formatMoney(td.amount)}"></td></tr>`;
     }
 
     data.items.forEach(item => {
         const pct = item.target_amount > 0 ? Math.round(((item.current_month_income) / item.target_amount) * 100) : 0;
         const barHtml = item.target_amount > 0 ? `<div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;background:${pct >= 100 ? 'var(--success)' : 'var(--primary)'};border-radius:2px;width:${Math.min(pct,100)}%"></div></div>` : '';
-        html += `<tr><td>${escHtml(item.fund_name)}</td><td>${fmt(item.current_month_income)}${barHtml}</td><td>${item.target_amount ? fmt(item.target_amount) : '—'}</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="cascade" value="${item.allocated}" step="0.01"></td></tr>`;
+        html += `<tr><td>${escHtml(item.fund_name)}</td><td>${fmt(item.current_month_income)}${barHtml}</td><td>${item.target_amount ? fmt(item.target_amount) : '—'}</td><td><input type="text" inputmode="decimal" class="dist-amount-input" data-money data-fund="${item.fund_id}" data-source="cascade" value="${formatMoney(item.allocated)}"></td></tr>`;
     });
 
     data.investment_items.forEach(item => {
-        html += `<tr class="split-row"><td>${escHtml(item.fund_name)}</td><td style="font-size:12px;color:#166534">${item.source || ''}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="split" value="${item.allocated}" step="0.01"></td></tr>`;
+        html += `<tr class="split-row"><td>${escHtml(item.fund_name)}</td><td style="font-size:12px;color:#166534">${item.source || ''}</td><td>—</td><td><input type="text" inputmode="decimal" class="dist-amount-input" data-money data-fund="${item.fund_id}" data-source="split" value="${formatMoney(item.allocated)}"></td></tr>`;
     });
 
     html += '</tbody></table>';
     html += `<div class="distribute-total">Итого к распределению: ${fmt(data.total_distributed)}</div>`;
     document.getElementById('dist-preview').innerHTML = html;
+    document.querySelectorAll('.dist-amount-input[data-money]').forEach(initMoneyInput);
 }
 
 document.getElementById('dist-confirm').addEventListener('click', async () => {
@@ -757,7 +758,7 @@ document.getElementById('dist-confirm').addEventListener('click', async () => {
     const confirmItems = [];
 
     for (const input of inputs) {
-        const amount = parseFloat(input.value);
+        const amount = parseMoney(input.value);
         if (!amount || amount <= 0) continue;
         const fundId = parseInt(input.dataset.fund);
         const source = input.dataset.source || 'cascade';

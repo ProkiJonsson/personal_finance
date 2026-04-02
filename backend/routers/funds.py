@@ -52,7 +52,7 @@ class FundUpdate(BaseModel):
 
 class FundResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     name: str
     description: Optional[str]
     type: models.FundType
@@ -146,7 +146,7 @@ class DistLogResponse(BaseModel):
 # Вспомогательные функции
 # ──────────────────────────────────────────────
 
-def _get_fund_or_404(fund_id: int, user_id: int, db: Session) -> models.Fund:
+def _get_fund_or_404(fund_id: int, user_id: str, db: Session) -> models.Fund:
     fund = db.query(models.Fund).filter(
         models.Fund.id == fund_id,
         models.Fund.user_id == user_id,
@@ -156,7 +156,7 @@ def _get_fund_or_404(fund_id: int, user_id: int, db: Session) -> models.Fund:
     return fund
 
 
-def _calc_balances(user_id: int, db: Session) -> dict[int, float]:
+def _calc_balances(user_id: str, db: Session) -> dict[int, float]:
     rows = (
         db.query(
             models.Transaction.fund_id,
@@ -207,7 +207,7 @@ def _fund_to_response(fund: models.Fund, balances: dict[int, float]) -> FundResp
     )
 
 
-def _get_month_income(user_id: int, fund_id: int, year: int, month: int, db: Session) -> float:
+def _get_month_income(user_id: str, fund_id: int, year: int, month: int, db: Session) -> float:
     result = (
         db.query(func.coalesce(func.sum(models.Transaction.amount), 0.0))
         .filter(
@@ -515,7 +515,7 @@ def delete_fund(
         raise HTTPException(status_code=409, detail="Нельзя удалить фонд: есть связанные данные")
 
 
-def _calc_tax_deduction(user_id: int, amount: float, year: int, db: Session) -> Optional[TaxDeduction]:
+def _calc_tax_deduction(user_id: str, amount: float, year: int, db: Session) -> Optional[TaxDeduction]:
     """Прогрессивный расчёт НДФЛ на доход от вкладов."""
     tax_setting = (
         db.query(models.TaxSetting)
@@ -556,35 +556,38 @@ def _calc_tax_deduction(user_id: int, amount: float, year: int, db: Session) -> 
             extract("year", models.Transaction.date) == year,
         ).scalar())
 
-    # Рассчитываем прогрессивный налог
+    # Рассчитываем прогрессивный налог по порогам (каждый порог = "до" суммы)
     threshold = tax_setting.tax_free_threshold
-    elevated = tax_setting.elevated_threshold
+    brackets = sorted(tax_setting.brackets, key=lambda b: b.threshold_amount)
     prev_total = ytd_income
     new_total = ytd_income + amount
 
     tax = 0.0
     rate_desc = "0%"
 
-    # Часть в зоне 0%
-    if new_total <= threshold:
+    if new_total <= threshold or not brackets:
         tax = 0.0
         rate_desc = "0%"
     else:
-        # Часть до порога — 0%
         taxable_start = max(prev_total, threshold)
-        # Часть в зоне 13%
-        if taxable_start < elevated:
-            taxable_13 = min(new_total, elevated) - taxable_start
-            if taxable_13 > 0:
-                tax += taxable_13 * tax_setting.rate_standard
-                rate_desc = f"{int(tax_setting.rate_standard*100)}%"
-        # Часть в зоне 15%
-        if new_total > elevated:
-            taxable_15_start = max(taxable_start, elevated)
-            taxable_15 = new_total - taxable_15_start
-            if taxable_15 > 0:
-                tax += taxable_15 * tax_setting.rate_elevated
-                rate_desc = f"{int(tax_setting.rate_elevated*100)}%"
+        prev_bound = threshold
+        for bracket in brackets:
+            bracket_upper = threshold + bracket.threshold_amount
+            if taxable_start >= bracket_upper:
+                prev_bound = bracket_upper
+                continue
+            zone_start = max(taxable_start, prev_bound)
+            zone_end = min(new_total, bracket_upper)
+            if zone_start < zone_end:
+                tax += (zone_end - zone_start) * bracket.rate
+                rate_desc = f"{int(bracket.rate * 100)}%"
+            prev_bound = bracket_upper
+        # Доход свыше последнего порога — последняя ставка
+        if new_total > prev_bound and brackets:
+            zone_start = max(taxable_start, prev_bound)
+            if zone_start < new_total:
+                tax += (new_total - zone_start) * brackets[-1].rate
+                rate_desc = f"{int(brackets[-1].rate * 100)}%"
 
     tax = round(tax, 2)
     if tax <= 0:

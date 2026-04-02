@@ -28,7 +28,7 @@
         .setting-label { font-size: 14px; color: var(--text-primary); }
         .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        .toggle { position: relative; width: 48px; height: 26px; }
+        .toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
         .toggle input { opacity: 0; width: 0; height: 0; }
         .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 26px; cursor: pointer; transition: background 0.2s; }
         .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
@@ -41,17 +41,19 @@
         .tax-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         .tax-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
         .tax-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .tax-table tr[data-year] { cursor: pointer; transition: background 0.15s; }
+        .tax-table tr[data-year]:hover { background: var(--bg-hover, #f5f5f5); }
         .tax-table .col-actions { text-align: right; width: 60px; }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
         .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
         .modal-title { font-size: 18px; font-weight: 700; }
         .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
         .modal-close svg { width: 18px; height: 18px; }
-        .modal-body { padding: 24px; }
-        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
 
         .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
@@ -59,6 +61,19 @@
         .form-group input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-error { font-size: 12px; color: var(--danger); }
+
+        .bracket-row { display: grid; grid-template-columns: 1fr 80px 36px; gap: 8px; align-items: end; margin-bottom: 10px; }
+        .bracket-row .form-group { margin-bottom: 0; }
+        .bracket-row .btn-remove { width: 36px; height: 40px; border: none; background: transparent; color: var(--danger); cursor: pointer; border-radius: 8px; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .bracket-row .btn-remove:hover { background: #fee2e2; }
+
+        /* Confirm Modal */
+        .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .confirm-overlay.open { opacity: 1; pointer-events: all; }
+        .confirm-box { background: #fff; border-radius: 20px; width: 100%; max-width: 380px; padding: 32px; text-align: center; }
+        .confirm-box h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+        .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+        .confirm-footer { display: flex; gap: 12px; justify-content: center; }
 
         @media (max-width: 768px) { .main-content { margin-left: 0; margin-bottom: 70px; } .page { padding: 16px; } .form-row { grid-template-columns: 1fr; } }
     </style>
@@ -93,6 +108,21 @@
             </div>
         </div>
 
+        <!-- Categories Settings -->
+        <div class="settings-card">
+            <h2>Статьи учёта</h2>
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Вести учёт по видам деятельности</div>
+                    <div class="setting-desc">При включении в структуру категорий добавляется уровень «Вид деятельности» с тремя разделами: Операционная, Инвестиционная и Финансовая деятельность</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="activity-mode-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
         <!-- Tax Settings -->
         <div class="settings-card">
             <h2>НДФЛ на доходы от вкладов</h2>
@@ -114,26 +144,17 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Год</label>
-                    <input type="number" id="tax-year" min="2020" max="2050" required>
+                    <input type="number" id="tax-year" min="2020" max="2050">
                 </div>
                 <div class="form-group">
                     <label>Необлагаемый порог (руб.)</label>
-                    <input type="number" id="tax-threshold" placeholder="160000" min="0" step="1000" required>
+                    <input type="text" inputmode="decimal" id="tax-threshold" placeholder="Введите сумму" data-money>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Ставка стандартная</label>
-                        <input type="number" id="tax-rate-std" value="0.13" step="0.01" min="0" max="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Ставка повышенная</label>
-                        <input type="number" id="tax-rate-elev" value="0.15" step="0.01" min="0" max="1" required>
-                    </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <label style="font-size:13px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin:0">Пороги и ставки</label>
+                    <button type="button" class="btn btn-sm btn-secondary" id="add-bracket-btn">+ Порог</button>
                 </div>
-                <div class="form-group">
-                    <label>Порог повышенной ставки (руб.)</label>
-                    <input type="number" id="tax-elev-threshold" value="2000000" min="0" step="100000" required>
-                </div>
+                <div id="brackets-container"></div>
                 <span class="form-error" id="tax-error"></span>
             </div>
             <div class="modal-footer">
@@ -141,6 +162,30 @@
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="confirm-overlay" id="confirm-modal">
+    <div class="confirm-box">
+        <h3 id="confirm-title">Удалить настройку НДФЛ?</h3>
+        <p id="confirm-text">Это действие нельзя отменить.</p>
+        <div class="confirm-footer">
+            <button class="btn btn-secondary" id="confirm-cancel">Отмена</button>
+            <button class="btn btn-danger" id="confirm-delete">Удалить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Mode Switch Warning Modal -->
+<div class="confirm-overlay" id="activity-switch-modal">
+    <div class="confirm-box">
+        <h3>Сменить режим учёта?</h3>
+        <p>Все группы статей и статьи будут удалены. Виды деятельности и типы операций сохранятся. Данные придётся заполнить заново.</p>
+        <div class="confirm-footer">
+            <button class="btn btn-secondary" id="activity-switch-cancel">Отмена</button>
+            <button class="btn btn-danger" id="activity-switch-ok">Сменить и очистить</button>
+        </div>
     </div>
 </div>
 
@@ -209,15 +254,17 @@ function renderTax() {
     const el = document.getElementById('tax-container');
     if (!taxSettings.length) { el.innerHTML = '<p style="color:var(--text-muted);margin-top:12px">Не настроено</p>'; return; }
 
-    let html = '<table class="tax-table"><thead><tr><th>Год</th><th>Порог</th><th>Ставка</th><th>Повышенная</th><th>Порог повыш.</th><th class="col-actions"></th></tr></thead><tbody>';
+    let html = '<table class="tax-table"><thead><tr><th>Год</th><th>Необлагаемый порог</th><th>Пороги / Ставки</th><th class="col-actions"></th></tr></thead><tbody>';
     taxSettings.forEach(t => {
-        html += `<tr>
+        const bracketsStr = (t.brackets || [])
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map(b => `до ${fmt(b.threshold_amount)} — ${Math.round(b.rate * 100)}%`)
+            .join('<br>');
+        html += `<tr data-year="${t.year}" onclick="editTax(${t.year})">
             <td><strong>${t.year}</strong></td>
             <td>${fmt(t.tax_free_threshold)}</td>
-            <td>${Math.round(t.rate_standard * 100)}%</td>
-            <td>${Math.round(t.rate_elevated * 100)}%</td>
-            <td>${fmt(t.elevated_threshold)}</td>
-            <td class="col-actions"><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="deleteTax(${t.year})">✕</button></td>
+            <td style="font-size:13px;line-height:1.6">${bracketsStr || '—'}</td>
+            <td class="col-actions"><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="event.stopPropagation();deleteTax(${t.year})">✕</button></td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -225,29 +272,98 @@ function renderTax() {
 }
 
 const taxModal = document.getElementById('tax-modal');
-function openTaxModal() {
-    document.getElementById('tax-year').value = new Date().getFullYear();
-    document.getElementById('tax-threshold').value = '';
-    document.getElementById('tax-rate-std').value = '0.13';
-    document.getElementById('tax-rate-elev').value = '0.15';
-    document.getElementById('tax-elev-threshold').value = '2000000';
+let modalBrackets = [];
+
+function renderBrackets() {
+    const container = document.getElementById('brackets-container');
+    let html = '';
+    modalBrackets.forEach((b, i) => {
+        html += `<div class="bracket-row">
+            <div class="form-group">
+                ${i === 0 ? '<label>Порог дохода до (руб.)</label>' : ''}
+                <input type="text" inputmode="decimal" data-money value="${b.threshold_amount ? formatMoney(b.threshold_amount) : ''}" onblur="this.value=formatMoney(this.value);modalBrackets[${i}].threshold_amount=parseMoney(this.value)" placeholder="Введите сумму">
+            </div>
+            <div class="form-group">
+                ${i === 0 ? '<label>Ставка %</label>' : ''}
+                <input type="number" value="${b.rate ? Math.round(b.rate * 100) : ''}" step="1" min="1" max="100" placeholder="%" onchange="modalBrackets[${i}].rate=parseFloat(this.value)/100">
+            </div>
+            <button type="button" class="btn-remove" onclick="removeBracket(${i})" ${modalBrackets.length <= 1 ? 'disabled style="opacity:0.3"' : ''}>✕</button>
+        </div>`;
+    });
+    container.innerHTML = html;
+    document.getElementById('add-bracket-btn').style.display = modalBrackets.length >= 5 ? 'none' : '';
+}
+
+function addBracket() {
+    if (modalBrackets.length >= 5) return;
+    modalBrackets.push({ threshold_amount: 0, rate: 0 });
+    renderBrackets();
+}
+
+function removeBracket(i) {
+    if (modalBrackets.length <= 1) return;
+    modalBrackets.splice(i, 1);
+    renderBrackets();
+}
+
+function openTaxModal(data) {
+    const yearInput = document.getElementById('tax-year');
+    if (data) {
+        yearInput.value = data.year;
+        yearInput.readOnly = true;
+        document.getElementById('tax-threshold').value = formatMoney(data.tax_free_threshold);
+        modalBrackets = (data.brackets || [])
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map(b => ({ threshold_amount: b.threshold_amount, rate: b.rate }));
+        document.querySelector('#tax-modal .modal-title').textContent = `НДФЛ — ${data.year}`;
+    } else {
+        yearInput.value = new Date().getFullYear();
+        yearInput.readOnly = false;
+        document.getElementById('tax-threshold').value = '';
+        modalBrackets = [
+            { threshold_amount: 0, rate: 0 },
+        ];
+        document.querySelector('#tax-modal .modal-title').textContent = 'Настройка НДФЛ';
+    }
     document.getElementById('tax-error').textContent = '';
+    renderBrackets();
     taxModal.classList.add('open');
 }
 function closeTaxModal() { taxModal.classList.remove('open'); }
 
-document.getElementById('add-tax-btn').addEventListener('click', openTaxModal);
+function editTax(year) {
+    const t = taxSettings.find(s => s.year === year);
+    if (t) openTaxModal(t);
+}
+
+document.getElementById('add-tax-btn').addEventListener('click', () => openTaxModal());
+document.getElementById('add-bracket-btn').addEventListener('click', addBracket);
 document.getElementById('tax-form').addEventListener('submit', async e => {
     e.preventDefault();
+    const errEl = document.getElementById('tax-error');
+    // Валидация года
+    const yearVal = parseInt(document.getElementById('tax-year').value);
+    if (!yearVal || yearVal < 2020 || yearVal > 2050) { errEl.textContent = 'Укажите корректный год (2020–2050)'; return; }
+    // Валидация необлагаемого порога
+    const thresholdVal = parseMoney(document.getElementById('tax-threshold').value);
+    if (!thresholdVal || thresholdVal <= 0) { errEl.textContent = 'Укажите необлагаемый порог'; return; }
+    // Валидация порогов
+    for (let i = 0; i < modalBrackets.length; i++) {
+        const t = modalBrackets[i].threshold_amount;
+        if (!t || t <= 0) { errEl.textContent = `Порог ${i + 1}: сумма должна быть больше нуля`; return; }
+        if (i > 0 && t <= modalBrackets[i - 1].threshold_amount) { errEl.textContent = `Порог ${i + 1} должен быть больше порога ${i}`; return; }
+        if (!modalBrackets[i].rate || modalBrackets[i].rate <= 0) { errEl.textContent = `Порог ${i + 1}: ставка должна быть больше нуля`; return; }
+    }
     try {
         await apiFetch('/settings/tax', {
             method: 'POST',
             body: JSON.stringify({
                 year: parseInt(document.getElementById('tax-year').value),
-                tax_free_threshold: parseFloat(document.getElementById('tax-threshold').value),
-                rate_standard: parseFloat(document.getElementById('tax-rate-std').value),
-                rate_elevated: parseFloat(document.getElementById('tax-rate-elev').value),
-                elevated_threshold: parseFloat(document.getElementById('tax-elev-threshold').value),
+                tax_free_threshold: parseMoney(document.getElementById('tax-threshold').value),
+                brackets: modalBrackets.map(b => ({
+                    threshold_amount: b.threshold_amount,
+                    rate: b.rate,
+                })),
             }),
         });
         closeTaxModal();
@@ -255,10 +371,55 @@ document.getElementById('tax-form').addEventListener('submit', async e => {
     } catch (err) { document.getElementById('tax-error').textContent = err.message; }
 });
 
-async function deleteTax(year) {
-    if (!confirm(`Удалить настройку НДФЛ за ${year}?`)) return;
-    try { await apiFetch(`/settings/tax/${year}`, { method: 'DELETE' }); loadTax(); } catch (e) { alert(e.message); }
+// ── Confirm Modal ──
+const confirmModal = document.getElementById('confirm-modal');
+let confirmAction = null;
+
+function showConfirm(title, text, action) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-text').textContent = text;
+    confirmAction = action;
+    confirmModal.classList.add('open');
 }
+function hideConfirm() { confirmModal.classList.remove('open'); confirmAction = null; }
+
+document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
+document.getElementById('confirm-delete').addEventListener('click', async () => {
+    if (confirmAction) await confirmAction();
+    hideConfirm();
+});
+
+async function deleteTax(year) {
+    showConfirm(`Удалить настройку НДФЛ за ${year}?`, 'Это действие нельзя отменить.', async () => {
+        try { await apiFetch(`/settings/tax/${year}`, { method: 'DELETE' }); loadTax(); } catch (e) { alert(e.message); }
+    });
+}
+
+// ── Activity Mode ──
+const activityToggle = document.getElementById('activity-mode-toggle');
+let activityMode = localStorage.getItem('activityMode') === 'true';
+activityToggle.checked = activityMode;
+
+activityToggle.addEventListener('change', () => {
+    activityToggle.checked = activityMode; // вернуть визуально до подтверждения
+    document.getElementById('activity-switch-modal').classList.add('open');
+});
+
+document.getElementById('activity-switch-cancel').addEventListener('click', () => {
+    document.getElementById('activity-switch-modal').classList.remove('open');
+});
+document.getElementById('activity-switch-ok').addEventListener('click', async () => {
+    document.getElementById('activity-switch-modal').classList.remove('open');
+    try {
+        await apiFetch('/categories/clear-user-data', { method: 'DELETE' });
+        activityMode = !activityMode;
+        activityToggle.checked = activityMode;
+        localStorage.setItem('activityMode', activityMode);
+        window.location.href = 'categories.html';
+    } catch (err) {
+        alert('Ошибка при переключении режима: ' + err.message);
+    }
+});
 
 // ── Init ──
 loadSettings();

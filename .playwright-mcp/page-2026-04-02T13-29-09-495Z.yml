@@ -1,0 +1,125 @@
+- generic [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Счета" [ref=e18] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e20]: Счета
+      - generic [ref=e21]:
+        - link "Статьи учёта" [ref=e22] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e24]: Статьи учёта
+        - link "Настройки" [ref=e25] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e27]: Настройки
+        - button "Выйти" [ref=e28] [cursor=pointer]:
+          - generic [ref=e30]: Выйти
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "Личные финансы" [level=1] [ref=e34]
+        - navigation [ref=e35]:
+          - link "Главная" [ref=e36] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e37] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e38] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e39]:
+        - button "Поиск" [ref=e40] [cursor=pointer]:
+          - img [ref=e41]
+        - button "Уведомления" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]
+        - generic [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Р
+          - generic [ref=e50]: Рашид Низамеев
+    - generic [ref=e51]:
+      - heading "Настройки" [level=1] [ref=e53]
+      - generic [ref=e54]:
+        - heading "Общие" [level=2] [ref=e55]
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: Учёт по фондам
+            - generic [ref=e59]: Включите для распределения доходов/расходов по фондам
+          - generic [ref=e60]:
+            - checkbox
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e64]: Макс. размер вложений
+            - generic [ref=e65]: Лимит для загружаемых файлов (МБ)
+          - spinbutton [ref=e66]: "10"
+        - button "Сохранить" [ref=e68] [cursor=pointer]
+      - generic [ref=e69]:
+        - heading "НДФЛ на доходы от вкладов" [level=2] [ref=e70]
+        - paragraph [ref=e71]: Настройте пороги и ставки налога по годам. Если для текущего года нет настройки, используется ближайшая прошлогодняя.
+        - button "+ Добавить год" [ref=e72] [cursor=pointer]
+        - table [ref=e112]:
+          - rowgroup [ref=e113]:
+            - row "Год Необлагаемый порог Пороги / Ставки" [ref=e114]:
+              - columnheader "Год" [ref=e115]
+              - columnheader "Необлагаемый порог" [ref=e116]
+              - columnheader "Пороги / Ставки" [ref=e117]
+              - columnheader [ref=e118]
+          - rowgroup [ref=e119]:
+            - row "2026 160 000 ₽ до 2 400 000 ₽ — 13% до 50 000 000 ₽ — 15% ✕" [ref=e120] [cursor=pointer]:
+              - cell "2026" [ref=e121]:
+                - strong [ref=e122]: "2026"
+              - cell "160 000 ₽" [ref=e123]
+              - cell "до 2 400 000 ₽ — 13% до 50 000 000 ₽ — 15%" [ref=e124]:
+                - text: до 2 400 000 ₽ — 13%
+                - text: до 50 000 000 ₽ — 15%
+              - cell "✕" [ref=e125]:
+                - button "✕" [ref=e126]
+  - generic:
+    - generic:
+      - generic:
+        - heading "Настройка НДФЛ" [level=3]
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Год
+            - spinbutton: "2026"
+          - generic:
+            - generic: Необлагаемый порог (руб.)
+            - textbox "160 000,00"
+          - generic:
+            - generic: Пороги и ставки
+            - button "+ Порог"
+          - generic:
+            - generic:
+              - generic:
+                - generic: Порог дохода до (руб.)
+                - textbox "2 400 000,00"
+              - generic:
+                - generic: Ставка %
+                - spinbutton: "13"
+              - button "✕"
+            - generic:
+              - generic:
+                - textbox "2 400 000,00": 50 000 000,00
+              - generic:
+                - spinbutton: "15"
+              - button "✕"
+        - generic:
+          - button "Отмена"
+          - button "Сохранить" [active]
+  - generic:
+    - generic:
+      - heading "Удалить настройку НДФЛ?" [level=3]
+      - paragraph: Это действие нельзя отменить.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"

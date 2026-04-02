@@ -76,7 +76,7 @@ class SplitRuleResponse(BaseModel):
 
 class CascadeResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     effective_from: date
     slots: list[SlotResponse]
     split_rules: list[SplitRuleResponse]
@@ -130,7 +130,7 @@ def _cascade_to_response(cascade: models.Cascade) -> CascadeResponse:
     )
 
 
-def _load_cascade(cascade_id: int, user_id: int, db: Session) -> models.Cascade:
+def _load_cascade(cascade_id: int, user_id: str, db: Session) -> models.Cascade:
     cascade = (
         db.query(models.Cascade)
         .options(
@@ -145,7 +145,7 @@ def _load_cascade(cascade_id: int, user_id: int, db: Session) -> models.Cascade:
     return cascade
 
 
-def _verify_funds_ownership(fund_ids: list[int], user_id: int, db: Session) -> None:
+def _verify_funds_ownership(fund_ids: list[int], user_id: str, db: Session) -> None:
     existing = set(
         f.id for f in db.query(models.Fund.id).filter(
             models.Fund.id.in_(fund_ids),

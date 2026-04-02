@@ -53,13 +53,13 @@
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
         .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 640px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 640px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
         .modal-title { font-size: 18px; font-weight: 700; }
         .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
         .modal-close svg { width: 18px; height: 18px; }
-        .modal-body { padding: 24px; }
-        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
 
         .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
@@ -136,7 +136,7 @@
             <div id="cm-slots"></div>
             <div class="form-row">
                 <select id="cm-new-fund"><option value="">Выберите фонд</option></select>
-                <input type="number" id="cm-new-target" placeholder="Цель" min="0" step="1000">
+                <input type="text" inputmode="decimal" id="cm-new-target" placeholder="Цель" data-money>
                 <button type="button" class="btn btn-sm btn-secondary" onclick="addSlotRow()">+</button>
             </div>
 
@@ -311,7 +311,7 @@ function renderModalSlots() {
     const el = document.getElementById('cm-slots');
     el.innerHTML = modalSlots.map((s, i) => {
         const fname = allFunds.find(f => f.id === s.fund_id);
-        return `<div class="form-row"><span style="padding:8px 0;font-size:13px"><strong>${i+1}.</strong> ${fname ? escHtml(fname.name) : 'Фонд #' + s.fund_id}</span><input type="number" value="${s.target_amount}" onchange="modalSlots[${i}].target_amount=parseFloat(this.value)" min="0" step="1000"><button class="btn btn-sm btn-secondary" style="color:var(--danger);padding:4px 8px" onclick="modalSlots.splice(${i},1);renderModalSlots();populateFundDropdowns()">✕</button></div>`;
+        return `<div class="form-row"><span style="padding:8px 0;font-size:13px"><strong>${i+1}.</strong> ${fname ? escHtml(fname.name) : 'Фонд #' + s.fund_id}</span><input type="text" inputmode="decimal" data-money value="${formatMoney(s.target_amount)}" onchange="modalSlots[${i}].target_amount=parseMoney(this.value)" onblur="this.value=formatMoney(this.value)"><button class="btn btn-sm btn-secondary" style="color:var(--danger);padding:4px 8px" onclick="modalSlots.splice(${i},1);renderModalSlots();populateFundDropdowns()">✕</button></div>`;
     }).join('');
 }
 
@@ -326,7 +326,7 @@ function renderModalRules() {
 
 function addSlotRow() {
     const fundId = parseInt(document.getElementById('cm-new-fund').value);
-    const target = parseFloat(document.getElementById('cm-new-target').value);
+    const target = parseMoney(document.getElementById('cm-new-target').value);
     if (!fundId || !target) return;
     modalSlots.push({ fund_id: fundId, target_amount: target, sort_order: modalSlots.length });
     document.getElementById('cm-new-fund').value = '';

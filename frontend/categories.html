@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личные финансы — Справочники</title>
+    <title>Личные финансы — Статьи учёта</title>
     <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
     <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/sidebar.css">
@@ -398,6 +398,9 @@
             width: 100%;
             max-width: 460px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 48px);
         }
 
         .modal-header {
@@ -406,6 +409,7 @@
             justify-content: space-between;
             padding: 24px;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .modal-title {
@@ -427,7 +431,7 @@
         .modal-close:hover { background: var(--bg-body); color: var(--text-primary); }
         .modal-close svg { width: 18px; height: 18px; }
 
-        .modal-body { padding: 24px; }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
 
         .form-group {
             display: flex;
@@ -481,6 +485,7 @@
             justify-content: flex-end;
             padding: 20px 24px;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         /* Confirm Modal */
@@ -850,13 +855,7 @@
     <!-- Page Content -->
     <div class="page">
         <div class="page-header">
-            <h1>Справочники</h1>
-        </div>
-
-        <!-- Tabs -->
-        <div class="page-tabs">
-            <button class="page-tab active" data-tab="catalog">Справочник</button>
-            <button class="page-tab" data-tab="settings">Настройки</button>
+            <h1>Статьи учёта</h1>
         </div>
 
         <!-- Catalog Content -->
@@ -888,6 +887,7 @@
                     <li id="info-level-group"><strong>Уровень 3:</strong> Группа статей операций</li>
                     <li id="info-level-article"><strong>Уровень 4:</strong> Конкретная статья</li>
                 </ul>
+                <div id="info-activity-hint" style="margin-top:12px;padding:10px 14px;background:var(--primary-light);border-radius:10px;font-size:13px;font-weight:500;color:var(--text-primary)">Вы можете включить учёт по видам деятельности в <a href="settings.html" style="color:var(--primary);font-weight:700;text-decoration:underline">Настройках</a></div>
             </div>
         </div>
 
@@ -938,22 +938,6 @@
         </section>
         </div><!-- end catalog-content -->
 
-        <!-- Settings Content -->
-        <div id="settings-content" style="display:none">
-            <div class="settings-card">
-                <div class="settings-card-title">Параметры учета</div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <h4>Вести учет по видам деятельности</h4>
-                        <p>При включении в структуру категорий добавляется уровень «Вид деятельности» с тремя разделами: Операционная, Инвестиционная и Финансовая деятельность.</p>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="activity-mode-toggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
     </div>
 </main>
 
@@ -1037,17 +1021,6 @@
     </div>
 </div>
 
-<!-- Activity Mode Switch Warning Modal -->
-<div class="confirm-overlay" id="activity-switch-modal">
-    <div class="confirm-box">
-        <h3>Сменить режим учёта?</h3>
-        <p>Все группы статей и статьи будут удалены. Виды деятельности и типы операций сохранятся. Данные придётся заполнить заново.</p>
-        <div class="confirm-footer">
-            <button class="btn btn-secondary" id="activity-switch-cancel">Отмена</button>
-            <button class="btn btn-danger" id="activity-switch-ok">Сменить и очистить</button>
-        </div>
-    </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
@@ -1111,43 +1084,16 @@ function matchesActivityKey(cat, key) {
            (key === 'financial'   && n.includes('финанс'));
 }
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-function switchTab(tab) {
-    document.querySelectorAll('.page-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    document.getElementById('catalog-content').style.display  = tab === 'catalog'  ? '' : 'none';
-    document.getElementById('settings-content').style.display = tab === 'settings' ? '' : 'none';
-}
-document.querySelectorAll('.page-tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
-
-// ── Activity mode ─────────────────────────────────────────────────────────────
-const activityToggle = document.getElementById('activity-mode-toggle');
-activityToggle.checked = activityMode;
-activityToggle.addEventListener('change', () => {
-    activityToggle.checked = activityMode; // вернуть визуально до подтверждения
-    document.getElementById('activity-switch-modal').classList.add('open');
-});
-
-const activitySwitchModal = document.getElementById('activity-switch-modal');
-
-document.getElementById('activity-switch-cancel').addEventListener('click', () => {
-    activitySwitchModal.classList.remove('open');
-});
-document.getElementById('activity-switch-ok').addEventListener('click', async () => {
-    activitySwitchModal.classList.remove('open');
-    try {
-        await apiFetch('/categories/clear-user-data', { method: 'DELETE' });
-        activityMode = !activityMode;
-        activityToggle.checked = activityMode;
-        localStorage.setItem('activityMode', activityMode);
+// ── Activity mode (управляется из settings.html, здесь только реагируем) ─────
+window.addEventListener('storage', async (e) => {
+    if (e.key === 'activityMode') {
+        activityMode = e.newValue === 'true';
         expandLevel = -1;
         localStorage.removeItem('infoPanelDismissed');
         infoPanelDismissed = false;
         document.getElementById('info-panel').style.display = '';
-        switchTab('catalog');
         updateActivityUI();
         await loadCategories();
-    } catch (err) {
-        alert('Ошибка при очистке справочника: ' + err.message);
     }
 });
 
@@ -1159,6 +1105,7 @@ function dismissInfoPanel() {
 
 function updateActivityUI() {
     document.getElementById('info-level-activity').style.display = activityMode ? '' : 'none';
+    document.getElementById('info-activity-hint').style.display = activityMode ? 'none' : '';
     if (activityMode) {
         document.getElementById('info-level-type').innerHTML    = '<strong>Уровень 2:</strong> Тип операции (Доходы / Расходы)';
         document.getElementById('info-level-group').innerHTML   = '<strong>Уровень 3:</strong> Группа статей операций';

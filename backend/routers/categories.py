@@ -86,7 +86,7 @@ class CategoryMove(BaseModel):
 class CategoryResponse(BaseModel):
     """Ответ с данными категории"""
     id: int
-    user_id: int
+    user_id: str
     name: str
     type: Optional[models.CategoryType]
     level: int
@@ -101,7 +101,7 @@ class CategoryResponse(BaseModel):
 # Вспомогательные функции
 # ──────────────────────────────────────────────
 
-def _get_category_or_404(category_id: int, user_id: int, db: Session) -> models.Category:
+def _get_category_or_404(category_id: int, user_id: str, db: Session) -> models.Category:
     """Возвращает категорию пользователя или выбрасывает 404."""
     category = db.query(models.Category).filter(
         models.Category.id == category_id,
@@ -112,7 +112,7 @@ def _get_category_or_404(category_id: int, user_id: int, db: Session) -> models.
     return category
 
 
-def _verify_parent(parent_id: int, user_id: int, expected_child_level: int, db: Session) -> None:
+def _verify_parent(parent_id: int, user_id: str, expected_child_level: int, db: Session) -> None:
     """
     Проверяет, что родительская категория существует, принадлежит пользователю
     и её уровень на единицу выше уровня дочерней (родитель имеет больший номер уровня).

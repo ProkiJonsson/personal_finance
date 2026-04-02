@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 from database import Base
 import enum
+import uuid
 
 
 # ──────────────────────────────────────────────
@@ -48,7 +49,7 @@ class User(Base):
     """Пользователи системы"""
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True, index=True)
     password_hash = Column(String(255), nullable=False)
@@ -74,7 +75,7 @@ class Counterparty(Base):
     __tablename__ = "counterparties"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -109,7 +110,7 @@ class Fund(Base):
     __tablename__ = "funds"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     type = Column(Enum(FundType), nullable=False)
@@ -133,7 +134,7 @@ class Account(Base):
     __tablename__ = "accounts"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     balance = Column(Float, nullable=False, default=0.0)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -153,7 +154,7 @@ class Category(Base):
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     type = Column(Enum(CategoryType), nullable=True)
     level = Column(Integer, nullable=False, default=1)
@@ -188,7 +189,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     date = Column(DateTime(timezone=True), nullable=False, index=True)
     amount = Column(Float, nullable=False)
     type = Column(Enum(TransactionType), nullable=False)
@@ -218,7 +219,7 @@ class Cascade(Base):
     __tablename__ = "cascades"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     effective_from = Column(Date, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
@@ -273,7 +274,7 @@ class DistributionLog(Base):
     __tablename__ = "distribution_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     amount = Column(Float, nullable=False)
     is_deposit_income = Column(Boolean, nullable=False, default=False)
     month = Column(String(7), nullable=False)  # YYYY-MM
@@ -305,12 +306,9 @@ class TaxSetting(Base):
     __tablename__ = "tax_settings"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     year = Column(Integer, nullable=False)
     tax_free_threshold = Column(Float, nullable=False)
-    rate_standard = Column(Float, nullable=False, default=0.13)
-    rate_elevated = Column(Float, nullable=False, default=0.15)
-    elevated_threshold = Column(Float, nullable=False, default=2000000.0)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     __table_args__ = (
@@ -318,6 +316,25 @@ class TaxSetting(Base):
     )
 
     user = relationship("User", back_populates="tax_settings")
+    brackets = relationship("TaxBracket", back_populates="tax_setting", cascade="all, delete-orphan",
+                            order_by="TaxBracket.sort_order")
+
+
+class TaxBracket(Base):
+    """Порог НДФЛ: от threshold_amount применяется rate. До 5 порогов на год."""
+    __tablename__ = "tax_brackets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tax_setting_id = Column(Integer, ForeignKey("tax_settings.id", ondelete="CASCADE"), nullable=False, index=True)
+    threshold_amount = Column(Float, nullable=False)
+    rate = Column(Float, nullable=False)
+    sort_order = Column(Integer, nullable=False, default=0)
+
+    __table_args__ = (
+        CheckConstraint("rate >= 0 AND rate <= 1", name="ck_tax_brackets_rate"),
+    )
+
+    tax_setting = relationship("TaxSetting", back_populates="brackets")
 
 
 # ──── Настройки приложения ───────────────────
@@ -327,7 +344,7 @@ class AppSetting(Base):
     __tablename__ = "app_settings"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     fund_accounting_enabled = Column(Boolean, nullable=False, default=False)
     max_attachment_size_mb = Column(Integer, nullable=False, default=10)
 
@@ -341,7 +358,7 @@ class Attachment(Base):
     __tablename__ = "attachments"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     entity_type = Column(Enum(AttachmentEntityType), nullable=False)
     entity_id = Column(Integer, nullable=False, index=True)
     filename = Column(String(255), nullable=False)

@@ -46,7 +46,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # JWT токены
 # ──────────────────────────────────────────────
 
-def create_access_token(user_id: int, name: str = "", expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(user_id: str, name: str = "", expires_delta: Optional[timedelta] = None) -> str:
     """
     Создаёт подписанный JWT access-токен.
 
@@ -66,7 +66,7 @@ def create_access_token(user_id: int, name: str = "", expires_delta: Optional[ti
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def _decode_token(token: str) -> Optional[int]:
+def _decode_token(token: str) -> Optional[str]:
     """
     Декодирует JWT и возвращает user_id.
     Возвращает None если токен невалиден или истёк.
@@ -76,8 +76,8 @@ def _decode_token(token: str) -> Optional[int]:
         user_id_str: Optional[str] = payload.get("sub")
         if user_id_str is None:
             return None
-        return int(user_id_str)
-    except (JWTError, ValueError):
+        return user_id_str
+    except JWTError:
         return None
 
 
