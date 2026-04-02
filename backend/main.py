@@ -12,6 +12,10 @@ from routers import funds as funds_router
 from routers import accounts as accounts_router
 from routers import categories as categories_router
 from routers import transactions as transactions_router
+from routers import counterparties as counterparties_router
+from routers import cascades as cascades_router
+from routers import settings as settings_router
+from routers import attachments as attachments_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -43,6 +47,10 @@ app.include_router(funds_router.router)
 app.include_router(accounts_router.router)
 app.include_router(categories_router.router)
 app.include_router(transactions_router.router)
+app.include_router(counterparties_router.router)
+app.include_router(cascades_router.router)
+app.include_router(settings_router.router)
+app.include_router(attachments_router.router)
 
 app.add_middleware(
     CORSMiddleware,

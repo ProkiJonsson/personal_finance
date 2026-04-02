@@ -21,9 +21,9 @@ class TransactionCreate(BaseModel):
     date: datetime
     amount: float
     type: models.TransactionType
-    fund_id: int
+    fund_id: Optional[int] = None
     account_id: Optional[int] = None
-    category_id: int
+    category_id: Optional[int] = None
     comment: Optional[str] = None
 
     @field_validator("amount")
@@ -59,7 +59,7 @@ class TransactionResponse(BaseModel):
     date: datetime
     amount: float
     type: models.TransactionType
-    fund_id: int
+    fund_id: Optional[int]
     account_id: Optional[int]
     category_id: Optional[int]
     comment: Optional[str]
@@ -104,21 +104,22 @@ def _get_transaction_or_404(transaction_id: int, user_id: int, db: Session) -> m
 
 def _verify_related_objects(
     user_id: int,
-    fund_id: int,
+    fund_id: Optional[int],
     category_id: Optional[int],
     account_id: Optional[int],
     db: Session,
 ) -> None:
     """
-    Проверяет, что fund, category и account (если указан)
+    Проверяет, что fund, category и account (если указаны)
     существуют и принадлежат пользователю.
     """
-    fund = db.query(models.Fund).filter(
-        models.Fund.id == fund_id,
-        models.Fund.user_id == user_id,
-    ).first()
-    if not fund:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Фонд не найден")
+    if fund_id is not None:
+        fund = db.query(models.Fund).filter(
+            models.Fund.id == fund_id,
+            models.Fund.user_id == user_id,
+        ).first()
+        if not fund:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Фонд не найден")
 
     if category_id is not None:
         category = db.query(models.Category).filter(
