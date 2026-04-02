@@ -28,12 +28,15 @@
 
     // ── 2. Конфигурация страниц ───────────────────────────────────────────────
     var PAGE_CONFIG = {
-        'dashboard.html': { nav: 'dashboard' },
-        'operations.html': { nav: 'operations' },
-        'funds.html':      { nav: 'funds' },
-        'accounts.html':   { nav: 'accounts' },
-        'categories.html': { nav: 'categories' },
-        '':                { nav: 'dashboard' },
+        'dashboard.html':       { nav: 'dashboard' },
+        'operations.html':      { nav: 'operations' },
+        'funds.html':           { nav: 'funds' },
+        'accounts.html':        { nav: 'accounts' },
+        'cascade.html':         { nav: 'cascade' },
+        'counterparties.html':  { nav: 'counterparties' },
+        'categories.html':      { nav: 'categories' },
+        'settings.html':        { nav: 'settings' },
+        '':                     { nav: 'dashboard' },
     };
 
     var currentPage = window.location.pathname.split('/').pop() || '';
@@ -66,7 +69,7 @@
         '          <span class="nav-item-text">Операции</span>',
         '          <span class="nav-tooltip">Операции</span>',
         '        </a>',
-        '        <a href="funds.html" class="nav-item" data-nav="funds">',
+        '        <a href="funds.html" class="nav-item" data-nav="funds" data-fund-feature>',
         '          <div class="nav-item-icon"><img src="assets/icons/funds.svg" alt=""></div>',
         '          <span class="nav-item-text">Фонды</span>',
         '          <span class="nav-tooltip">Фонды</span>',
@@ -79,10 +82,25 @@
         '      </nav>',
         '    </div>',
         '    <div class="sidebar-bottom">',
+        '      <a href="cascade.html" class="nav-item" data-nav="cascade" data-fund-feature>',
+        '        <div class="nav-item-icon"><img src="assets/icons/cascade.svg" alt=""></div>',
+        '        <span class="nav-item-text">Каскад Фондов</span>',
+        '        <span class="nav-tooltip">Каскад Фондов</span>',
+        '      </a>',
+        '      <a href="counterparties.html" class="nav-item" data-nav="counterparties" data-fund-feature>',
+        '        <div class="nav-item-icon"><img src="assets/icons/counterparties.svg" alt=""></div>',
+        '        <span class="nav-item-text">Контрагенты</span>',
+        '        <span class="nav-tooltip">Контрагенты</span>',
+        '      </a>',
         '      <a href="categories.html" class="nav-item" data-nav="categories">',
         '        <div class="nav-item-icon"><img src="assets/icons/categories.svg" alt=""></div>',
-        '        <span class="nav-item-text">Справочники</span>',
-        '        <span class="nav-tooltip">Справочники</span>',
+        '        <span class="nav-item-text">Статьи учёта</span>',
+        '        <span class="nav-tooltip">Статьи учёта</span>',
+        '      </a>',
+        '      <a href="settings.html" class="nav-item" data-nav="settings">',
+        '        <div class="nav-item-icon"><img src="assets/icons/settings.svg" alt=""></div>',
+        '        <span class="nav-item-text">Настройки</span>',
+        '        <span class="nav-tooltip">Настройки</span>',
         '      </a>',
         '      <button class="nav-item" id="logout-btn">',
         '        <div class="nav-item-icon"><img src="assets/icons/logout.svg" alt=""></div>',
@@ -102,7 +120,7 @@
         '    <nav class="header-nav">',
         '      <a href="dashboard.html" class="header-nav-item" data-nav="dashboard">Главная</a>',
         '      <a href="operations.html" class="header-nav-item" data-nav="operations">Операции</a>',
-        '      <a href="funds.html" class="header-nav-item" data-nav="funds">Фонды</a>',
+        '      <a href="funds.html" class="header-nav-item" data-nav="funds" data-fund-feature>Фонды</a>',
         '      <a href="accounts.html" class="header-nav-item" data-nav="accounts">Счета</a>',
         '    </nav>',
         '  </div>',
@@ -196,6 +214,42 @@
     var logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', window.handleLogout);
+    }
+
+    // ── 10b. Скрыть fund-пункты если учёт по фондам выключен ───────────────
+    // Страница настроек всегда доступна — оттуда включается режим
+    var FUND_PAGES_REDIRECT = ['funds.html', 'cascade.html', 'counterparties.html'];
+
+    function setFundFeaturesVisible(visible) {
+        document.querySelectorAll('[data-fund-feature]').forEach(function (el) {
+            el.style.display = visible ? '' : 'none';
+        });
+        // Редирект если пользователь на fund-странице (но НЕ на settings)
+        if (!visible && FUND_PAGES_REDIRECT.indexOf(currentPage) !== -1) {
+            window.location.replace('dashboard.html');
+        }
+    }
+
+    // Глобальная функция — вызывается из settings.html после сохранения
+    window.setFundFeaturesVisible = setFundFeaturesVisible;
+
+    // Async проверка настроек (не блокирует рендер)
+    if (token) {
+        var apiBase = 'http://127.0.0.1:8000';
+        fetch(apiBase + '/settings', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        }).then(function (res) {
+            if (res.ok) return res.json();
+            return null;
+        }).then(function (settings) {
+            if (settings && !settings.fund_accounting_enabled) {
+                setFundFeaturesVisible(false);
+            }
+            // Если settings === null (нет записи), пункты остаются видимыми —
+            // пользователь сначала увидит всё, затем может выключить в настройках
+        }).catch(function () {
+            // Ошибка сети — не скрываем, чтобы не ломать навигацию
+        });
     }
 
     // ── 11. Toggle sidebar ────────────────────────────────────────────────────

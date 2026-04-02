@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Настройки</title>
+    <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .page { padding: 32px; max-width: 900px; }
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 24px; font-weight: 700; }
+
+        .btn { padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+
+        .settings-card { background: var(--bg-card-light); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; }
+        .settings-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-label { font-size: 14px; color: var(--text-primary); }
+        .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        .toggle { position: relative; width: 48px; height: 26px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 26px; cursor: pointer; transition: background 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+        .toggle input:checked + .toggle-slider { background: var(--primary); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+        .setting-input { width: 80px; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; text-align: center; }
+        .setting-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+
+        .tax-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .tax-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .tax-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .tax-table .col-actions { text-align: right; width: 60px; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal-title { font-size: 18px; font-weight: 700; }
+        .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .modal-close svg { width: 18px; height: 18px; }
+        .modal-body { padding: 24px; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+        .form-group input { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text-primary); background: #fafafa; outline: none; font-family: inherit; }
+        .form-group input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-error { font-size: 12px; color: var(--danger); }
+
+        @media (max-width: 768px) { .main-content { margin-left: 0; margin-bottom: 70px; } .page { padding: 16px; } .form-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<main class="main-content">
+    <div class="page">
+        <div class="page-header"><h1>Настройки</h1></div>
+
+        <!-- General Settings -->
+        <div class="settings-card">
+            <h2>Общие</h2>
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Учёт по фондам</div>
+                    <div class="setting-desc">Включите для распределения доходов/расходов по фондам</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="fund-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Макс. размер вложений</div>
+                    <div class="setting-desc">Лимит для загружаемых файлов (МБ)</div>
+                </div>
+                <input type="number" class="setting-input" id="max-size" min="1" max="100" value="10">
+            </div>
+            <div style="margin-top:16px;text-align:right">
+                <button class="btn btn-primary btn-sm" id="save-general">Сохранить</button>
+            </div>
+        </div>
+
+        <!-- Tax Settings -->
+        <div class="settings-card">
+            <h2>НДФЛ на доходы от вкладов</h2>
+            <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px">Настройте пороги и ставки налога по годам. Если для текущего года нет настройки, используется ближайшая прошлогодняя.</p>
+            <button class="btn btn-sm btn-secondary" id="add-tax-btn">+ Добавить год</button>
+            <div id="tax-container"></div>
+        </div>
+    </div>
+</main>
+
+<!-- Tax Modal -->
+<div class="modal-overlay" id="tax-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Настройка НДФЛ</h3>
+            <button class="modal-close" onclick="closeTaxModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <form id="tax-form">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Год</label>
+                    <input type="number" id="tax-year" min="2020" max="2050" required>
+                </div>
+                <div class="form-group">
+                    <label>Необлагаемый порог (руб.)</label>
+                    <input type="number" id="tax-threshold" placeholder="160000" min="0" step="1000" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ставка стандартная</label>
+                        <input type="number" id="tax-rate-std" value="0.13" step="0.01" min="0" max="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ставка повышенная</label>
+                        <input type="number" id="tax-rate-elev" value="0.15" step="0.01" min="0" max="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Порог повышенной ставки (руб.)</label>
+                    <input type="number" id="tax-elev-threshold" value="2000000" min="0" step="100000" required>
+                </div>
+                <span class="form-error" id="tax-error"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTaxModal()">Отмена</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script>
+const API = 'http://127.0.0.1:8000';
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) window.location.href = 'index.html';
+function logout() { localStorage.removeItem('token'); sessionStorage.removeItem('token'); window.location.href = 'index.html'; }
+async function apiFetch(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+    if (res.status === 401) logout();
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail || 'HTTP ' + res.status); }
+    if (res.status === 204) return null;
+    return res.json();
+}
+function fmt(a) { return new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',minimumFractionDigits:0}).format(a); }
+
+// ── General Settings ──
+async function loadSettings() {
+    const s = await apiFetch('/settings');
+    document.getElementById('fund-toggle').checked = s.fund_accounting_enabled;
+    document.getElementById('max-size').value = s.max_attachment_size_mb;
+}
+
+// Автосохранение toggle "Учёт по фондам" при переключении
+document.getElementById('fund-toggle').addEventListener('change', async () => {
+    const enabled = document.getElementById('fund-toggle').checked;
+    try {
+        await apiFetch('/settings', {
+            method: 'PUT',
+            body: JSON.stringify({ fund_accounting_enabled: enabled }),
+        });
+        // Мгновенно показать/скрыть пункты в sidebar
+        document.querySelectorAll('[data-fund-feature]').forEach(el => {
+            el.style.display = enabled ? '' : 'none';
+        });
+    } catch (e) { alert('Ошибка: ' + e.message); }
+});
+
+// Сохранение остальных настроек по кнопке
+document.getElementById('save-general').addEventListener('click', async () => {
+    try {
+        await apiFetch('/settings', {
+            method: 'PUT',
+            body: JSON.stringify({
+                fund_accounting_enabled: document.getElementById('fund-toggle').checked,
+                max_attachment_size_mb: parseInt(document.getElementById('max-size').value),
+            }),
+        });
+        const btn = document.getElementById('save-general');
+        btn.textContent = 'Сохранено ✓';
+        setTimeout(() => { btn.textContent = 'Сохранить'; }, 2000);
+    } catch (e) { alert('Ошибка: ' + e.message); }
+});
+
+// ── Tax Settings ──
+let taxSettings = [];
+
+async function loadTax() {
+    taxSettings = await apiFetch('/settings/tax');
+    renderTax();
+}
+
+function renderTax() {
+    const el = document.getElementById('tax-container');
+    if (!taxSettings.length) { el.innerHTML = '<p style="color:var(--text-muted);margin-top:12px">Не настроено</p>'; return; }
+
+    let html = '<table class="tax-table"><thead><tr><th>Год</th><th>Порог</th><th>Ставка</th><th>Повышенная</th><th>Порог повыш.</th><th class="col-actions"></th></tr></thead><tbody>';
+    taxSettings.forEach(t => {
+        html += `<tr>
+            <td><strong>${t.year}</strong></td>
+            <td>${fmt(t.tax_free_threshold)}</td>
+            <td>${Math.round(t.rate_standard * 100)}%</td>
+            <td>${Math.round(t.rate_elevated * 100)}%</td>
+            <td>${fmt(t.elevated_threshold)}</td>
+            <td class="col-actions"><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="deleteTax(${t.year})">✕</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+}
+
+const taxModal = document.getElementById('tax-modal');
+function openTaxModal() {
+    document.getElementById('tax-year').value = new Date().getFullYear();
+    document.getElementById('tax-threshold').value = '';
+    document.getElementById('tax-rate-std').value = '0.13';
+    document.getElementById('tax-rate-elev').value = '0.15';
+    document.getElementById('tax-elev-threshold').value = '2000000';
+    document.getElementById('tax-error').textContent = '';
+    taxModal.classList.add('open');
+}
+function closeTaxModal() { taxModal.classList.remove('open'); }
+taxModal.addEventListener('click', e => { if (e.target === taxModal) closeTaxModal(); });
+
+document.getElementById('add-tax-btn').addEventListener('click', openTaxModal);
+document.getElementById('tax-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+        await apiFetch('/settings/tax', {
+            method: 'POST',
+            body: JSON.stringify({
+                year: parseInt(document.getElementById('tax-year').value),
+                tax_free_threshold: parseFloat(document.getElementById('tax-threshold').value),
+                rate_standard: parseFloat(document.getElementById('tax-rate-std').value),
+                rate_elevated: parseFloat(document.getElementById('tax-rate-elev').value),
+                elevated_threshold: parseFloat(document.getElementById('tax-elev-threshold').value),
+            }),
+        });
+        closeTaxModal();
+        loadTax();
+    } catch (err) { document.getElementById('tax-error').textContent = err.message; }
+});
+
+async function deleteTax(year) {
+    if (!confirm(`Удалить настройку НДФЛ за ${year}?`)) return;
+    try { await apiFetch(`/settings/tax/${year}`, { method: 'DELETE' }); loadTax(); } catch (e) { alert(e.message); }
+}
+
+// ── Init ──
+loadSettings();
+loadTax();
+</script>
+</body>
+</html>

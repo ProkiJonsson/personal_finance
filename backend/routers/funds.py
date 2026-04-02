@@ -20,6 +20,7 @@ router = APIRouter(prefix="/funds", tags=["funds"])
 
 class FundCreate(BaseModel):
     name: str
+    description: Optional[str] = None
     type: models.FundType
     contract_id: Optional[int] = None
 
@@ -34,6 +35,7 @@ class FundCreate(BaseModel):
 
 class FundUpdate(BaseModel):
     name: Optional[str] = None
+    description: Optional[str] = None
     type: Optional[models.FundType] = None
     contract_id: Optional[int] = None
     is_archived: Optional[bool] = None
@@ -52,6 +54,7 @@ class FundResponse(BaseModel):
     id: int
     user_id: int
     name: str
+    description: Optional[str]
     type: models.FundType
     balance: float
     contract_id: Optional[int]
@@ -159,6 +162,7 @@ def _fund_to_response(fund: models.Fund, balances: dict[int, float]) -> FundResp
         id=fund.id,
         user_id=fund.user_id,
         name=fund.name,
+        description=fund.description,
         type=fund.type,
         balance=balances.get(fund.id, 0.0),
         contract_id=fund.contract_id,

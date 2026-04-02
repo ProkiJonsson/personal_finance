@@ -256,9 +256,10 @@ def update_cascade(
 ) -> CascadeResponse:
     cascade = _load_cascade(cascade_id, current_user.id, db)
 
-    # Нельзя редактировать если есть более новый каскад
+    # Нельзя редактировать если есть более новый каскад (исключая сам редактируемый)
     newer = db.query(models.Cascade).filter(
         models.Cascade.user_id == current_user.id,
+        models.Cascade.id != cascade.id,
         models.Cascade.effective_from > cascade.effective_from,
     ).first()
     if newer:

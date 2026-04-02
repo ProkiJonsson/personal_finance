@@ -20,7 +20,17 @@
       "Bash(pip install:*)",
       "Bash(python -m pytest tests/ -v --tb=short)",
       "Bash(python -m pytest tests/test_auth.py tests/test_funds.py -v --tb=short)",
-      "Bash(python -m pytest tests/test_funds.py::test_delete_fund_with_transactions_fails -v --tb=long)"
+      "Bash(python -m pytest tests/test_funds.py::test_delete_fund_with_transactions_fails -v --tb=long)",
+      "Bash(python -m pytest tests/ --tb=short -q)",
+      "Bash(python -m uvicorn main:app --reload --port 8000)",
+      "Bash(curl -s http://127.0.0.1:8000/)",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/auth/register -H \"Content-Type: application/json\" -d '{\"name\":\"Test\",\"email\":\"t@t.com\",\"password\":\"pass123\"}')",
+      "Bash(curl -s http://127.0.0.1:8000/settings -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwibmFtZSI6IlRlc3QiLCJleHAiOjE3NzUxOTg4ODF9.-zm8Hp6i8TFkeFvZpMy3AiZ720K2tz7vj1JeBkCE73w')",
+      "Bash(curl -s -X PUT http://127.0.0.1:8000/settings -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwibmFtZSI6IlRlc3QiLCJleHAiOjE3NzUxOTg4ODF9.-zm8Hp6i8TFkeFvZpMy3AiZ720K2tz7vj1JeBkCE73w' -H 'Content-Type: application/json' -d '{\"fund_accounting_enabled\":true}')",
+      "Bash(python -m http.server 5500 --directory frontend)",
+      "Bash(curl -s http://localhost:5500/settings.html)",
+      "Bash(curl -s http://localhost:5500/js/layout.js)",
+      "Bash(python -m pytest tests/ -q --tb=short)"
     ]
   }
 }

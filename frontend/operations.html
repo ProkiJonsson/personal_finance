@@ -1059,6 +1059,12 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group" id="tx-fund-group">
+                <label>Фонд</label>
+                <select id="tx-fund">
+                    <option value="">— Без фонда —</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label>Описание</label>
                 <input type="text" id="tx-description" placeholder="Оплата...">
@@ -1201,14 +1207,32 @@ async function loadAccounts() {
         addCard.addEventListener('click', () => window.location.href = 'accounts.html');
         container.appendChild(addCard);
 
-        // Populate fund filter
-        const fundFilter = document.getElementById('filter-fund');
-        funds.forEach(f => {
-            const opt = document.createElement('option');
-            opt.value = f.id;
-            opt.textContent = f.name;
-            fundFilter.appendChild(opt);
+        // Populate fund filter and tx-fund select with optgroups
+        const TYPE_LABELS = { budget:'Бюджет', investment:'Инвестиции', tax_reserve:'Налоги', debt:'Долг', loan:'Займ', placement:'Размещение' };
+        const grouped = {};
+        funds.forEach(f => { (grouped[f.type] = grouped[f.type] || []).push(f); });
+
+        [document.getElementById('filter-fund'), document.getElementById('tx-fund')].forEach(sel => {
+            if (!sel) return;
+            const defaultOpt = sel.querySelector('option');
+            sel.innerHTML = '';
+            sel.appendChild(defaultOpt);
+            for (const [type, list] of Object.entries(grouped)) {
+                const og = document.createElement('optgroup');
+                og.label = TYPE_LABELS[type] || type;
+                list.forEach(f => { const o = document.createElement('option'); o.value = f.id; o.textContent = f.name; og.appendChild(o); });
+                sel.appendChild(og);
+            }
         });
+
+        // Hide fund field if fund accounting disabled
+        try {
+            const settings = await apiFetch('/settings');
+            if (!settings.fund_accounting_enabled) {
+                const fg = document.getElementById('tx-fund-group');
+                if (fg) fg.style.display = 'none';
+            }
+        } catch (e) { /* settings may not exist yet */ }
 
     } catch (err) {
         console.error('Error loading accounts:', err);
@@ -1390,17 +1414,62 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTransactions();
 });
 
-// Placeholder functions for edit/delete
+// Save transaction
+document.getElementById('modal-save').addEventListener('click', async () => {
+    const activeType = document.querySelector('.type-segmented button[class*="active-"]');
+    const type = activeType && activeType.dataset.type === 'income' ? 'income' : 'expense';
+    const date = document.getElementById('tx-date').value;
+    const amount = parseFloat(document.getElementById('tx-amount').value);
+    const account_id = parseInt(document.getElementById('tx-account').value) || null;
+    const category_id = parseInt(document.getElementById('tx-category').value) || null;
+    const fundSel = document.getElementById('tx-fund');
+    const fund_id = fundSel ? (parseInt(fundSel.value) || null) : null;
+    const comment = document.getElementById('tx-comment').value.trim() || null;
+
+    if (!date || !amount) { alert('Укажите дату и сумму'); return; }
+
+    const body = { date: date + 'T00:00:00', amount, type };
+    if (fund_id) body.fund_id = fund_id;
+    if (account_id) body.account_id = account_id;
+    if (category_id) body.category_id = category_id;
+    if (comment) body.comment = comment;
+
+    try {
+        if (editingId) {
+            await apiFetch(`/transactions/${editingId}`, { method: 'PUT', body: JSON.stringify(body) });
+        } else {
+            await apiFetch('/transactions', { method: 'POST', body: JSON.stringify(body) });
+        }
+        closeModal();
+        loadTransactions();
+    } catch (err) { alert('Ошибка: ' + err.message); }
+});
+
 function editTransaction(id) {
-    console.log('Edit transaction:', id);
-    // TODO: Implement edit
+    const tx = transactions.find(t => t.id === id);
+    if (!tx) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Редактировать операцию';
+    document.getElementById('tx-date').value = tx.date ? tx.date.split('T')[0] : '';
+    document.getElementById('tx-amount').value = tx.amount;
+    document.getElementById('tx-account').value = tx.account_id || '';
+    document.getElementById('tx-category').value = tx.category_id || '';
+    const fundSel = document.getElementById('tx-fund');
+    if (fundSel) fundSel.value = tx.fund_id || '';
+    document.getElementById('tx-comment').value = tx.comment || '';
+    // Set type toggle
+    document.querySelectorAll('.type-segmented button').forEach(b => b.classList.remove('active-income', 'active-expense'));
+    const typeBtn = document.querySelector(`.type-segmented button[data-type="${tx.type}"]`);
+    if (typeBtn) typeBtn.classList.add(tx.type === 'income' ? 'active-income' : 'active-expense');
+    modal.classList.add('open');
 }
 
-function deleteTransaction(id) {
-    if (confirm('Удалить эту операцию?')) {
-        console.log('Delete transaction:', id);
-        // TODO: Implement delete
-    }
+async function deleteTransaction(id) {
+    if (!confirm('Удалить эту операцию?')) return;
+    try {
+        await apiFetch(`/transactions/${id}`, { method: 'DELETE' });
+        loadTransactions();
+    } catch (err) { alert('Ошибка: ' + err.message); }
 }
 
 // Select all checkbox

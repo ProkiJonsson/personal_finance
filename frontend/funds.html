@@ -9,437 +9,219 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/common.css">
     <style>
+        .page { padding: 32px; max-width: 1400px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .page-header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
 
-        .page {
-            padding: 32px;
-            max-width: 1400px;
-        }
-
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
-
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: #fff;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
+        .btn { padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 16px rgba(26,109,255,0.3); }
+        .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
         .btn svg { width: 18px; height: 18px; }
 
-        /* Funds Grid */
-        .funds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
+        /* View toggle */
+        .view-toggle { display: flex; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .view-toggle button { padding: 8px 12px; border: none; background: #fff; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; display: flex; align-items: center; }
+        .view-toggle button.active { background: var(--primary); color: #fff; }
+        .view-toggle button svg { width: 18px; height: 18px; }
 
-        .fund-card {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            padding: 24px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        /* Help tip */
+        .help-tip { background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+        .help-tip.hidden { display: none; }
+        .help-tip-icon { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; font-size: 16px; }
+        .help-tip-content { flex: 1; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+        .help-tip-content strong { color: var(--text-primary); }
+        .help-tip-close { border: none; background: none; cursor: pointer; color: var(--text-muted); padding: 4px; }
+        .help-tip-close:hover { color: var(--text-primary); }
 
-        .fund-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
+        /* Fund section */
+        .fund-section { margin-bottom: 32px; }
+        .fund-section-title { font-size: 15px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .fund-section-count { font-size: 12px; font-weight: 600; background: var(--border); color: var(--text-secondary); padding: 2px 8px; border-radius: 10px; }
 
-        .fund-card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
+        /* Cards row */
+        .funds-row { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+        .funds-row::-webkit-scrollbar { height: 6px; }
+        .funds-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-        .fund-icon {
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .fund-card { background: var(--bg-card-light); border-radius: 20px; padding: 16px; border: 1px solid var(--border); transition: all 0.3s ease; cursor: pointer; min-width: 260px; max-width: 300px; flex-shrink: 0; position: relative; }
+        .fund-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); border-color: var(--primary); }
+        .fund-card-total { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: #fff; border: none; }
+        .fund-card-total .fund-name, .fund-card-total .fund-balance { color: #fff; }
+        .fund-card-total .fund-sub { color: rgba(255,255,255,0.6); }
 
-        .fund-icon svg { width: 24px; height: 24px; }
-
-        .fund-actions {
-            display: flex;
-            gap: 6px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
+        .fund-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+        .fund-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
         .fund-card:hover .fund-actions { opacity: 1; }
-
-        .fund-action-btn {
-            width: 32px; height: 32px;
-            border: none;
-            background: var(--bg-body);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .fund-action-btn:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .fund-action-btn.delete:hover {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
+        .fund-action-btn { width: 28px; height: 28px; border: none; background: rgba(0,0,0,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .fund-action-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .fund-action-btn.delete:hover { background: #fef2f2; color: var(--danger); }
         .fund-action-btn svg { width: 14px; height: 14px; }
 
-        .fund-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .badge-current { background: #eff4ff; color: var(--primary); }
+        .fund-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 8px; }
+        .badge-budget { background: #eff4ff; color: var(--primary); }
         .badge-investment { background: #f0fdf4; color: var(--success); }
+        .badge-tax_reserve { background: #fffbeb; color: #d97706; }
+        .badge-debt { background: #fef2f2; color: var(--danger); }
+        .badge-loan { background: #fff7ed; color: #ea580c; }
+        .badge-placement { background: #fdf4ff; color: #9333ea; }
 
-        .fund-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
+        .fund-name { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fund-balance { font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
+        .fund-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-        .fund-balance {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-        }
+        /* Progress bar */
+        .fund-progress { margin-top: 10px; }
+        .fund-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .fund-progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.3s; }
+        .fund-progress-fill.full { background: var(--success); }
+        .fund-progress-text { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
-        .fund-currency {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+        /* Table view */
+        .funds-table { width: 100%; border-collapse: collapse; }
+        .funds-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border); }
+        .funds-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .funds-table tr:hover { background: var(--primary-light); }
+        .funds-table .col-balance { font-weight: 700; text-align: right; }
+        .funds-table .col-target { text-align: right; color: var(--text-secondary); }
+        .funds-table .col-actions { text-align: right; width: 100px; }
+        .funds-table .col-actions .action-row { display: flex; gap: 4px; justify-content: flex-end; }
+        .td-progress { width: 120px; }
 
-        /* Add Fund Card */
-        .fund-card-add {
-            background: var(--bg-card-light);
-            border: 2px dashed var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: var(--text-secondary);
-            min-height: 200px;
-        }
+        /* Cards grid — 5 per row */
+        .funds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .funds-grid .fund-card { min-width: auto; max-width: none; }
 
-        .fund-card-add:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: none;
-            box-shadow: none;
-        }
+        /* Type filter buttons */
+        .type-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .type-filter-btn { padding: 6px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: #fafafa; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+        .type-filter-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .type-filter-btn.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .fund-card-add .add-icon {
-            width: 56px; height: 56px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        /* btn-select for fund type in modal */
+        .btn-select-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        .btn-select { padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: #fafafa; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+        .btn-select:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .btn-select.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .fund-card-add .add-icon svg {
-            width: 28px; height: 28px;
-            color: var(--primary);
-        }
+        /* Help toggle in title */
+        .help-toggle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--primary); background: none; color: var(--primary); font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 8px; vertical-align: middle; }
+        .help-toggle:hover { background: var(--primary); color: #fff; }
 
-        .fund-card-add span {
-            font-size: 14px;
-            font-weight: 600;
-        }
+        /* Fund add card */
+        .fund-card-add { border: 2px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-secondary); min-height: 160px; }
+        .fund-card-add:hover { border-color: var(--primary); color: var(--primary); transform: none; box-shadow: none; }
+        .fund-card-add .add-icon { width: 48px; height: 48px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .fund-card-add .add-icon svg { width: 24px; height: 24px; color: var(--primary); }
 
-        /* Empty State */
-        .empty-state {
-            grid-column: 1 / -1;
-            padding: 80px 20px;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .empty-state svg {
-            width: 64px; height: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        /* Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.4s infinite;
-            border-radius: 6px;
-        }
-
-        @keyframes shimmer {
-            to { background-position: -200% 0; }
-        }
+        .empty-state { padding: 60px 20px; text-align: center; color: var(--text-secondary); }
+        .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
 
         /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            width: 36px; height: 36px;
-            border: none; background: transparent;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover { background: var(--bg-body); color: var(--text-primary); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal-wide { max-width: 680px; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .modal-close:hover { background: var(--bg-body); }
         .modal-close svg { width: 18px; height: 18px; }
-
         .modal-body { padding: 24px; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-group input, .form-group select, .form-group textarea { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text-primary); background: #fafafa; outline: none; transition: all 0.2s; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-error { font-size: 12px; color: var(--danger); min-height: 16px; }
+        .form-hint { font-size: 12px; color: var(--text-muted); }
+        .form-group.hidden { display: none; }
 
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+        /* Confirm */
+        .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .confirm-overlay.open { opacity: 1; pointer-events: all; }
+        .confirm-box { background: #fff; border-radius: 20px; max-width: 380px; width: 100%; padding: 32px; text-align: center; }
+        .confirm-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+        .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+        .confirm-footer { display: flex; gap: 12px; justify-content: center; }
 
-        .form-group input,
-        .form-group select {
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fafafa;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
+        /* Distribute panel */
+        .distribute-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .distribute-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 8px; text-align: left; border-bottom: 2px solid var(--border); }
+        .distribute-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .distribute-table input[type="number"] { width: 120px; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; text-align: right; }
+        .distribute-table .tax-row { background: #fffbeb; font-weight: 600; }
+        .distribute-table .split-row { background: #f0fdf4; }
+        .distribute-total { font-size: 16px; font-weight: 700; text-align: right; margin-top: 12px; }
 
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+        .checkbox-row label { font-size: 14px; color: var(--text-primary); cursor: pointer; }
 
-        .form-error {
-            font-size: 12px;
-            color: var(--danger);
-            min-height: 16px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        /* Confirm Modal */
-        .confirm-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .confirm-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .confirm-box {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            padding: 32px;
-            text-align: center;
-        }
-
-        .confirm-box h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .confirm-box p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        .confirm-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .main-content { margin-left: 0; margin-bottom: 70px; }
-
-            .header { padding: 0 16px; }
             .header-nav { display: none; }
             .page { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
             .funds-grid { grid-template-columns: 1fr; }
         }
-
     </style>
 </head>
 <body>
-
-<!-- Main Content -->
 <main class="main-content">
-    <!-- Header и sidebar инъектируются через layout.js -->
-
-    <!-- Page Content -->
     <div class="page">
-        <div class="page-header">
-            <h1>Фонды</h1>
-            <button class="btn btn-primary" id="add-fund-btn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                </svg>
-                Добавить фонд
+        <!-- Help tip -->
+        <div class="help-tip" id="help-tip">
+            <div class="help-tip-icon">?</div>
+            <div class="help-tip-content">
+                <strong>Что такое фонд?</strong> Фонд — это виртуальный кошелёк. Каждый рубль дохода попадает в конкретный фонд и тратится только на его цели. Настройте <a href="cascade.html">Каскад Фондов</a> чтобы автоматически распределять доход.<br><br><strong>Предопределённые типы:</strong> <strong>Бюджетные</strong> — для текущих расходов с каскадным наполнением. <strong>Инвестиционные</strong> — накопления. <strong>Налоговые резервы</strong> — откладывание на налоги. <strong>Долги</strong> — учёт кому я должен. <strong>Займы</strong> — кто должен мне. <strong>Размещения</strong> — где физически лежат инвестиции (вклады, брокер).
+            </div>
+            <button class="help-tip-close" onclick="hideHelpTip()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
 
-        <div class="funds-grid" id="funds-grid">
-            <!-- Skeleton -->
-            <div class="fund-card skeleton" style="height: 200px;"></div>
-            <div class="fund-card skeleton" style="height: 200px;"></div>
-            <div class="fund-card skeleton" style="height: 200px;"></div>
+        <div class="page-header">
+            <h1>Фонды <button class="help-toggle" onclick="toggleHelpTip()" title="Справка">?</button></h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="distribute-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>
+                    Распределить доход
+                </button>
+                <button class="btn btn-secondary" id="add-fund-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Добавить фонд
+                </button>
+                <div class="view-toggle">
+                    <button id="view-cards" class="active" title="Карточки">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    </button>
+                    <button id="view-table" title="Таблица">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Type filters -->
+        <div class="type-filters" id="type-filters">
+            <button class="type-filter-btn" data-type="budget" onclick="toggleTypeFilter(this, event)">Бюджет</button>
+            <button class="type-filter-btn" data-type="investment" onclick="toggleTypeFilter(this, event)">Инвестиции</button>
+            <button class="type-filter-btn" data-type="tax_reserve" onclick="toggleTypeFilter(this, event)">Налоги</button>
+            <button class="type-filter-btn" data-type="debt" onclick="toggleTypeFilter(this, event)">Долги</button>
+            <button class="type-filter-btn" data-type="loan" onclick="toggleTypeFilter(this, event)">Займы</button>
+            <button class="type-filter-btn" data-type="placement" onclick="toggleTypeFilter(this, event)">Размещения</button>
+        </div>
+
+        <div id="funds-container">
+            <div class="funds-grid"><div class="fund-card" style="height:160px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:20px"></div></div>
         </div>
     </div>
 </main>
@@ -449,27 +231,37 @@
     <div class="modal">
         <div class="modal-header">
             <h3 class="modal-title" id="modal-title">Добавить фонд</h3>
-            <button class="modal-close" id="modal-close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
+            <button class="modal-close" id="modal-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <form id="fund-form">
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="fund-name">Название</label>
-                    <input type="text" id="fund-name" placeholder="Например: Основной фонд" maxlength="100" required>
-                    <span class="form-error" id="err-name"></span>
+                    <label>Название</label>
+                    <input type="text" id="fund-name" placeholder="Например: Текущие расходы" maxlength="100" required>
                 </div>
                 <div class="form-group">
-                    <label for="fund-type">Тип</label>
-                    <select id="fund-type" required>
-                        <option value="current">Текущий</option>
-                        <option value="investment">Инвестиционный</option>
-                    </select>
-                    <span class="form-error" id="err-type"></span>
+                    <label>Описание</label>
+                    <textarea id="fund-desc" placeholder="Необязательно" style="min-height:60px;resize:vertical"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Тип фонда</label>
+                    <div class="btn-select-group" id="fund-type-btns">
+                        <button type="button" class="btn-select selected" data-value="budget" onclick="selectFundType(this)">Бюджетный</button>
+                        <button type="button" class="btn-select" data-value="investment" onclick="selectFundType(this)">Инвестиционный</button>
+                        <button type="button" class="btn-select" data-value="tax_reserve" onclick="selectFundType(this)">Налоговый резерв</button>
+                        <button type="button" class="btn-select" data-value="debt" onclick="selectFundType(this)">Долг</button>
+                        <button type="button" class="btn-select" data-value="loan" onclick="selectFundType(this)">Займ</button>
+                        <button type="button" class="btn-select" data-value="placement" onclick="selectFundType(this)">Размещение</button>
+                    </div>
+                </div>
+                <div class="form-group hidden" id="contract-group">
+                    <label>Договор контрагента</label>
+                    <select id="fund-contract"><option value="">— Без привязки —</option></select>
+                    <span class="form-hint">Привяжите к контрагенту через договор</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+                    <input type="checkbox" id="create-another" style="width:18px;height:18px;accent-color:var(--primary)">
+                    <label for="create-another" style="font-size:13px;color:var(--text-secondary);cursor:pointer">Создать ещё</label>
                 </div>
                 <span class="form-error" id="err-global"></span>
             </div>
@@ -481,11 +273,41 @@
     </div>
 </div>
 
-<!-- Confirm Delete Modal -->
+<!-- Distribute Modal -->
+<div class="modal-overlay" id="distribute-modal">
+    <div class="modal modal-wide">
+        <div class="modal-header">
+            <h3 class="modal-title">Распределить доход</h3>
+            <button class="modal-close" onclick="closeDistribute()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Сумма дохода</label>
+                    <input type="number" id="dist-amount" placeholder="0" min="1" step="0.01" required>
+                </div>
+                <div class="form-group" style="justify-content:flex-end">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="dist-deposit">
+                        <label for="dist-deposit">Доход от вкладов</label>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" id="dist-calc">Рассчитать</button>
+                </div>
+            </div>
+            <div id="dist-preview"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeDistribute()">Отмена</button>
+            <button type="button" class="btn btn-primary" id="dist-confirm" disabled>Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete -->
 <div class="confirm-overlay" id="confirm-modal">
     <div class="confirm-box">
         <h3>Удалить фонд?</h3>
-        <p>Это действие нельзя отменить. Все связанные операции будут удалены.</p>
+        <p>Это действие нельзя отменить.</p>
         <div class="confirm-footer">
             <button class="btn btn-secondary" id="confirm-cancel">Отмена</button>
             <button class="btn btn-danger" id="confirm-ok">Удалить</button>
@@ -493,245 +315,410 @@
     </div>
 </div>
 
+<script src="js/layout.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
-
-// Auth guard
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-if (!token) { window.location.href = 'index.html'; }
+if (!token) window.location.href = 'index.html';
 
-// Logout (используется в apiFetch при 401)
-function logout() {
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('token');
-    window.location.href = 'index.html';
-}
+function logout() { localStorage.removeItem('token'); sessionStorage.removeItem('token'); window.location.href = 'index.html'; }
 
-// API fetch
 async function apiFetch(path, options = {}) {
-    const res = await fetch(API + path, {
-        ...options,
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
-    });
-    if (res.status === 401) { logout(); }
-    if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || 'HTTP ' + res.status);
-    }
+    const res = await fetch(API + path, { ...options, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(options.headers || {}) } });
+    if (res.status === 401) logout();
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail || 'HTTP ' + res.status); }
     if (res.status === 204) return null;
     return res.json();
 }
 
-// Formatters
-function fmt(amount, currency = 'RUB') {
-    return new Intl.NumberFormat('ru-RU', {
-        style: 'currency', currency,
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
-    }).format(amount);
+function fmt(a, c='RUB') { return new Intl.NumberFormat('ru-RU',{style:'currency',currency:c,minimumFractionDigits:2,maximumFractionDigits:2}).format(a); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+const TYPE_LABELS = { budget:'Бюджет', investment:'Инвестиции', tax_reserve:'Налоги', debt:'Долг', loan:'Займ', placement:'Размещение' };
+const TYPE_BADGES = { budget:'badge-budget', investment:'badge-investment', tax_reserve:'badge-tax_reserve', debt:'badge-debt', loan:'badge-loan', placement:'badge-placement' };
+const SECTION_ORDER = ['budget','investment','tax_reserve','debt','loan','placement'];
+const SECTION_TITLES = { budget:'Бюджетные фонды', investment:'Инвестиции', tax_reserve:'Налоговые резервы', debt:'Долги (я должен)', loan:'Займы (мне должны)', placement:'Размещения' };
+
+let allFunds = [];
+let cascadeSlots = {};  // fund_id → target_amount
+let contracts = [];     // для dropdown
+let currentView = localStorage.getItem('fundsView') || 'cards';
+
+// ── Help tip ──
+function hideHelpTip() {
+    document.getElementById('help-tip').classList.add('hidden');
+    localStorage.setItem('helpTip_funds_hidden', 'true');
+}
+function toggleHelpTip() {
+    const el = document.getElementById('help-tip');
+    const hidden = el.classList.toggle('hidden');
+    localStorage.setItem('helpTip_funds_hidden', hidden ? 'true' : 'false');
+}
+if (localStorage.getItem('helpTip_funds_hidden') === 'true') {
+    document.getElementById('help-tip').classList.add('hidden');
 }
 
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+// ── Type filters (multi-select with Ctrl) ──
+let activeFilters = new Set();
+
+function toggleTypeFilter(btn, event) {
+    const type = btn.dataset.type;
+    if (event.ctrlKey || event.metaKey) {
+        // Multi-select: toggle this one
+        if (activeFilters.has(type)) { activeFilters.delete(type); } else { activeFilters.add(type); }
+    } else {
+        // Single: if already only this one selected, deselect all; else select only this
+        if (activeFilters.size === 1 && activeFilters.has(type)) { activeFilters.clear(); }
+        else { activeFilters.clear(); activeFilters.add(type); }
+    }
+    document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.toggle('selected', activeFilters.has(b.dataset.type)));
+    renderFunds();
 }
 
-// Fund colors
-const FUND_COLORS = [
-    { bg: '#eff4ff', color: '#1a6dff' },
-    { bg: '#f0fdf4', color: '#16a34a' },
-    { bg: '#fff7ed', color: '#ea580c' },
-    { bg: '#fdf4ff', color: '#9333ea' },
-    { bg: '#fef2f2', color: '#dc2626' },
-];
+// ── Fund type selection in modal (btn-select) ──
+let selectedFundType = 'budget';
 
-const TYPE_LABELS = { current: 'Текущий', investment: 'Инвестиционный' };
-const TYPE_BADGES = { current: 'badge-current', investment: 'badge-investment' };
+function selectFundType(btn) {
+    document.querySelectorAll('#fund-type-btns .btn-select').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedFundType = btn.dataset.value;
+    updateContractVisibility();
+}
 
-// Render funds
-function renderFunds(funds) {
-    const grid = document.getElementById('funds-grid');
-    grid.innerHTML = '';
+function updateContractVisibility() {
+    const show = ['debt', 'loan', 'placement'].includes(selectedFundType);
+    document.getElementById('contract-group').classList.toggle('hidden', !show);
+    const sel = document.getElementById('fund-contract');
+    sel.innerHTML = '<option value="">— Без привязки —</option>';
+    contracts.forEach(c => { sel.innerHTML += `<option value="${c.id}">${escHtml(c.label)}</option>`; });
+}
 
-    if (!funds.length) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-                <h3>Фондов пока нет</h3>
-                <p>Добавьте первый фонд, чтобы начать учёт</p>
-            </div>
-        `;
+// ── Copy fund ──
+function copyFund(id) {
+    const f = allFunds.find(x => x.id === id);
+    if (!f) return;
+    openModal({ ...f, id: null, name: f.name + ' (копия)' });
+}
+
+// ── View toggle ──
+document.getElementById('view-cards').addEventListener('click', () => setView('cards'));
+document.getElementById('view-table').addEventListener('click', () => setView('table'));
+
+function setView(v) {
+    currentView = v;
+    localStorage.setItem('fundsView', v);
+    document.getElementById('view-cards').classList.toggle('active', v === 'cards');
+    document.getElementById('view-table').classList.toggle('active', v === 'table');
+    renderFunds();
+}
+
+// ── Load data ──
+async function loadAll() {
+    try {
+        const [funds, cascade, cps] = await Promise.all([
+            apiFetch('/funds'),
+            apiFetch('/cascades/active').catch(() => null),
+            apiFetch('/counterparties'),
+        ]);
+        allFunds = funds;
+        cascadeSlots = {};
+        if (cascade && cascade.slots) {
+            cascade.slots.forEach(s => { cascadeSlots[s.fund_id] = s.target_amount; });
+        }
+        // Build contracts list from counterparties
+        contracts = [];
+        cps.forEach(cp => {
+            if (cp.contracts) {
+                cp.contracts.forEach(c => contracts.push({ id: c.id, label: `${cp.name} — ${c.name}` }));
+            }
+        });
+        // For list view we may not have full contracts, fetch individually if needed
+        if (cps.length && !cps[0].contracts) {
+            for (const cp of cps) {
+                const detail = await apiFetch(`/counterparties/${cp.id}`);
+                detail.contracts.forEach(c => contracts.push({ id: c.id, label: `${cp.name} — ${c.name}` }));
+            }
+        }
+        renderFunds();
+    } catch (e) {
+        document.getElementById('funds-container').innerHTML = '<div class="empty-state"><h3>Ошибка загрузки</h3><p>' + escHtml(e.message) + '</p></div>';
+    }
+}
+
+// ── Render ──
+function renderFunds() {
+    const container = document.getElementById('funds-container');
+    if (!allFunds.length) {
+        container.innerHTML = '<div class="empty-state"><h3>Фондов пока нет</h3><p>Добавьте первый фонд, чтобы начать учёт</p></div>';
         return;
     }
 
-    funds.forEach((fund, i) => {
-        const c = FUND_COLORS[i % FUND_COLORS.length];
-        const card = document.createElement('div');
-        card.className = 'fund-card';
-        card.innerHTML = `
-            <div class="fund-card-header">
-                <div class="fund-icon" style="background: ${c.bg}">
-                    <svg viewBox="0 0 24 24" fill="${c.color}">
-                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                    </svg>
-                </div>
-                <div class="fund-actions">
-                    <button class="fund-action-btn" onclick="editFund(${fund.id})" aria-label="Редактировать">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </svg>
-                    </button>
-                    <button class="fund-action-btn delete" onclick="deleteFund(${fund.id})" aria-label="Удалить">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <span class="fund-badge ${TYPE_BADGES[fund.type]}">${TYPE_LABELS[fund.type]}</span>
-            <h3 class="fund-name">${escHtml(fund.name)}</h3>
-            <div class="fund-balance">${fmt(fund.balance || 0)}</div>
-            <div class="fund-currency">RUB</div>
-        `;
-        grid.appendChild(card);
+    // Filter by active type filters
+    const filtered = activeFilters.size > 0 ? allFunds.filter(f => activeFilters.has(f.type)) : allFunds;
+
+    // Group by type
+    const groups = {};
+    SECTION_ORDER.forEach(t => { groups[t] = []; });
+    filtered.forEach(f => { (groups[f.type] || (groups[f.type] = [])).push(f); });
+
+    const totalBalance = filtered.reduce((s, f) => s + (f.balance || 0), 0);
+
+    if (currentView === 'table') {
+        renderTableView(container, groups, totalBalance);
+    } else {
+        renderCardView(container, groups, totalBalance);
+    }
+}
+
+function renderCardView(container, groups, totalBalance) {
+    let html = '';
+    // Total card row
+    html += '<div class="funds-row" style="margin-bottom:24px">';
+    html += `<div class="fund-card fund-card-total"><div class="fund-sub">Все фонды</div><div class="fund-balance">${fmt(totalBalance)}</div><div class="fund-sub">${allFunds.length} фондов</div></div>`;
+    html += '</div>';
+
+    SECTION_ORDER.forEach(type => {
+        const funds = groups[type];
+        if (!funds.length) return;
+        html += `<div class="fund-section">`;
+        html += `<div class="fund-section-title">${SECTION_TITLES[type]} <span class="fund-section-count">${funds.length}</span></div>`;
+        html += '<div class="funds-grid">';
+        funds.forEach(f => { html += fundCardHtml(f); });
+        html += '</div></div>';
     });
 
     // Add card
-    const addCard = document.createElement('div');
-    addCard.className = 'fund-card fund-card-add';
-    addCard.innerHTML = `
-        <div class="add-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14"/>
-            </svg>
-        </div>
-        <span>Добавить фонд</span>
-    `;
-    addCard.addEventListener('click', () => openModal());
-    grid.appendChild(addCard);
+    html += '<div class="funds-grid" style="margin-top:16px"><div class="fund-card fund-card-add" onclick="openModal()"><div class="add-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div><span>Добавить фонд</span></div></div>';
+    container.innerHTML = html;
 }
 
-// Modal handling
+function fundCardHtml(f) {
+    const target = cascadeSlots[f.id];
+    const hasTarget = target !== undefined && target > 0;
+    const pct = hasTarget ? Math.min(100, Math.round(((f.balance || 0) / target) * 100)) : 0;
+    const cpInfo = f.counterparty_name ? `${escHtml(f.counterparty_name)} — ${escHtml(f.contract_name || 'Основной')}` : '';
+
+    let progressHtml = '';
+    if (hasTarget) {
+        progressHtml = `<div class="fund-progress"><div class="fund-progress-bar"><div class="fund-progress-fill ${pct >= 100 ? 'full' : ''}" style="width:${pct}%"></div></div><div class="fund-progress-text"><span>${fmt(f.balance||0)}</span><span>${fmt(target)}</span></div></div>`;
+    }
+
+    return `<div class="fund-card">
+        <div class="fund-card-header">
+            <span class="fund-badge ${TYPE_BADGES[f.type]}">${TYPE_LABELS[f.type]}</span>
+            <div class="fund-actions">
+                <button class="fund-action-btn" onclick="editFund(${f.id})" title="Редактировать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="fund-action-btn" onclick="copyFund(${f.id})" title="Копировать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                <button class="fund-action-btn delete" onclick="deleteFund(${f.id})" title="Удалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+            </div>
+        </div>
+        <h3 class="fund-name">${escHtml(f.name)}</h3>
+        <div class="fund-balance">${fmt(f.balance || 0)}</div>
+        ${cpInfo ? `<div class="fund-sub">${cpInfo}</div>` : ''}
+        ${progressHtml}
+    </div>`;
+}
+
+function renderTableView(container, groups, totalBalance) {
+    let html = `<table class="funds-table"><thead><tr><th>Название</th><th>Тип</th><th>Контрагент</th><th class="col-target">Цель</th><th class="col-balance">Баланс</th><th class="td-progress">Прогресс</th><th class="col-actions"></th></tr></thead><tbody>`;
+    html += `<tr style="font-weight:700;background:var(--primary-light)"><td colspan="4">Итого</td><td class="col-balance">${fmt(totalBalance)}</td><td></td><td></td></tr>`;
+
+    SECTION_ORDER.forEach(type => {
+        const funds = groups[type];
+        if (!funds.length) return;
+        html += `<tr><td colspan="7" style="font-weight:700;font-size:13px;color:var(--text-secondary);text-transform:uppercase;padding-top:20px">${SECTION_TITLES[type]}</td></tr>`;
+        funds.forEach(f => {
+            const target = cascadeSlots[f.id];
+            const hasTarget = target !== undefined && target > 0;
+            const pct = hasTarget ? Math.min(100, Math.round(((f.balance||0) / target) * 100)) : 0;
+            const cpInfo = f.counterparty_name ? `${escHtml(f.counterparty_name)}` : '—';
+            const targetStr = hasTarget ? fmt(target) : '—';
+            const progressBar = hasTarget ? `<div class="fund-progress-bar" style="width:100px;display:inline-block"><div class="fund-progress-fill ${pct>=100?'full':''}" style="width:${pct}%"></div></div> ${pct}%` : '';
+
+            html += `<tr>
+                <td><strong>${escHtml(f.name)}</strong></td>
+                <td><span class="fund-badge ${TYPE_BADGES[f.type]}">${TYPE_LABELS[f.type]}</span></td>
+                <td>${cpInfo}</td>
+                <td class="col-target">${targetStr}</td>
+                <td class="col-balance">${fmt(f.balance||0)}</td>
+                <td class="td-progress">${progressBar}</td>
+                <td class="col-actions"><div class="action-row">
+                    <button class="fund-action-btn" onclick="editFund(${f.id})" title="Ред."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="fund-action-btn" onclick="copyFund(${f.id})" title="Копия"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <button class="fund-action-btn delete" onclick="deleteFund(${f.id})" title="Удалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                </div></td>
+            </tr>`;
+        });
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// ── Modal: Add/Edit Fund ──
 const modal = document.getElementById('fund-modal');
 let editingId = null;
 
-function openModal(edit = false) {
-    editingId = edit ? null : null;
-    document.getElementById('modal-title').textContent = edit ? 'Редактировать фонд' : 'Добавить фонд';
-    document.getElementById('fund-name').value = '';
-    document.getElementById('fund-type').value = 'current';
-    document.getElementById('err-name').textContent = '';
-    document.getElementById('err-type').textContent = '';
+function openModal(fundData) {
+    editingId = fundData ? fundData.id : null;
+    document.getElementById('modal-title').textContent = editingId ? 'Редактировать фонд' : 'Добавить фонд';
+    document.getElementById('fund-name').value = fundData ? fundData.name : '';
+    document.getElementById('fund-desc').value = fundData ? (fundData.description || '') : '';
     document.getElementById('err-global').textContent = '';
+    // Set type via btn-select
+    selectedFundType = fundData ? fundData.type : 'budget';
+    document.querySelectorAll('#fund-type-btns .btn-select').forEach(b => b.classList.toggle('selected', b.dataset.value === selectedFundType));
+    updateContractVisibility();
+    if (fundData && fundData.contract_id) {
+        document.getElementById('fund-contract').value = fundData.contract_id;
+    }
     modal.classList.add('open');
 }
 
-function closeModal() {
-    modal.classList.remove('open');
-    editingId = null;
-}
+function closeModal() { modal.classList.remove('open'); editingId = null; }
 
 document.getElementById('add-fund-btn').addEventListener('click', () => openModal());
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-});
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
-// Form submit
-document.getElementById('fund-form').addEventListener('submit', async (e) => {
+document.getElementById('fund-form').addEventListener('submit', async e => {
     e.preventDefault();
     const name = document.getElementById('fund-name').value.trim();
-    const type = document.getElementById('fund-type').value;
+    const description = document.getElementById('fund-desc').value.trim() || null;
+    const type = selectedFundType;
+    const contractVal = document.getElementById('fund-contract').value;
+    const contract_id = contractVal ? parseInt(contractVal) : null;
 
-    if (!name) {
-        document.getElementById('err-name').textContent = 'Введите название';
-        return;
-    }
+    if (!name) { document.getElementById('err-global').textContent = 'Введите название'; return; }
 
     try {
+        const body = { name, description, type };
+        if (['debt', 'loan', 'placement'].includes(type) && contract_id) {
+            body.contract_id = contract_id;
+        }
         if (editingId) {
-            await apiFetch(`/funds/${editingId}`, {
-                method: 'PUT',
-                body: JSON.stringify({ name, type }),
-            });
+            await apiFetch(`/funds/${editingId}`, { method: 'PUT', body: JSON.stringify(body) });
         } else {
-            await apiFetch('/funds', {
-                method: 'POST',
-                body: JSON.stringify({ name, type }),
-            });
+            await apiFetch('/funds', { method: 'POST', body: JSON.stringify(body) });
+        }
+
+        // "Создать ещё" — очистить поля и не закрывать
+        if (!editingId && document.getElementById('create-another').checked) {
+            document.getElementById('fund-name').value = '';
+            document.getElementById('fund-desc').value = '';
+            document.getElementById('err-global').textContent = '';
+            loadAll();
+            return;
         }
         closeModal();
-        loadFunds();
+        loadAll();
     } catch (err) {
         document.getElementById('err-global').textContent = err.message;
     }
 });
 
-// Delete confirmation
+function editFund(id) {
+    const f = allFunds.find(x => x.id === id);
+    if (f) openModal(f);
+}
+
+// ── Delete ──
 const confirmModal = document.getElementById('confirm-modal');
 let deleteId = null;
 
-function showConfirm(id) {
-    deleteId = id;
-    confirmModal.classList.add('open');
-}
-
-function hideConfirm() {
-    confirmModal.classList.remove('open');
-    deleteId = null;
-}
+function deleteFund(id) { deleteId = id; confirmModal.classList.add('open'); }
+function hideConfirm() { confirmModal.classList.remove('open'); deleteId = null; }
 
 document.getElementById('confirm-cancel').addEventListener('click', hideConfirm);
-confirmModal.addEventListener('click', (e) => {
-    if (e.target === confirmModal) hideConfirm();
-});
-
+confirmModal.addEventListener('click', e => { if (e.target === confirmModal) hideConfirm(); });
 document.getElementById('confirm-ok').addEventListener('click', async () => {
     if (!deleteId) return;
     try {
         await apiFetch(`/funds/${deleteId}`, { method: 'DELETE' });
         hideConfirm();
-        loadFunds();
+        loadAll();
+    } catch (err) { alert('Ошибка: ' + err.message); }
+});
+
+// ── Distribute ──
+const distModal = document.getElementById('distribute-modal');
+let distData = null;
+
+document.getElementById('distribute-btn').addEventListener('click', () => {
+    document.getElementById('dist-amount').value = '';
+    document.getElementById('dist-deposit').checked = false;
+    document.getElementById('dist-preview').innerHTML = '';
+    document.getElementById('dist-confirm').disabled = true;
+    distData = null;
+    distModal.classList.add('open');
+});
+
+function closeDistribute() { distModal.classList.remove('open'); distData = null; }
+distModal.addEventListener('click', e => { if (e.target === distModal) closeDistribute(); });
+
+document.getElementById('dist-calc').addEventListener('click', async () => {
+    const amount = parseFloat(document.getElementById('dist-amount').value);
+    if (!amount || amount <= 0) return;
+    const isDeposit = document.getElementById('dist-deposit').checked;
+
+    try {
+        distData = await apiFetch('/funds/distribute', {
+            method: 'POST',
+            body: JSON.stringify({ amount, is_deposit_income: isDeposit }),
+        });
+        renderDistPreview(distData);
+        document.getElementById('dist-confirm').disabled = false;
     } catch (err) {
-        alert('Ошибка удаления: ' + err.message);
+        document.getElementById('dist-preview').innerHTML = `<div style="color:var(--danger)">${escHtml(err.message)}</div>`;
     }
 });
 
-// Load funds
-async function loadFunds() {
-    const grid = document.getElementById('funds-grid');
-    try {
-        const funds = await apiFetch('/funds');
-        renderFunds(funds);
-    } catch (err) {
-        grid.innerHTML = '<div class="empty-state"><h3>Ошибка загрузки</h3></div>';
+function renderDistPreview(data) {
+    let html = '<table class="distribute-table"><thead><tr><th>Фонд</th><th>Уже за месяц</th><th>Цель</th><th>Выделяется</th></tr></thead><tbody>';
+
+    if (data.tax_deduction) {
+        const td = data.tax_deduction;
+        html += `<tr class="tax-row"><td>${escHtml(td.fund_name)} (НДФЛ ${td.tax_rate_applied})</td><td>YTD: ${fmt(td.ytd_deposit_income)}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${td.fund_id}" data-source="tax" value="${td.amount}" step="0.01"></td></tr>`;
     }
+
+    data.items.forEach(item => {
+        html += `<tr><td>${escHtml(item.fund_name)}</td><td>${fmt(item.current_month_income)}</td><td>${item.target_amount ? fmt(item.target_amount) : '—'}</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="cascade" value="${item.allocated}" step="0.01"></td></tr>`;
+    });
+
+    data.investment_items.forEach(item => {
+        html += `<tr class="split-row"><td>${escHtml(item.fund_name)}</td><td>${item.source || ''}</td><td>—</td><td><input type="number" class="dist-amount-input" data-fund="${item.fund_id}" data-source="split" value="${item.allocated}" step="0.01"></td></tr>`;
+    });
+
+    html += '</tbody></table>';
+    html += `<div class="distribute-total">Итого: ${fmt(data.total_distributed)}</div>`;
+    document.getElementById('dist-preview').innerHTML = html;
 }
 
-// Placeholder functions
-function editFund(id) {
-    console.log('Edit fund:', id);
-    // TODO: Load fund data and open modal
-}
+document.getElementById('dist-confirm').addEventListener('click', async () => {
+    const inputs = document.querySelectorAll('.dist-amount-input');
+    const txDate = new Date().toISOString();
+    let created = 0;
 
-function deleteFund(id) {
-    showConfirm(id);
-}
+    for (const input of inputs) {
+        const amount = parseFloat(input.value);
+        if (!amount || amount <= 0) continue;
+        const fundId = parseInt(input.dataset.fund);
+        try {
+            await apiFetch('/transactions', {
+                method: 'POST',
+                body: JSON.stringify({ date: txDate, amount, type: 'income', fund_id: fundId }),
+            });
+            created++;
+        } catch (err) { console.error('Ошибка создания транзакции:', err); }
+    }
 
-// Init
-loadFunds();
+    closeDistribute();
+    if (created > 0) loadAll();
+});
+
+// ── Init ──
+setView(currentView);
+loadAll();
 </script>
-<script src="js/layout.js"></script>
 </body>
 </html>

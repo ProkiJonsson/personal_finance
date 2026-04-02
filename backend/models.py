@@ -110,6 +110,7 @@ class Fund(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     type = Column(Enum(FundType), nullable=False)
     contract_id = Column(Integer, ForeignKey("contracts.id", ondelete="SET NULL"), nullable=True, index=True)
     is_archived = Column(Boolean, nullable=False, default=False)

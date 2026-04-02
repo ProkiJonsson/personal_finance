@@ -40,7 +40,7 @@ finance/
     ├── dashboard.html       # Главная, карточки фондов
     ├── accounts.html        # CRUD счетов
     ├── funds.html           # CRUD фондов (6 типов, группировка)
-    ├── categories.html      # Справочники (виды/группы/статьи)
+    ├── categories.html      # Статьи учёта (виды/группы/статьи)
     ├── operations.html      # Транзакции с фильтрами
     ├── counterparties.html  # Контрагенты + договоры + вложения
     ├── cascade.html         # Расклад (каскады)
@@ -91,6 +91,7 @@ finance/
 | id | Integer PK | |
 | user_id | FK → users CASCADE | |
 | name | String(255) | |
+| description | Text | nullable |
 | type | Enum(FundType) | `budget`/`investment`/`tax_reserve`/`debt`/`loan`/`placement` |
 | contract_id | FK → contracts | nullable, SET NULL |
 | is_archived | Boolean | default False |
@@ -164,6 +165,11 @@ fund_accounting_enabled (Boolean), max_attachment_size_mb (Integer, default 10).
 - Заголовок `Authorization: Bearer <token>` на все защищённые запросы
 - CSS-переменные определены в `css/common.css`
 - `js/layout.js` подключается последним скриптом на каждой странице — инъектирует sidebar и header
+- Элементы с `data-fund-feature` скрываются если `fund_accounting_enabled=false` (проверяется через `GET /settings` в layout.js)
+- Sidebar: основная секция (Главная, Операции, Фонды, Счета) + bottom (Каскад Фондов, Контрагенты, Статьи учёта, Настройки, Выход)
+- Тип фонда в модалке выбирается кнопками `.btn-select-group` (как в categories.html)
+
+**Тесты:** `cd backend && python -m pytest tests/ -v` (53 теста, in-memory SQLite + StaticPool)
 
 ---
 

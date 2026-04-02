@@ -1098,16 +1098,21 @@ async function loadAccounts() {
             container.appendChild(card);
         });
 
-        // Add fund cards
+        // Add fund cards grouped by type
+        const TYPE_LABELS = { budget:'Бюджет', investment:'Инвест', tax_reserve:'Налоги', debt:'Долг', loan:'Займ', placement:'Размещ.' };
+        const TYPE_COLORS = { budget:'#1a6dff', investment:'#16a34a', tax_reserve:'#d97706', debt:'#dc2626', loan:'#ea580c', placement:'#9333ea' };
         funds.forEach(fund => {
+            const typeColor = TYPE_COLORS[fund.type] || '#6b7280';
+            const typeLabel = TYPE_LABELS[fund.type] || fund.type;
             const card = document.createElement('div');
             card.className = 'account-card';
             card.innerHTML = `
                 <div class="account-header">
                     <div>
-                        <div class="account-name">${escHtml(fund.name)} (Фонд)</div>
+                        <div class="account-name">${escHtml(fund.name)}</div>
                         <div class="account-balance">${fmt(fund.balance || 0)}</div>
                     </div>
+                    <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${typeColor}20;color:${typeColor}">${typeLabel}</span>
                 </div>
             `;
             container.appendChild(card);

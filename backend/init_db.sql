@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS funds (
     id          INTEGER      NOT NULL,
     user_id     INTEGER      NOT NULL,
     name        VARCHAR(255) NOT NULL,
+    description TEXT,
     type        VARCHAR(20)  NOT NULL,
     contract_id INTEGER,
     is_archived BOOLEAN      NOT NULL DEFAULT 0,

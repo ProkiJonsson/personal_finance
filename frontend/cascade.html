@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Каскад Фондов</title>
+    <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .page { padding: 32px; max-width: 1200px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .page-header h1 { font-size: 24px; font-weight: 700; }
+        .btn { padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .btn svg { width: 18px; height: 18px; }
+
+        .help-tip { background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+        .help-tip.hidden { display: none; }
+        .help-tip-icon { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
+        .help-tip-content { flex: 1; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+        .help-tip-content strong { color: var(--text-primary); }
+        .help-tip-close { border: none; background: none; cursor: pointer; color: var(--text-muted); }
+
+        .cascade-card { background: var(--bg-card-light); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; }
+        .cascade-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .cascade-card-header h2 { font-size: 18px; font-weight: 700; }
+        .cascade-date { font-size: 14px; color: var(--text-secondary); background: var(--primary-light); padding: 4px 12px; border-radius: 8px; }
+
+        .slots-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        .slots-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .slots-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .slots-table .col-order { width: 50px; text-align: center; font-weight: 700; color: var(--primary); }
+        .slots-table .col-target { text-align: right; font-weight: 600; }
+
+        .rules-list { display: flex; flex-direction: column; gap: 8px; }
+        .rule-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; font-size: 13px; }
+        .rule-chip .pct { font-weight: 700; color: var(--success); }
+        .rule-chip .trigger { color: var(--text-secondary); }
+
+        .section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin: 16px 0 8px; }
+
+        .history-item { background: #fafafa; border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; cursor: pointer; }
+        .history-item:hover { background: var(--primary-light); }
+        .history-item .date { font-weight: 600; }
+        .history-item .info { font-size: 13px; color: var(--text-muted); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 640px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal-title { font-size: 18px; font-weight: 700; }
+        .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .modal-close svg { width: 18px; height: 18px; }
+        .modal-body { padding: 24px; }
+        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+        .form-group input, .form-group select { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text-primary); background: #fafafa; outline: none; transition: all 0.2s; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+        .form-row { display: grid; grid-template-columns: 1fr 150px 40px; gap: 8px; align-items: end; margin-bottom: 8px; }
+        .form-row select, .form-row input { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit; background: #fafafa; }
+        .form-row select:focus, .form-row input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+        .form-row-rule { display: grid; grid-template-columns: 1fr 1fr 80px 40px; gap: 8px; align-items: end; margin-bottom: 8px; }
+        .form-row-rule select, .form-row-rule input { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit; background: #fafafa; }
+        .slot-labels, .rule-labels { display: grid; gap: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .slot-labels { grid-template-columns: 1fr 150px 40px; }
+        .rule-labels { grid-template-columns: 1fr 1fr 80px 40px; }
+        .form-error { font-size: 12px; color: var(--danger); }
+
+        .empty-state { padding: 60px 20px; text-align: center; color: var(--text-secondary); }
+        .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+
+        @media (max-width: 768px) { .main-content { margin-left: 0; margin-bottom: 70px; } .page { padding: 16px; } .form-row, .form-row-rule { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<main class="main-content">
+    <div class="page">
+        <div class="help-tip" id="help-tip">
+            <div class="help-tip-icon">?</div>
+            <div class="help-tip-content">
+                <strong>Каскад Фондов</strong> — это правила автоматического распределения дохода. Доход заполняет фонды последовательно, как стаканы:
+                <div style="display:flex;gap:6px;margin:12px 0;align-items:flex-end">
+                    <div style="width:60px;height:60px;background:var(--primary);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">100%</div>
+                    <div style="width:60px;height:45px;background:var(--primary);opacity:0.7;border-radius:6px;display:flex;align-items:flex-end;justify-content:center;color:#fff;font-size:10px;font-weight:700;padding-bottom:4px"><div style="position:absolute;width:60px;height:30px;background:var(--primary);border-radius:0 0 6px 6px"></div>60%</div>
+                    <div style="width:60px;height:30px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted)">0%</div>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--text-muted)" stroke-width="2" style="flex-shrink:0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <div style="font-size:11px;color:var(--text-muted);max-width:120px">Каждый следующий наполняется после предыдущего</div>
+                </div>
+                Настройте правила отщепления (например, 10% в инвестиции после заполнения первого фонда). Каскад действует с указанной даты до создания нового.
+            </div>
+            <button class="help-tip-close" onclick="document.getElementById('help-tip').classList.add('hidden');localStorage.setItem('helpTip_cascade_hidden','true')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <div class="page-header">
+            <h1>Каскад Фондов</h1>
+            <div style="display:flex;gap:10px">
+                <button class="btn btn-secondary" id="copy-btn" style="display:none">Копировать текущий</button>
+                <button class="btn btn-primary" id="add-cascade-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Новый каскад
+                </button>
+            </div>
+        </div>
+
+        <div id="active-cascade"></div>
+        <div id="history-section"></div>
+    </div>
+</main>
+
+<!-- Create/Edit Cascade Modal -->
+<div class="modal-overlay" id="cascade-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="cm-title">Новый каскад</h3>
+            <button class="modal-close" onclick="closeCascadeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Дата начала действия</label>
+                <input type="date" id="cm-date" required>
+            </div>
+
+            <div class="section-title">Позиции (фонды с целями)</div>
+            <div class="slot-labels"><span>Фонд</span><span>Цель (руб.)</span><span></span></div>
+            <div id="cm-slots"></div>
+            <div class="form-row">
+                <select id="cm-new-fund"><option value="">Выберите фонд</option></select>
+                <input type="number" id="cm-new-target" placeholder="Цель" min="0" step="1000">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="addSlotRow()">+</button>
+            </div>
+
+            <div class="section-title" style="margin-top:24px">Правила отщепления</div>
+            <div class="rule-labels"><span>Триггер</span><span>Фонд-получатель</span><span>%</span><span></span></div>
+            <div id="cm-rules"></div>
+            <div class="form-row-rule">
+                <select id="cm-new-trigger">
+                    <option value="">От каждого рубля</option>
+                    <option value="-1">После всех позиций</option>
+                </select>
+                <select id="cm-new-rule-fund"><option value="">Фонд-получатель</option></select>
+                <input type="number" id="cm-new-pct" placeholder="%" min="1" max="100" step="1">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="addRuleRow()">+</button>
+            </div>
+
+            <span class="form-error" id="cm-error"></span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCascadeModal()">Отмена</button>
+            <button type="button" class="btn btn-primary" id="cm-save">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script>
+const API = 'http://127.0.0.1:8000';
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) window.location.href = 'index.html';
+function logout() { localStorage.removeItem('token'); sessionStorage.removeItem('token'); window.location.href = 'index.html'; }
+async function apiFetch(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+    if (res.status === 401) logout();
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail || 'HTTP ' + res.status); }
+    if (res.status === 204) return null;
+    return res.json();
+}
+function fmt(a) { return new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',minimumFractionDigits:0}).format(a); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+if (localStorage.getItem('helpTip_cascade_hidden') === 'true') document.getElementById('help-tip').classList.add('hidden');
+
+let activeCascade = null;
+let allFunds = [];
+let editingCascadeId = null;
+let modalSlots = [];
+let modalRules = [];
+
+async function loadAll() {
+    try {
+        const [active, history, funds] = await Promise.all([
+            apiFetch('/cascades/active').catch(() => null),
+            apiFetch('/cascades'),
+            apiFetch('/funds'),
+        ]);
+        activeCascade = active;
+        allFunds = funds;
+        renderActive(active);
+        renderHistory(history);
+        document.getElementById('copy-btn').style.display = active ? '' : 'none';
+        // Блокировка если нет фондов
+        const addBtn = document.getElementById('add-cascade-btn');
+        if (funds.length === 0) {
+            addBtn.disabled = true;
+            addBtn.title = 'Сначала добавьте фонды';
+            addBtn.style.opacity = '0.5';
+        } else {
+            addBtn.disabled = false;
+            addBtn.title = '';
+            addBtn.style.opacity = '';
+        }
+        populateFundDropdowns();
+    } catch (e) {
+        document.getElementById('active-cascade').innerHTML = '<div class="empty-state"><h3>Ошибка</h3></div>';
+    }
+}
+
+function renderActive(cascade) {
+    const el = document.getElementById('active-cascade');
+    if (!cascade) {
+        const hasFunds = allFunds.length > 0;
+        el.innerHTML = '<div class="empty-state"><h3>Каскад не настроен</h3><p>' +
+            (hasFunds
+                ? 'Создайте первый каскад для автоматического распределения дохода.'
+                : 'Сначала <a href="funds.html" style="color:var(--primary);font-weight:600">добавьте фонды</a>, чтобы настроить каскад.') +
+            '</p></div>';
+        return;
+    }
+
+    let html = '<div class="cascade-card"><div class="cascade-card-header"><h2>Активный каскад</h2><span class="cascade-date">с ' + cascade.effective_from + '</span></div>';
+
+    if (cascade.slots.length) {
+        html += '<table class="slots-table"><thead><tr><th class="col-order">№</th><th>Фонд</th><th class="col-target">Цель</th></tr></thead><tbody>';
+        let totalTarget = 0;
+        cascade.slots.forEach((s, i) => {
+            totalTarget += s.target_amount;
+            html += `<tr><td class="col-order">${i + 1}</td><td>${escHtml(s.fund_name)}</td><td class="col-target">${fmt(s.target_amount)}</td></tr>`;
+        });
+        html += `<tr style="font-weight:700;background:var(--primary-light)"><td class="col-order"></td><td>Итого</td><td class="col-target">${fmt(totalTarget)}</td></tr>`;
+        html += '</tbody></table>';
+    }
+
+    if (cascade.split_rules.length) {
+        html += '<div class="section-title">Правила отщепления</div><div class="rules-list">';
+        cascade.split_rules.forEach(r => {
+            const trigger = r.trigger_position === null ? 'От каждого рубля' : r.trigger_position === -1 ? 'После всех позиций' : `После позиции ${r.trigger_position + 1}`;
+            html += `<div class="rule-chip"><span class="trigger">${trigger}</span> → <span class="pct">${Math.round(r.percentage * 100)}%</span> в ${escHtml(r.target_fund_name)}</div>`;
+        });
+        html += '</div>';
+    }
+
+    html += '<div style="margin-top:16px;display:flex;gap:8px">';
+    html += `<button class="btn btn-sm btn-secondary" onclick="editCascade(${cascade.id})">Редактировать</button>`;
+    html += `<button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="deleteCascade(${cascade.id})">Удалить</button>`;
+    html += '</div></div>';
+    el.innerHTML = html;
+}
+
+function renderHistory(cascades) {
+    const el = document.getElementById('history-section');
+    const past = cascades.filter(c => !activeCascade || c.id !== activeCascade.id);
+    if (!past.length) { el.innerHTML = ''; return; }
+
+    let html = '<div class="section-title" style="margin-top:32px">История каскадов</div>';
+    past.forEach(c => {
+        html += `<div class="history-item" onclick="viewHistoryCascade(${c.id})"><span class="date">с ${c.effective_from}</span> <span class="info">${c.slots_count} позиций, ${c.rules_count} правил</span> <span style="float:right;color:var(--primary);font-size:12px">▸ подробнее</span></div>`;
+        html += `<div id="history-detail-${c.id}" style="display:none;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;margin-top:-9px;margin-bottom:8px"></div>`;
+    });
+    el.innerHTML = html;
+}
+
+function populateFundDropdowns() {
+    const budgetFunds = allFunds.filter(f => f.type === 'budget');
+    const allOptions = allFunds.map(f => `<option value="${f.id}">${escHtml(f.name)}</option>`).join('');
+    const budgetOptions = budgetFunds.map(f => `<option value="${f.id}">${escHtml(f.name)}</option>`).join('');
+
+    document.getElementById('cm-new-fund').innerHTML = '<option value="">Выберите фонд</option>' + budgetOptions;
+    document.getElementById('cm-new-rule-fund').innerHTML = '<option value="">Фонд-получатель</option>' + allOptions;
+
+    // Update trigger dropdown with slot positions
+    const triggerSel = document.getElementById('cm-new-trigger');
+    triggerSel.innerHTML = '<option value="">От каждого рубля</option>';
+    modalSlots.forEach((s, i) => {
+        const fname = allFunds.find(f => f.id === s.fund_id);
+        triggerSel.innerHTML += `<option value="${i}">После поз. ${i + 1}${fname ? ' (' + fname.name + ')' : ''}</option>`;
+    });
+    triggerSel.innerHTML += '<option value="-1">После всех позиций</option>';
+}
+
+// ── Modal ──
+const cascadeModal = document.getElementById('cascade-modal');
+
+function openCascadeModal(cascade) {
+    editingCascadeId = cascade ? cascade.id : null;
+    document.getElementById('cm-title').textContent = cascade ? 'Редактировать каскад' : 'Новый каскад';
+    document.getElementById('cm-date').value = cascade ? cascade.effective_from : new Date().toISOString().split('T')[0];
+    document.getElementById('cm-error').textContent = '';
+
+    modalSlots = cascade ? cascade.slots.map(s => ({ fund_id: s.fund_id, target_amount: s.target_amount, sort_order: s.sort_order })) : [];
+    modalRules = cascade ? cascade.split_rules.map(r => ({ trigger_position: r.trigger_position, target_fund_id: r.target_fund_id, percentage: r.percentage })) : [];
+
+    renderModalSlots();
+    renderModalRules();
+    populateFundDropdowns();
+    cascadeModal.classList.add('open');
+}
+
+function closeCascadeModal() { cascadeModal.classList.remove('open'); }
+cascadeModal.addEventListener('click', e => { if (e.target === cascadeModal) closeCascadeModal(); });
+
+function renderModalSlots() {
+    const el = document.getElementById('cm-slots');
+    el.innerHTML = modalSlots.map((s, i) => {
+        const fname = allFunds.find(f => f.id === s.fund_id);
+        return `<div class="form-row"><span style="padding:8px 0;font-size:13px"><strong>${i+1}.</strong> ${fname ? escHtml(fname.name) : 'Фонд #' + s.fund_id}</span><input type="number" value="${s.target_amount}" onchange="modalSlots[${i}].target_amount=parseFloat(this.value)" min="0" step="1000"><button class="btn btn-sm btn-secondary" style="color:var(--danger);padding:4px 8px" onclick="modalSlots.splice(${i},1);renderModalSlots();populateFundDropdowns()">✕</button></div>`;
+    }).join('');
+}
+
+function renderModalRules() {
+    const el = document.getElementById('cm-rules');
+    el.innerHTML = modalRules.map((r, i) => {
+        const fname = allFunds.find(f => f.id === r.target_fund_id);
+        const trigger = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position + 1}`;
+        return `<div class="form-row-rule"><span style="padding:8px">${trigger}</span><span style="padding:8px">${fname ? escHtml(fname.name) : '#' + r.target_fund_id}</span><span style="padding:8px;font-weight:700">${Math.round(r.percentage * 100)}%</span><button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="modalRules.splice(${i},1);renderModalRules()">✕</button></div>`;
+    }).join('');
+}
+
+function addSlotRow() {
+    const fundId = parseInt(document.getElementById('cm-new-fund').value);
+    const target = parseFloat(document.getElementById('cm-new-target').value);
+    if (!fundId || !target) return;
+    modalSlots.push({ fund_id: fundId, target_amount: target, sort_order: modalSlots.length });
+    document.getElementById('cm-new-fund').value = '';
+    document.getElementById('cm-new-target').value = '';
+    renderModalSlots();
+    populateFundDropdowns();
+}
+
+function addRuleRow() {
+    const triggerVal = document.getElementById('cm-new-trigger').value;
+    const fundId = parseInt(document.getElementById('cm-new-rule-fund').value);
+    const pct = parseInt(document.getElementById('cm-new-pct').value);
+    if (!fundId || !pct) return;
+    const trigger_position = triggerVal === '' ? null : parseInt(triggerVal);
+    modalRules.push({ trigger_position, target_fund_id: fundId, percentage: pct / 100 });
+    document.getElementById('cm-new-rule-fund').value = '';
+    document.getElementById('cm-new-pct').value = '';
+    renderModalRules();
+}
+
+document.getElementById('cm-save').addEventListener('click', async () => {
+    const effective_from = document.getElementById('cm-date').value;
+    if (!effective_from) { document.getElementById('cm-error').textContent = 'Укажите дату'; return; }
+    if (!modalSlots.length) { document.getElementById('cm-error').textContent = 'Добавьте хотя бы одну позицию'; return; }
+
+    const body = { effective_from, slots: modalSlots.map((s, i) => ({ ...s, sort_order: i })), split_rules: modalRules };
+
+    try {
+        if (editingCascadeId) {
+            await apiFetch(`/cascades/${editingCascadeId}`, { method: 'PUT', body: JSON.stringify(body) });
+        } else {
+            await apiFetch('/cascades', { method: 'POST', body: JSON.stringify(body) });
+        }
+        closeCascadeModal();
+        loadAll();
+    } catch (err) { document.getElementById('cm-error').textContent = err.message; }
+});
+
+document.getElementById('add-cascade-btn').addEventListener('click', () => {
+    if (allFunds.length === 0) { alert('Сначала добавьте фонды на странице Фонды'); return; }
+    openCascadeModal();
+});
+document.getElementById('copy-btn').addEventListener('click', async () => {
+    if (!activeCascade) return;
+    const newDate = prompt('Дата начала нового каскада (ГГГГ-ММ-ДД):', new Date().toISOString().split('T')[0]);
+    if (!newDate) return;
+    try {
+        await apiFetch(`/cascades/${activeCascade.id}/copy?effective_from=${newDate}`, { method: 'POST' });
+        loadAll();
+    } catch (e) { alert(e.message); }
+});
+
+function editCascade(id) {
+    const c = activeCascade && activeCascade.id === id ? activeCascade : null;
+    if (c) openCascadeModal(c);
+    else apiFetch(`/cascades/${id}`).then(data => openCascadeModal(data)).catch(e => alert(e.message));
+}
+
+async function deleteCascade(id) {
+    if (!confirm('Удалить каскад?')) return;
+    try { await apiFetch(`/cascades/${id}`, { method: 'DELETE' }); loadAll(); } catch (e) { alert(e.message); }
+}
+
+async function viewHistoryCascade(id) {
+    const el = document.getElementById('history-detail-' + id);
+    if (!el) return;
+    if (el.style.display !== 'none') { el.style.display = 'none'; return; }
+    el.innerHTML = 'Загрузка...';
+    el.style.display = 'block';
+    try {
+        const c = await apiFetch(`/cascades/${id}`);
+        let html = '<table class="slots-table" style="margin:0"><thead><tr><th class="col-order">№</th><th>Фонд</th><th class="col-target">Цель</th></tr></thead><tbody>';
+        let total = 0;
+        c.slots.forEach((s, i) => { total += s.target_amount; html += `<tr><td class="col-order">${i+1}</td><td>${escHtml(s.fund_name)}</td><td class="col-target">${fmt(s.target_amount)}</td></tr>`; });
+        html += `<tr style="font-weight:700"><td></td><td>Итого</td><td class="col-target">${fmt(total)}</td></tr></tbody></table>`;
+        if (c.split_rules.length) {
+            html += '<div style="margin-top:8px">';
+            c.split_rules.forEach(r => {
+                const trigger = r.trigger_position === null ? 'От рубля' : r.trigger_position === -1 ? 'После всех' : `После поз. ${r.trigger_position+1}`;
+                html += `<span class="rule-chip" style="margin:4px">${trigger} → ${Math.round(r.percentage*100)}% в ${escHtml(r.target_fund_name)}</span>`;
+            });
+            html += '</div>';
+        }
+        el.innerHTML = html;
+    } catch (e) { el.innerHTML = '<span style="color:var(--danger)">Ошибка: ' + escHtml(e.message) + '</span>'; }
+}
+
+loadAll();
+</script>
+</body>
+</html>
