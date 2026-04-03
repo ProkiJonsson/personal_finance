@@ -1,0 +1,131 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Фонды" [ref=e18] [cursor=pointer]:
+            - /url: funds.html
+            - generic [ref=e20]: Фонды
+          - link "Счета" [ref=e21] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e23]: Счета
+          - link "Каскад Фондов" [ref=e24] [cursor=pointer]:
+            - /url: cascade.html
+            - generic [ref=e26]: Каскад Фондов
+          - link "Контрагенты" [ref=e27] [cursor=pointer]:
+            - /url: counterparties.html
+            - generic [ref=e29]: Контрагенты
+          - link "Статьи учёта" [ref=e30] [cursor=pointer]:
+            - /url: categories.html
+            - generic [ref=e32]: Статьи учёта
+          - link "Админ-панель" [ref=e33] [cursor=pointer]:
+            - /url: admin.html
+            - generic [ref=e35]: Админ-панель
+          - link "Настройки" [ref=e36] [cursor=pointer]:
+            - /url: settings.html
+            - generic [ref=e38]: Настройки
+      - button "Выйти" [ref=e40] [cursor=pointer]:
+        - generic [ref=e42]: Выйти
+  - main [ref=e43]:
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading "Личные финансы" [level=1] [ref=e46]
+        - navigation [ref=e47]:
+          - link "Главная" [ref=e48] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e49] [cursor=pointer]:
+            - /url: operations.html
+          - link "Фонды" [ref=e50] [cursor=pointer]:
+            - /url: funds.html
+          - link "Счета" [ref=e51] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e52]:
+        - button "Поиск" [ref=e53] [cursor=pointer]:
+          - img [ref=e54]
+        - button "Уведомления" [ref=e57] [cursor=pointer]:
+          - img [ref=e58]
+        - generic [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: A
+          - generic [ref=e63]: Admin
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - heading "Счета" [level=1] [ref=e66]
+        - generic [ref=e67]:
+          - button "Начальные остатки" [ref=e68] [cursor=pointer]:
+            - img [ref=e69]
+            - text: Начальные остатки
+          - button "Добавить счёт" [ref=e71] [cursor=pointer]:
+            - img [ref=e72]
+            - text: Добавить счёт
+          - generic [ref=e74]:
+            - button "Карточки" [ref=e75] [cursor=pointer]:
+              - img [ref=e76]
+            - button "Таблица" [ref=e81] [cursor=pointer]:
+              - img [ref=e82]
+      - table [ref=e85]:
+        - rowgroup [ref=e86]:
+          - row "Название Баланс Дата открытия" [ref=e87]:
+            - columnheader "Название" [ref=e88]
+            - columnheader "Баланс" [ref=e89]
+            - columnheader "Дата открытия" [ref=e90]
+            - columnheader [ref=e91]
+        - rowgroup [ref=e92]:
+          - row "Сбербанк 0,00 ₽ 03.04.2026, 11:03" [ref=e93]:
+            - cell "Сбербанк" [ref=e94]
+            - cell "0,00 ₽" [ref=e95]
+            - cell "03.04.2026, 11:03" [ref=e96]
+            - cell [ref=e97]:
+              - generic [ref=e98]:
+                - button "Редактировать" [ref=e99] [cursor=pointer]:
+                  - img [ref=e100]
+                - button "Удалить" [ref=e103] [cursor=pointer]:
+                  - img [ref=e104]
+  - generic:
+    - generic:
+      - generic:
+        - heading "Новый счёт" [level=2]
+        - button "Закрыть":
+          - img
+      - generic:
+        - generic:
+          - generic: Название счёта
+          - textbox "Название счёта":
+            - /placeholder: "Например: Тинькофф"
+          - generic: Можете указать банк или тип счёта
+        - generic:
+          - button "Сохранить"
+          - button "Отмена"
+  - generic:
+    - generic:
+      - generic:
+        - heading "Начальные остатки" [level=2]
+        - button "Закрыть":
+          - img
+      - generic:
+        - paragraph: Введите начальные балансы всех ваших счетов. Это поможет системе правильно рассчитывать общую сумму.
+        - table:
+          - rowgroup:
+            - row "Счёт Начальный баланс (₽)":
+              - columnheader "Счёт"
+              - columnheader "Начальный баланс (₽)"
+          - rowgroup
+        - generic:
+          - button "Сохранить"
+          - button "Отмена"
+  - generic:
+    - generic:
+      - heading "Удалить счёт?" [level=3]
+      - paragraph: Это действие нельзя отменить. Все связанные операции будут удалены.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"

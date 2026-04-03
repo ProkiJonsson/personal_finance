@@ -9,39 +9,43 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/common.css">
     <style>
-        .page { padding: 32px; max-width: 1400px; }
-        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .page-header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .page { padding: 24px 32px; max-width: 1400px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .page-header h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
 
-        .btn { padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
-        .btn-primary { background: var(--primary); color: #fff; }
+        .btn { padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; height: 28px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); background: #fff; color: var(--text-secondary); }
+        .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
         .btn-primary:hover { background: var(--primary-dark); }
         .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
         .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
         .btn-danger { background: var(--danger); color: #fff; }
-        .btn-sm { padding: 6px 14px; font-size: 13px; }
-        .btn svg { width: 18px; height: 18px; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; height: 24px; }
+        .btn svg { width: 14px; height: 14px; }
 
-        .help-tip { background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+        .help-tip { background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px; }
         .help-tip.hidden { display: none; }
-        .help-tip-icon { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
-        .help-tip-content { flex: 1; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+        .help-tip-icon { width: 24px; height: 24px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; font-size: 12px; }
+        .help-tip-content { flex: 1; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
         .help-tip-content strong { color: var(--text-primary); }
         .help-tip-close { border: none; background: none; cursor: pointer; color: var(--text-muted); }
 
-        .cp-table { width: 100%; border-collapse: collapse; }
-        .cp-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border); }
-        .cp-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .cp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cp-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .cp-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .cp-table tr:hover { background: var(--primary-light); cursor: pointer; }
         .cp-table .col-balance { font-weight: 700; text-align: right; }
-        .cp-table .col-actions { text-align: right; width: 80px; }
+        .cp-table .col-actions { text-align: right; width: 110px; white-space: nowrap; }
+        .action-btn { width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+        .action-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .action-btn.danger:hover { background: #fef2f2; color: var(--danger); }
+        .action-btn svg { width: 15px; height: 15px; }
 
         .cp-expand { background: #fafafa; }
         .cp-expand td { padding: 0; }
         .cp-expand-inner { padding: 16px 24px; }
         .cp-expand.hidden { display: none; }
 
-        .contracts-list { display: flex; flex-direction: column; gap: 12px; }
+        .contracts-list { display: flex; flex-direction: column; gap: 8px; }
         .contract-item { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .contract-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
         .contract-info p { font-size: 13px; color: var(--text-muted); }
@@ -59,22 +63,6 @@
         .empty-state { padding: 60px 20px; text-align: center; color: var(--text-secondary); }
         .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .modal-title { font-size: 18px; font-weight: 700; }
-        .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
-        .modal-close:hover { background: var(--bg-body); }
-        .modal-close svg { width: 18px; height: 18px; }
-        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
-        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
-
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-        .form-group input, .form-group textarea { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text-primary); background: #fafafa; outline: none; transition: all 0.2s; font-family: inherit; }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
-        .form-group textarea { min-height: 80px; resize: vertical; }
         .form-error { font-size: 12px; color: var(--danger); min-height: 16px; }
 
         .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
@@ -82,7 +70,7 @@
         .confirm-box { background: #fff; border-radius: 20px; max-width: 380px; width: 100%; padding: 32px; text-align: center; }
         .confirm-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
         .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
-        .confirm-footer { display: flex; gap: 12px; justify-content: center; }
+        .confirm-footer { display: flex; gap: 8px; justify-content: center; }
 
         @media (max-width: 768px) { .main-content { margin-left: 0; margin-bottom: 70px; } .page { padding: 16px; } }
     </style>
@@ -112,15 +100,15 @@
     </div>
 </main>
 
-<!-- Add/Edit Counterparty Modal -->
-<div class="modal-overlay" id="cp-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title" id="cp-modal-title">Добавить контрагента</h3>
-            <button class="modal-close" onclick="closeCpModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+<!-- Add/Edit Counterparty Panel -->
+<div class="slide-panel-overlay" id="cp-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 class="slide-panel-title" id="cp-modal-title">Добавить контрагента</h3>
+            <button class="slide-panel-close" onclick="closeCpModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <form id="cp-form">
-            <div class="modal-body">
+            <div class="slide-panel-body">
                 <div class="form-group">
                     <label>Название</label>
                     <input type="text" id="cp-name" placeholder="Например: ВТБ" maxlength="255" required>
@@ -130,24 +118,26 @@
                     <textarea id="cp-desc" placeholder="Необязательно"></textarea>
                 </div>
                 <span class="form-error" id="cp-error"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeCpModal()">Отмена</button>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <label class="checkbox-row" id="cp-add-more-wrap" style="margin-top:8px">
+                    <input type="checkbox" id="cp-add-more">
+                    Добавить ещё
+                </label>
+                <button type="submit" class="btn-panel btn-panel-primary">Сохранить</button>
+                <button type="button" class="btn-panel btn-panel-secondary" onclick="closeCpModal()">Отмена</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Add Contract Modal -->
-<div class="modal-overlay" id="contract-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title">Добавить договор</h3>
-            <button class="modal-close" onclick="closeContractModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+<!-- Add Contract Panel -->
+<div class="slide-panel-overlay" id="contract-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 class="slide-panel-title">Добавить договор</h3>
+            <button class="slide-panel-close" onclick="closeContractModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <form id="contract-form">
-            <div class="modal-body">
+            <div class="slide-panel-body">
                 <div class="form-group">
                     <label>Название</label>
                     <input type="text" id="ct-name" placeholder="Например: Вклад 12 мес" maxlength="255" required>
@@ -157,10 +147,8 @@
                     <textarea id="ct-desc" placeholder="Необязательно"></textarea>
                 </div>
                 <span class="form-error" id="ct-error"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeContractModal()">Отмена</button>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="submit" class="btn-panel btn-panel-primary" style="margin-top:12px">Сохранить</button>
+                <button type="button" class="btn-panel btn-panel-secondary" onclick="closeContractModal()">Отмена</button>
             </div>
         </form>
     </div>
@@ -178,6 +166,7 @@
     </div>
 </div>
 
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
@@ -222,8 +211,11 @@ function renderCps() {
             <td>${cp.contracts_count}</td>
             <td class="col-balance">${fmt(cp.balance)}</td>
             <td class="col-actions" onclick="event.stopPropagation()">
-                <button class="btn btn-sm btn-secondary" onclick="openEditCp(${cp.id})">✎</button>
-                <button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="confirmDeleteCp(${cp.id})">✕</button>
+                <div style="display:inline-flex;gap:2px">
+                <button class="action-btn" title="Редактировать" onclick="openEditCp(${cp.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                <button class="action-btn" title="Копировать" onclick="copyCp(${cp.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+                <button class="action-btn danger" title="Удалить" onclick="confirmDeleteCp(${cp.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>
+                </div>
             </td>
         </tr>`;
         html += `<tr class="cp-expand ${expandedCpId === cp.id ? '' : 'hidden'}" id="expand-${cp.id}"><td colspan="5"><div class="cp-expand-inner" id="expand-inner-${cp.id}">Загрузка...</div></td></tr>`;
@@ -259,9 +251,9 @@ async function loadContracts(cpId) {
                         <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadFile(this, 'contract', ${ct.id})">
                     </div>
                 </div>
-                <div class="contract-actions" style="display:flex;flex-direction:column;gap:6px">
-                    <button class="btn btn-sm btn-secondary" onclick="openEditContract(${ct.id}, '${escHtml(ct.name)}', '${escHtml(ct.description || '')}')">Редактировать</button>
-                    ${ct.name !== 'Основной' ? `<button class="btn btn-sm btn-secondary" style="color:var(--danger)" onclick="confirmDeleteContract(${ct.id})">Удалить</button>` : ''}
+                <div class="contract-actions">
+                    <button class="action-btn" title="Редактировать" onclick="openEditContract(${ct.id}, '${escHtml(ct.name)}', '${escHtml(ct.description || '')}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                    ${ct.name !== 'Основной' ? `<button class="action-btn danger" title="Удалить" onclick="confirmDeleteContract(${ct.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>` : ''}
                 </div>
             </div>`;
         }
@@ -291,8 +283,8 @@ async function deleteAtt(id) {
 
 // ── Modals ──
 const cpModal = document.getElementById('cp-modal');
-function openCpModal() { editingCpId = null; document.getElementById('cp-modal-title').textContent = 'Добавить контрагента'; document.getElementById('cp-name').value = ''; document.getElementById('cp-desc').value = ''; document.getElementById('cp-error').textContent = ''; cpModal.classList.add('open'); }
-function openEditCp(id) { const cp = allCps.find(x => x.id === id); if (!cp) return; editingCpId = id; document.getElementById('cp-modal-title').textContent = 'Редактировать'; document.getElementById('cp-name').value = cp.name; document.getElementById('cp-desc').value = cp.description || ''; cpModal.classList.add('open'); }
+function openCpModal() { editingCpId = null; document.getElementById('cp-modal-title').textContent = 'Добавить контрагента'; document.getElementById('cp-name').value = ''; document.getElementById('cp-desc').value = ''; document.getElementById('cp-error').textContent = ''; document.getElementById('cp-add-more').checked = false; document.getElementById('cp-add-more-wrap').style.display = ''; cpModal.classList.add('open'); }
+function openEditCp(id) { const cp = allCps.find(x => x.id === id); if (!cp) return; editingCpId = id; document.getElementById('cp-modal-title').textContent = 'Редактировать'; document.getElementById('cp-name').value = cp.name; document.getElementById('cp-desc').value = cp.description || ''; document.getElementById('cp-error').textContent = ''; document.getElementById('cp-add-more-wrap').style.display = 'none'; cpModal.classList.add('open'); }
 function closeCpModal() { cpModal.classList.remove('open'); }
 
 document.getElementById('add-cp-btn').addEventListener('click', openCpModal);
@@ -304,14 +296,21 @@ document.getElementById('cp-form').addEventListener('submit', async e => {
     try {
         if (editingCpId) { await apiFetch(`/counterparties/${editingCpId}`, { method: 'PUT', body: JSON.stringify({ name, description }) }); }
         else { await apiFetch('/counterparties', { method: 'POST', body: JSON.stringify({ name, description }) }); }
-        closeCpModal(); loadCps();
+        loadCps();
+        const addMore = document.getElementById('cp-add-more').checked;
+        if (addMore && !editingCpId) {
+            document.getElementById('cp-name').value = '';
+            document.getElementById('cp-desc').value = '';
+            document.getElementById('cp-error').textContent = '';
+            document.getElementById('cp-name').focus();
+        } else { closeCpModal(); }
     } catch (err) { document.getElementById('cp-error').textContent = err.message; }
 });
 
 const contractModal = document.getElementById('contract-modal');
 let editingContractId = null;
-function openContractModal(cpId) { editingContractId = null; addContractCpId = cpId; document.getElementById('ct-name').value = ''; document.getElementById('ct-desc').value = ''; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.modal-title').textContent = 'Добавить договор'; contractModal.classList.add('open'); }
-function openEditContract(ctId, name, desc) { editingContractId = ctId; document.getElementById('ct-name').value = name; document.getElementById('ct-desc').value = desc; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.modal-title').textContent = 'Редактировать договор'; contractModal.classList.add('open'); }
+function openContractModal(cpId) { editingContractId = null; addContractCpId = cpId; document.getElementById('ct-name').value = ''; document.getElementById('ct-desc').value = ''; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.slide-panel-title').textContent = 'Добавить договор'; contractModal.classList.add('open'); }
+function openEditContract(ctId, name, desc) { editingContractId = ctId; document.getElementById('ct-name').value = name; document.getElementById('ct-desc').value = desc; document.getElementById('ct-error').textContent = ''; contractModal.querySelector('.slide-panel-title').textContent = 'Редактировать договор'; contractModal.classList.add('open'); }
 function closeContractModal() { contractModal.classList.remove('open'); editingContractId = null; }
 
 document.getElementById('contract-form').addEventListener('submit', async e => {
@@ -336,6 +335,18 @@ let confirmAction = null;
 function showConfirm(title, text, action) { document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-text').textContent = text; confirmAction = action; confirmModal.classList.add('open'); }
 function hideConfirm() { confirmModal.classList.remove('open'); confirmAction = null; }
 document.getElementById('confirm-ok').addEventListener('click', async () => { if (confirmAction) { try { await confirmAction(); } catch (e) { alert(e.message); } } hideConfirm(); });
+
+function copyCp(id) {
+    const cp = allCps.find(x => x.id === id);
+    if (!cp) return;
+    editingCpId = null;
+    document.getElementById('cp-modal-title').textContent = 'Добавить контрагента';
+    document.getElementById('cp-name').value = cp.name + ' (копия)';
+    document.getElementById('cp-desc').value = cp.description || '';
+    document.getElementById('cp-error').textContent = '';
+    document.getElementById('cp-add-more').checked = false;
+    cpModal.classList.add('open');
+}
 
 function confirmDeleteCp(id) { showConfirm('Удалить контрагента?', 'Все договоры будут удалены.', async () => { await apiFetch(`/counterparties/${id}`, { method: 'DELETE' }); expandedCpId = null; loadCps(); }); }
 function confirmDeleteContract(id) { showConfirm('Удалить договор?', 'Это действие нельзя отменить.', async () => { await apiFetch(`/counterparties/contracts/${id}`, { method: 'DELETE' }); if (expandedCpId) loadContracts(expandedCpId); }); }

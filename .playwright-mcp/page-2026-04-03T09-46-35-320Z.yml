@@ -1,0 +1,155 @@
+- generic [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+        - button "Развернуть/свернуть" [ref=e9] [cursor=pointer]
+        - navigation [ref=e10]:
+          - link "Главная" [ref=e11] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic: Главная
+          - link "Операции" [ref=e13] [cursor=pointer]:
+            - /url: operations.html
+            - generic: Операции
+          - link "Счета" [ref=e15] [cursor=pointer]:
+            - /url: accounts.html
+            - generic: Счета
+      - generic [ref=e17]:
+        - link "Статьи учёта" [ref=e18] [cursor=pointer]:
+          - /url: categories.html
+          - generic: Статьи учёта
+        - link "Админ-панель" [ref=e20] [cursor=pointer]:
+          - /url: admin.html
+          - generic: Админ-панель
+        - link "Настройки" [ref=e22] [cursor=pointer]:
+          - /url: settings.html
+          - generic: Настройки
+        - button "Выйти" [ref=e24] [cursor=pointer]:
+          - generic: Выйти
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - heading "Личные финансы" [level=1] [ref=e29]
+        - navigation [ref=e30]:
+          - link "Главная" [ref=e31] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e32] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e33] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e34]:
+        - button "Поиск" [ref=e35] [cursor=pointer]:
+          - img [ref=e36]
+        - button "Уведомления" [ref=e39] [cursor=pointer]:
+          - img [ref=e40]
+        - generic [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: A
+          - generic [ref=e45]: Admin
+    - generic [ref=e46]:
+      - generic [ref=e47]: Мои счета
+      - generic [ref=e48]:
+        - generic [ref=e49] [cursor=pointer]:
+          - generic [ref=e50]: Все счета
+          - generic [ref=e52]: 0 ₽
+        - generic [ref=e53] [cursor=pointer]:
+          - img [ref=e55]
+          - generic [ref=e57]:
+            - text: Добавить
+            - text: счёт
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]: Все счета
+          - generic [ref=e61]:
+            - button "Все" [ref=e62] [cursor=pointer]
+            - button "Приход" [ref=e63] [cursor=pointer]
+            - button "Расход" [ref=e64] [cursor=pointer]
+        - generic [ref=e65]:
+          - button "Экспорт" [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+            - text: Экспорт
+          - button "Фильтры" [ref=e70] [cursor=pointer]:
+            - img [ref=e71]
+            - text: Фильтры
+          - button "Добавить" [active] [ref=e72] [cursor=pointer]
+          - generic [ref=e73]:
+            - button "<" [disabled] [ref=e74]
+            - button "1" [ref=e75] [cursor=pointer]
+            - button "2" [ref=e76] [cursor=pointer]
+            - button "3" [ref=e77] [cursor=pointer]
+            - button "..." [ref=e78] [cursor=pointer]
+            - button "105" [ref=e79] [cursor=pointer]
+            - button ">" [ref=e80] [cursor=pointer]
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - button "Вчера" [ref=e83] [cursor=pointer]
+          - button "Сегодня" [ref=e84] [cursor=pointer]
+          - button "Неделя" [ref=e85] [cursor=pointer]
+          - button "Месяц" [ref=e86] [cursor=pointer]
+        - generic [ref=e87]:
+          - textbox [ref=e88]: 2026-03-31
+          - generic [ref=e89]: —
+          - textbox [ref=e90]: 2026-04-03
+        - generic [ref=e91]:
+          - img
+          - textbox "Поиск по операциям..." [ref=e92]
+        - button "Найти" [ref=e93] [cursor=pointer]
+      - table [ref=e95]:
+        - rowgroup [ref=e96]:
+          - row "Номер ▼ Дата ▼ Контрагент Описание Счёт Сумма Комментарий" [ref=e97]:
+            - columnheader [ref=e98] [cursor=pointer]:
+              - checkbox [ref=e99]
+            - columnheader "Номер ▼" [ref=e100] [cursor=pointer]:
+              - text: Номер
+              - generic [ref=e101]: ▼
+            - columnheader "Дата ▼" [ref=e102] [cursor=pointer]:
+              - text: Дата
+              - generic [ref=e103]: ▼
+            - columnheader "Контрагент" [ref=e104] [cursor=pointer]
+            - columnheader "Описание" [ref=e105] [cursor=pointer]
+            - columnheader "Счёт" [ref=e106] [cursor=pointer]
+            - columnheader "Сумма" [ref=e107] [cursor=pointer]
+            - columnheader "Комментарий" [ref=e108] [cursor=pointer]
+            - columnheader [ref=e109] [cursor=pointer]
+        - rowgroup [ref=e110]:
+          - row "Операций не найдено" [ref=e111]:
+            - cell "Операций не найдено" [ref=e112]
+  - generic [ref=e114]:
+    - generic [ref=e115]:
+      - heading "Добавить платёж" [level=3] [ref=e116]
+      - button [ref=e117] [cursor=pointer]:
+        - img [ref=e118]
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - button "Расход" [ref=e123] [cursor=pointer]
+        - button "Приход" [ref=e124] [cursor=pointer]
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]: Дата
+          - textbox [ref=e128]: 2026-04-03
+        - generic [ref=e129]:
+          - generic [ref=e130]: Счёт
+          - combobox [ref=e131]:
+            - option "Выбрать" [selected]
+      - generic [ref=e132]:
+        - generic [ref=e133]:
+          - generic [ref=e134]: Контрагент
+          - combobox [ref=e135]:
+            - option "Выбрать" [selected]
+        - generic [ref=e136]:
+          - generic [ref=e137]: Сумма
+          - textbox "0,00 ₽" [ref=e138]
+      - generic [ref=e139]:
+        - generic [ref=e140]: Категория
+        - combobox [ref=e141]:
+          - option "Выбрать категорию" [selected]
+      - generic [ref=e142]:
+        - generic [ref=e143]: Описание операции
+        - textbox "Оплата..." [ref=e144]
+      - generic [ref=e145]:
+        - generic [ref=e146]: Комментарий
+        - textbox "Учесть..." [ref=e147]
+    - generic [ref=e148]:
+      - button "Добавить" [ref=e149] [cursor=pointer]
+      - generic [ref=e150] [cursor=pointer]:
+        - checkbox "Добавить ещё один платёж" [ref=e151]
+        - text: Добавить ещё один платёж

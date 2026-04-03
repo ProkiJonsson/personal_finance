@@ -9,1012 +9,202 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/common.css">
     <style>
-        /* ========== PAGE CONTENT ========== */
-        .page {
-            padding: 32px;
-            max-width: 1400px;
-        }
-
-        /* Accounts Section */
-        .accounts-section {
-            margin-bottom: 32px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+        .page { padding: 24px 32px; max-width: 1400px; }
 
         .section-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        /* Cards row */
+        .cards-row {
             display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-title .refresh-btn {
-            width: 28px;
-            height: 28px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .section-title .refresh-btn:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .section-title .refresh-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .accounts-row {
-            display: flex;
-            gap: 16px;
+            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            padding-bottom: 4px;
+            margin-bottom: 24px;
         }
+        .cards-row::-webkit-scrollbar { height: 4px; }
+        .cards-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .accounts-row::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .accounts-row::-webkit-scrollbar-track {
-            background: var(--bg-body);
-            border-radius: 3px;
-        }
-
-        .accounts-row::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .account-card {
+        .dash-card {
             flex-shrink: 0;
-            min-width: 240px;
-            max-width: 280px;
+            width: 190px;
+            min-width: 190px;
+            max-width: 190px;
+            height: 120px;
             background: var(--bg-card-light);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            border-radius: 16px;
+            padding: 16px 20px;
             border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+        .dash-card:hover { border-color: var(--primary); }
 
-        .account-card:hover {
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
-
-        .account-card.selected {
-            border-color: var(--primary);
-        }
-
-        .account-card-dark {
+        .dash-card-dark {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #fff;
+            border: 2px solid transparent;
         }
+        .dash-card-dark:hover { border-color: var(--primary); }
+        .dash-card-dark .card-name,
+        .dash-card-dark .card-balance { color: #fff; }
+        .dash-card-dark .card-sub { color: rgba(255,255,255,0.6); }
 
-        .account-card-dark .account-name {
-            color: var(--text-muted);
-        }
-
-        .account-card-dark .account-change {
-            color: var(--success);
-        }
-
-        .account-card-dark .account-balance {
-            color: #fff;
-        }
-
-        .account-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .account-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .account-change {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--success);
-            margin-bottom: 8px;
-        }
-
-        .account-balance {
-            font-size: 28px;
+        .card-name {
+            font-size: 13px;
             font-weight: 700;
             color: var(--text-primary);
-            letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .card-balance {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+        .card-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--primary-light);
+            color: var(--primary);
+            margin-bottom: 2px;
+            white-space: nowrap;
         }
 
-        .account-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .account-action-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .account-card-dark .account-action-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .account-action-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .account-action-btn svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .account-card-add {
-            background: var(--bg-card-light);
+        /* Add card */
+        .dash-card-add {
             border: 2px dashed var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 6px;
             color: var(--text-secondary);
+            width: 90px !important;
+            min-width: 90px !important;
+            max-width: 90px !important;
         }
-
-        .account-card-add:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: none;
-            box-shadow: none;
-        }
-
-        .account-card-add .add-icon {
-            width: 48px;
-            height: 48px;
+        .dash-card-add:hover { border-color: var(--primary); color: var(--primary); }
+        .dash-card-add .add-icon {
+            width: 30px; height: 30px;
             background: var(--primary-light);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
+        .dash-card-add .add-icon svg { width: 16px; height: 16px; color: var(--primary); }
+        .dash-card-add span { font-size: 11px; }
 
-        .account-card-add .add-icon svg {
-            width: 24px;
-            height: 24px;
-            color: var(--primary);
-        }
-
-        .account-card-add span {
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Add Payment Section */
-        .add-payment-section {
-            margin-bottom: 32px;
-        }
-
-        .add-payment-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-
-        .add-payment-form {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fafafa;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-group .input-icon {
-            position: relative;
-        }
-
-        .form-group .input-icon svg {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-
-        .form-row-full {
-            display: flex;
-            gap: 16px;
-        }
-
-        .form-row-full .form-group {
-            flex: 1;
-        }
-
-        .btn-primary {
-            padding: 14px 32px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            align-self: flex-start;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
-        }
-
-        /* Info Card */
-        .info-card {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            padding: 24px;
-            margin-top: 16px;
+        /* Table */
+        .table-wrap {
             border: 1px solid var(--border);
-        }
-
-        .info-card-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .info-card-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .info-card-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-
-        .info-card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .info-card-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Transactions Table */
-        .transactions-section {
-            margin-top: 32px;
-        }
-
-        .table-container {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            border: 1px solid var(--border);
             overflow: hidden;
-        }
-
-        .table-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .table-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-secondary {
-            padding: 10px 20px;
             background: #fff;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-secondary svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .filter-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 24px;
-            background: var(--bg-body);
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: #fff;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .filter-btn.active {
-            background: var(--text-primary);
-            color: #fff;
-            border-color: var(--text-primary);
-        }
-
-        .date-filter {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: #fff;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-        }
-
-        .date-filter input {
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: transparent;
-        }
-
-        .search-filter {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-        }
-
-        .search-filter input {
-            width: 100%;
-            padding: 10px 16px 10px 40px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fff;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-filter input:focus {
-            border-color: var(--primary);
-        }
-
-        .search-filter svg {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-
-        .filter-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
+        .recent-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
         }
-
-        thead th {
-            padding: 14px 20px;
+        .recent-table thead th {
+            padding: 10px 12px;
             text-align: left;
             font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-weight: 600;
             color: var(--text-secondary);
             background: #fafafa;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
-
-        tbody tr {
+        .recent-table tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
+            transition: background 0.15s;
         }
-
-        tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background: var(--primary-light);
-        }
-
-        tbody td {
-            padding: 16px 20px;
+        .recent-table tbody tr:last-child { border-bottom: none; }
+        .recent-table tbody tr:hover { background: var(--primary-light); }
+        .recent-table tbody td {
+            padding: 8px 12px;
             color: var(--text-primary);
-        }
-
-        .td-num {
-            color: var(--text-muted);
+            vertical-align: middle;
             font-size: 13px;
-            width: 40px;
         }
+        .td-date { color: var(--text-secondary); font-size: 12px; white-space: nowrap; }
+        .td-desc { font-weight: 500; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .td-account { color: var(--text-secondary); font-size: 13px; }
+        .td-amount { font-weight: 700; text-align: right; white-space: nowrap; }
+        .amount-income { color: var(--success); }
+        .amount-expense { color: var(--danger); }
+        .td-comment { color: var(--text-secondary); font-size: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .td-date {
-            color: var(--text-secondary);
-            font-size: 13px;
-            white-space: nowrap;
-        }
+        .empty-hint { padding: 32px; text-align: center; color: var(--text-muted); font-size: 13px; }
 
-        .td-desc {
-            font-weight: 500;
-        }
-
-        .td-category {
-            color: var(--text-secondary);
-        }
-
-        .td-category span {
-            padding: 4px 12px;
-            background: var(--bg-body);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .td-type span {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .type-income {
-            background: #f0fdf4;
-            color: var(--success);
-        }
-
-        .type-expense {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .td-amount {
-            font-weight: 700;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .amount-income {
-            color: var(--success);
-        }
-
-        .amount-expense {
-            color: var(--danger);
-        }
-
-        .td-actions {
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 4px;
-            justify-content: flex-end;
-        }
-
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: var(--bg-body);
-            color: var(--primary);
-        }
-
-        .action-btn.delete:hover {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .action-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .table-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: #fafafa;
-        }
-
-        .table-total {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .pagination button {
-            width: 36px;
-            height: 36px;
-            border: 1.5px solid var(--border);
-            background: #fff;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .pagination button:hover,
-        .pagination button.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .pagination button.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        /* Skeleton loading */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.4s infinite;
-            border-radius: 6px;
-        }
-
-        @keyframes shimmer {
-            to {
-                background-position: -200% 0;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .form-row {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+        /* Skeleton */
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+        @keyframes shimmer { to { background-position: -200% 0; } }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                bottom: 0;
-                top: auto;
-                flex-direction: row;
-                padding: 12px;
-                border-right: none;
-                border-top: 1px solid var(--border);
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-bottom: 70px;
-            }
-
-            .header {
-                padding: 0 16px;
-            }
-
-            .header-nav {
-                display: none;
-            }
-
-            .page {
-                padding: 16px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .accounts-row {
-                flex-direction: column;
-            }
-
-            .account-card {
-                max-width: none;
-            }
+            .main-content { margin-left: 0; margin-bottom: 70px; }
+            .page { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Main Content -->
 <main class="main-content">
-    <!-- Header и sidebar инъектируются через layout.js -->
-
-    <!-- Page Content -->
     <div class="page">
         <!-- Accounts Section -->
-        <section class="accounts-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    Мои счета
-                    <button class="refresh-btn" aria-label="Обновить">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M23 4v6h-6"/>
-                            <path d="M1 20v-6h6"/>
-                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-                        </svg>
-                    </button>
-                </h2>
-            </div>
-            <div class="accounts-row" id="accounts-container">
-                <!-- Skeleton -->
-                <div class="account-card account-card-dark skeleton" style="height: 160px;"></div>
-                <div class="account-card skeleton" style="height: 160px;"></div>
-                <div class="account-card skeleton" style="height: 160px;"></div>
+        <div class="section-title">Мои счета</div>
+        <div id="accounts-container" class="cards-row">
+            <div class="dash-card" style="height:120px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:16px"></div>
+        </div>
 
-                <!-- Add Account Card (will be inserted by JS) -->
-            </div>
-        </section>
+        <!-- Funds Section -->
+        <div class="section-title" data-fund-feature>Фонды</div>
+        <div id="funds-container" class="cards-row" data-fund-feature>
+            <div class="dash-card" style="height:120px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:16px"></div>
+        </div>
 
-        <!-- Add Payment Section -->
-        <section class="add-payment-section">
-            <h3 class="add-payment-title">Добавьте первую операцию</h3>
-            <div class="add-payment-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Дата</label>
-                        <div class="input-icon">
-                            <input type="date" id="tx-date">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Счёт</label>
-                        <select id="tx-account">
-                            <option value="">Выбрать счёт</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Категория</label>
-                        <select id="tx-category">
-                            <option value="">Выбрать категорию</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Сумма</label>
-                        <input type="text" inputmode="decimal" id="tx-amount" placeholder="0,00 ₽" data-money>
-                    </div>
-                </div>
-                <div class="form-row-full">
-                    <div class="form-group">
-                        <label>Описание</label>
-                        <input type="text" id="tx-description" placeholder="Оплата...">
-                    </div>
-                    <div class="form-group">
-                        <label>Комментарий</label>
-                        <input type="text" id="tx-comment" placeholder="Учесть...">
-                    </div>
-                </div>
-                <button type="button" class="btn-primary" id="add-tx-btn">Добавить</button>
-            </div>
-
-            <!-- Info Card -->
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="info-card-title">Что такое счёт?</h4>
-                        <p class="info-card-text">
-                            Банковский счёт, карта или наличка. На счета мы принимаем деньги, оплачиваем расходы.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Transactions Section -->
-        <section class="transactions-section">
-            <div class="table-container">
-                <div class="table-header">
-                    <h3 class="table-title">Все операции</h3>
-                    <div class="table-actions">
-                        <button class="btn-secondary">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            Экспорт
-                        </button>
-                        <button class="btn-secondary">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="4" y1="21" x2="4" y2="14"/>
-                                <line x1="4" y1="10" x2="4" y2="3"/>
-                                <line x1="12" y1="21" x2="12" y2="12"/>
-                                <line x1="12" y1="8" x2="12" y2="3"/>
-                                <line x1="20" y1="21" x2="20" y2="16"/>
-                                <line x1="20" y1="12" x2="20" y2="3"/>
-                                <line x1="1" y1="14" x2="7" y2="14"/>
-                                <line x1="9" y1="8" x2="15" y2="8"/>
-                                <line x1="17" y1="16" x2="23" y2="16"/>
-                            </svg>
-                            Фильтры
-                        </button>
-                        <button class="btn-primary" id="add-operation-btn">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                            </svg>
-                            Добавить
-                        </button>
-                    </div>
-                </div>
-
-                <div class="filter-bar">
-                    <div class="filter-group">
-                        <button class="filter-btn active">Все</button>
-                        <button class="filter-btn">Приход</button>
-                        <button class="filter-btn">Расход</button>
-                    </div>
-                    <div class="date-filter">
-                        <input type="date" id="filter-date-from">
-                        <span style="color: var(--text-muted);">—</span>
-                        <input type="date" id="filter-date-to">
-                    </div>
-                    <div class="search-filter">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
-                        </svg>
-                        <input type="text" placeholder="Поиск по операциям...">
-                    </div>
-                    <div class="filter-actions">
-                        <button class="btn-secondary" style="padding: 8px 12px;">Найти</button>
-                        <button class="btn-secondary" style="padding: 8px 12px;">Сбросить</button>
-                    </div>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 40px;">№</th>
-                                <th>Дата</th>
-                                <th>Описание</th>
-                                <th>Категория</th>
-                                <th>Тип</th>
-                                <th style="text-align: right;">Сумма</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactions-tbody">
-                            <!-- Skeleton rows -->
-                            <tr>
-                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 200px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 100px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 100px; height: 14px; margin-left: auto;"></span></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 180px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 90px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 90px; height: 14px; margin-left: auto;"></span></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="td-num"><span class="skeleton" style="width: 30px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 80px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 220px; height: 14px;"></span></td>
-                                <td><span class="skeleton" style="width: 110px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                                <td><span class="skeleton" style="width: 100px; height: 14px; margin-left: auto;"></span></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="table-footer">
-                    <div class="table-total" id="table-total">0 ₽</div>
-                    <div class="pagination">
-                        <button disabled>&lt;</button>
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <button>...</button>
-                        <button>105</button>
-                        <button>&gt;</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Recent Transactions -->
+        <div class="section-title">Последние операции</div>
+        <div id="transactions-container">
+            <div class="table-wrap"><div class="empty-hint">Загрузка...</div></div>
+        </div>
     </div>
 </main>
 
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// Auth guard
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-if (!token) { window.location.href = 'index.html'; }
+if (!token) {
+    window.location.href = 'index.html';
+}
 
-// Logout (используется в apiFetch при 401)
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
 
-// API fetch
 async function apiFetch(path, options = {}) {
     const res = await fetch(API + path, {
         ...options,
@@ -1033,18 +223,20 @@ async function apiFetch(path, options = {}) {
     return res.json();
 }
 
-// Formatters
-function fmt(amount, currency = 'RUB') {
+function fmt(amount) {
     return new Intl.NumberFormat('ru-RU', {
-        style: 'currency', currency,
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
+        style: 'currency',
+        currency: 'RUB',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
     }).format(amount);
 }
 
-function fmtDate(iso) {
-    return new Date(iso).toLocaleString('ru-RU', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
+function fmtDateRu(iso) {
+    return new Date(iso).toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
     });
 }
 
@@ -1056,206 +248,158 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
-// Load accounts
+const FUND_TYPE_LABELS = {
+    budget: 'Бюджет',
+    investment: 'Инвестиции',
+    tax_reserve: 'Налоговый резерв',
+    debt: 'Долг',
+    loan: 'Займ',
+    placement: 'Размещение',
+};
+
+// ── Accounts ──
 async function loadAccounts() {
-    const container = document.getElementById('accounts-container');
     try {
-        const [accounts, funds] = await Promise.all([
-            apiFetch('/accounts'),
-            apiFetch('/funds')
-        ]);
-        container.innerHTML = '';
+        const accounts = await apiFetch('/accounts');
+        const container = document.getElementById('accounts-container');
 
-        // Combined balance
-        const totalBalance = (accounts.reduce((s, a) => s + a.balance, 0) +
-                             funds.reduce((s, f) => s + (f.balance || 0), 0));
-
-        // "All accounts" card (dark)
-        const allCard = document.createElement('div');
-        allCard.className = 'account-card account-card-dark selected';
-        allCard.innerHTML = `
-            <div class="account-header">
-                <div>
-                    <div class="account-name">Все счета</div>
-                    <div class="account-balance">${fmt(totalBalance)}</div>
-                </div>
-            </div>
-        `;
-        container.appendChild(allCard);
-
-        // Individual accounts
-        accounts.forEach(acc => {
-            const card = document.createElement('div');
-            card.className = 'account-card';
-            card.innerHTML = `
-                <div class="account-header">
-                    <div>
-                        <div class="account-name">${escHtml(acc.name)}</div>
-                        <div class="account-balance">${fmt(acc.balance)}</div>
-                    </div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-
-        // Add fund cards grouped by type
-        const TYPE_LABELS = { budget:'Бюджет', investment:'Инвест', tax_reserve:'Налоги', debt:'Долг', loan:'Займ', placement:'Размещ.' };
-        const TYPE_COLORS = { budget:'#1a6dff', investment:'#16a34a', tax_reserve:'#d97706', debt:'#dc2626', loan:'#ea580c', placement:'#9333ea' };
-        funds.forEach(fund => {
-            const typeColor = TYPE_COLORS[fund.type] || '#6b7280';
-            const typeLabel = TYPE_LABELS[fund.type] || fund.type;
-            const card = document.createElement('div');
-            card.className = 'account-card';
-            card.innerHTML = `
-                <div class="account-header">
-                    <div>
-                        <div class="account-name">${escHtml(fund.name)}</div>
-                        <div class="account-balance">${fmt(fund.balance || 0)}</div>
-                    </div>
-                    <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${typeColor}20;color:${typeColor}">${typeLabel}</span>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-
-        // Add account card
-        const addCard = document.createElement('div');
-        addCard.className = 'account-card account-card-add';
-        addCard.innerHTML = `
-            <div class="add-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
-            </div>
-            <span>Добавить счёт</span>
-        `;
-        addCard.addEventListener('click', () => {
-            window.location.href = 'accounts.html';
-        });
-        container.appendChild(addCard);
-
-    } catch (err) {
-        console.error('Error loading accounts:', err);
-        container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Ошибка загрузки счетов</p>';
-    }
-}
-
-// Load transactions
-async function loadTransactions() {
-    const tbody = document.getElementById('transactions-tbody');
-    try {
-        const all = await apiFetch('/transactions');
-        const txs = all.slice(0, 10);
-        tbody.innerHTML = '';
-
-        if (!txs.length) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">Операций пока нет</td></tr>`;
+        if (!accounts.length) {
+            container.innerHTML = '<div class="dash-card dash-card-add" onclick="location.href=\'accounts.html\'"><div class="add-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Добавить</span></div>';
             return;
         }
 
-        let total = 0;
-        txs.forEach((tx, i) => {
-            const isIncome = tx.type === 'income';
-            total += isIncome ? tx.amount : -tx.amount;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="td-num">#${String(i + 1).padStart(5, '0')}</td>
-                <td class="td-date">${fmtDate(tx.created_at)}</td>
-                <td class="td-desc">${escHtml(tx.comment || 'Без описания')}</td>
-                <td class="td-category"><span>${escHtml(tx.category || 'Другое')}</span></td>
-                <td class="td-type"><span class="${isIncome ? 'type-income' : 'type-expense'}">${isIncome ? 'Доход' : 'Расход'}</span></td>
-                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${fmt(tx.amount)}</td>
-                <td class="td-actions">
-                    <div class="action-btns">
-                        <button class="action-btn" title="Редактировать">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn delete" title="Удалить" data-id="${tx.id}">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(tr);
+        const total = accounts.reduce((s, a) => s + a.balance, 0);
+        let html = '';
+
+        // Total card
+        html += '<div class="dash-card dash-card-dark" onclick="location.href=\'accounts.html\'">';
+        html += '<div><div class="card-sub">Всего</div><div class="card-name">Все счета</div></div>';
+        html += '<div class="card-balance">' + fmt(total) + '</div>';
+        html += '</div>';
+
+        // Individual cards
+        accounts.forEach(function(acc) {
+            html += '<div class="dash-card" onclick="location.href=\'accounts.html\'">';
+            html += '<div><div class="card-name">' + escHtml(acc.name) + '</div></div>';
+            html += '<div class="card-balance">' + fmt(acc.balance) + '</div>';
+            html += '</div>';
         });
 
-        document.getElementById('table-total').textContent = fmt(total);
+        // Add card
+        html += '<div class="dash-card dash-card-add" onclick="location.href=\'accounts.html\'">';
+        html += '<div class="add-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>';
+        html += '<span>Добавить</span></div>';
 
-        // Delete handlers
-        tbody.querySelectorAll('.action-btn.delete').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const id = this.dataset.id;
-                if (confirm('Удалить эту операцию?')) {
-                    await apiFetch('/transactions/' + id, { method: 'DELETE' });
-                    loadTransactions();
-                    loadAccounts();
-                }
-            });
-        });
-
+        container.innerHTML = html;
     } catch (err) {
-        console.error('Error loading transactions:', err);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--danger);">Ошибка загрузки операций</td></tr>`;
+        console.error('Error loading accounts:', err);
+        document.getElementById('accounts-container').innerHTML = '<div class="empty-hint" style="color:var(--danger)">Ошибка загрузки счетов</div>';
     }
 }
 
-// Initialize
-loadAccounts();
-loadTransactions();
-
-// Set today's date
-document.getElementById('tx-date').valueAsDate = new Date();
-
-// Add transaction
-document.getElementById('add-tx-btn').addEventListener('click', async function() {
-    const date = document.getElementById('tx-date').value;
-    const account = document.getElementById('tx-account').value;
-    const category = document.getElementById('tx-category').value;
-    const amount = parseMoney(document.getElementById('tx-amount').value);
-    const description = document.getElementById('tx-description').value.trim();
-    const comment = document.getElementById('tx-comment').value.trim();
-
-    if (!amount || amount <= 0) {
-        alert('Введите корректную сумму');
-        return;
-    }
-
-    const payload = {
-        account_id: account,
-        category: category || 'other',
-        amount: amount,
-        type: 'expense',
-        comment: description || 'Без описания',
-        date: date ? new Date(date).toISOString() : new Date().toISOString(),
-    };
-
+// ── Funds ──
+async function loadFunds() {
     try {
-        await apiFetch('/transactions', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
-        // Reset form
-        document.getElementById('tx-amount').value = '';
-        document.getElementById('tx-description').value = '';
-        document.getElementById('tx-comment').value = '';
-        // Reload data
-        loadTransactions();
-        loadAccounts();
-    } catch (err) {
-        alert('Ошибка: ' + err.message);
-    }
-});
+        const funds = await apiFetch('/funds');
+        const container = document.getElementById('funds-container');
 
-// Add operation button
-document.getElementById('add-operation-btn').addEventListener('click', () => {
-    window.location.href = 'operations.html';
-});
+        if (!funds.length) {
+            container.innerHTML = '<div class="dash-card dash-card-add" onclick="location.href=\'funds.html\'"><div class="add-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Добавить</span></div>';
+            return;
+        }
+
+        const total = funds.reduce((s, f) => s + (f.balance || 0), 0);
+        let html = '';
+
+        // Total card
+        html += '<div class="dash-card dash-card-dark" onclick="location.href=\'funds.html\'">';
+        html += '<div><div class="card-sub">Всего</div><div class="card-name">Все фонды</div></div>';
+        html += '<div class="card-balance">' + fmt(total) + '</div>';
+        html += '</div>';
+
+        // Individual fund cards
+        funds.forEach(function(fund) {
+            html += '<div class="dash-card" onclick="location.href=\'funds.html\'">';
+            html += '<div>';
+            html += '<div class="card-badge">' + escHtml(FUND_TYPE_LABELS[fund.type] || fund.type) + '</div>';
+            html += '<div class="card-name">' + escHtml(fund.name) + '</div>';
+            html += '</div>';
+            html += '<div class="card-balance">' + fmt(fund.balance || 0) + '</div>';
+            html += '</div>';
+        });
+
+        // Add card
+        html += '<div class="dash-card dash-card-add" onclick="location.href=\'funds.html\'">';
+        html += '<div class="add-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>';
+        html += '<span>Добавить</span></div>';
+
+        container.innerHTML = html;
+    } catch (err) {
+        console.error('Error loading funds:', err);
+        document.getElementById('funds-container').innerHTML = '<div class="empty-hint" style="color:var(--danger)">Ошибка загрузки фондов</div>';
+    }
+}
+
+// ── Transactions ──
+async function loadTransactions() {
+    try {
+        const txns = await apiFetch('/transactions');
+        const container = document.getElementById('transactions-container');
+
+        // Take last 10 transactions (sorted by date desc, API returns newest first)
+        const recent = txns.slice(0, 10);
+
+        if (!recent.length) {
+            container.innerHTML = '<div class="table-wrap"><div class="empty-hint">Нет операций</div></div>';
+            return;
+        }
+
+        // Load accounts and categories for display names
+        var accounts = [];
+        var categories = [];
+        try {
+            accounts = await apiFetch('/accounts');
+            categories = await apiFetch('/categories');
+        } catch(e) {}
+
+        var accountMap = {};
+        accounts.forEach(function(a) { accountMap[a.id] = a.name; });
+        var categoryMap = {};
+        categories.forEach(function(c) { categoryMap[c.id] = c.name; });
+
+        let html = '<div class="table-wrap"><table class="recent-table"><thead><tr>';
+        html += '<th>Дата</th><th>Описание</th><th>Счёт</th><th style="text-align:right">Сумма</th><th>Комментарий</th>';
+        html += '</tr></thead><tbody>';
+
+        recent.forEach(function(tx) {
+            var dateStr = fmtDateRu(tx.date);
+            var desc = categoryMap[tx.category_id] || '—';
+            var accName = accountMap[tx.account_id] || '—';
+            var amountClass = tx.type === 'income' ? 'amount-income' : 'amount-expense';
+            var amountPrefix = tx.type === 'income' ? '+' : '-';
+            var comment = tx.comment || '';
+
+            html += '<tr>';
+            html += '<td class="td-date">' + escHtml(dateStr) + '</td>';
+            html += '<td class="td-desc">' + escHtml(desc) + '</td>';
+            html += '<td class="td-account">' + escHtml(accName) + '</td>';
+            html += '<td class="td-amount ' + amountClass + '">' + amountPrefix + fmt(tx.amount) + '</td>';
+            html += '<td class="td-comment">' + escHtml(comment) + '</td>';
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+    } catch (err) {
+        console.error('Error loading transactions:', err);
+        document.getElementById('transactions-container').innerHTML = '<div class="table-wrap"><div class="empty-hint" style="color:var(--danger)">Ошибка загрузки операций</div></div>';
+    }
+}
+
+// ── Init ──
+loadAccounts();
+loadFunds();
+loadTransactions();
 </script>
 </body>
 </html>

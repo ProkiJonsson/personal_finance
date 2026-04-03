@@ -1,0 +1,189 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Фонды" [ref=e18] [cursor=pointer]:
+            - /url: funds.html
+            - generic [ref=e20]: Фонды
+          - link "Счета" [ref=e21] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e23]: Счета
+      - generic [ref=e24]:
+        - link "Каскад Фондов" [ref=e25] [cursor=pointer]:
+          - /url: cascade.html
+          - generic [ref=e27]: Каскад Фондов
+        - link "Контрагенты" [ref=e28] [cursor=pointer]:
+          - /url: counterparties.html
+          - generic [ref=e30]: Контрагенты
+        - link "Статьи учёта" [ref=e31] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e33]: Статьи учёта
+        - link "Админ-панель" [ref=e34] [cursor=pointer]:
+          - /url: admin.html
+          - generic [ref=e36]: Админ-панель
+        - link "Настройки" [ref=e37] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e39]: Настройки
+        - button "Выйти" [ref=e40] [cursor=pointer]:
+          - generic [ref=e42]: Выйти
+  - main [ref=e43]:
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading "Личные финансы" [level=1] [ref=e46]
+        - navigation [ref=e47]:
+          - link "Главная" [ref=e48] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e49] [cursor=pointer]:
+            - /url: operations.html
+          - link "Фонды" [ref=e50] [cursor=pointer]:
+            - /url: funds.html
+          - link "Счета" [ref=e51] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e52]:
+        - button "Поиск" [ref=e53] [cursor=pointer]:
+          - img [ref=e54]
+        - button "Уведомления" [ref=e57] [cursor=pointer]:
+          - img [ref=e58]
+        - generic [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: A
+          - generic [ref=e63]: Admin
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]: "?"
+        - generic [ref=e67]:
+          - strong [ref=e68]: Что такое фонд?
+          - text: Фонд — это виртуальный кошелёк. Каждый рубль дохода попадает в конкретный фонд и тратится только на его цели. Настройте
+          - link "Каскад Фондов" [ref=e69] [cursor=pointer]:
+            - /url: cascade.html
+          - text: чтобы автоматически распределять доход.
+          - strong [ref=e70]: "Предопределённые типы:"
+          - strong [ref=e71]: Бюджетные
+          - text: — для текущих расходов с каскадным наполнением.
+          - strong [ref=e72]: Инвестиционные
+          - text: — накопления.
+          - strong [ref=e73]: Налоговые резервы
+          - text: — откладывание на налоги.
+          - strong [ref=e74]: Долги
+          - text: — учёт кому я должен.
+          - strong [ref=e75]: Займы
+          - text: — кто должен мне.
+          - strong [ref=e76]: Размещения
+          - text: — где физически лежат инвестиции (вклады, брокер).
+        - button [ref=e77] [cursor=pointer]:
+          - img [ref=e78]
+      - generic [ref=e81]:
+        - heading "Фонды" [level=1] [ref=e82]
+        - generic [ref=e83]:
+          - button "Распределить доход" [ref=e84] [cursor=pointer]:
+            - img [ref=e85]
+            - text: Распределить доход
+          - button "Добавить фонд" [ref=e88] [cursor=pointer]:
+            - img [ref=e89]
+            - text: Добавить фонд
+          - generic [ref=e91]:
+            - button "Карточки" [ref=e92] [cursor=pointer]:
+              - img [ref=e93]
+            - button "Таблица" [ref=e98] [cursor=pointer]:
+              - img [ref=e99]
+      - generic [ref=e100]:
+        - button "Бюджет" [ref=e101] [cursor=pointer]
+        - button "Инвестиции" [ref=e102] [cursor=pointer]
+        - button "Налоги" [ref=e103] [cursor=pointer]
+        - button "Долги" [ref=e104] [cursor=pointer]
+        - button "Займы" [ref=e105] [cursor=pointer]
+        - button "Размещения" [ref=e106] [cursor=pointer]
+      - generic [ref=e108]:
+        - generic [ref=e109] [cursor=pointer]:
+          - generic [ref=e110]: Все фонды
+          - generic [ref=e111]: 0,00 ₽
+          - generic [ref=e112]: 1 фондов
+        - generic [ref=e113] [cursor=pointer]:
+          - generic [ref=e114]:
+            - generic [ref=e115]: Бюджет
+            - generic [ref=e116]:
+              - button "Редактировать" [ref=e117]:
+                - img [ref=e118]
+              - button "Копировать" [ref=e121]:
+                - img [ref=e122]
+              - button "Удалить" [ref=e125]:
+                - img [ref=e126]
+          - heading "Текущие расходы" [level=3] [ref=e128]
+          - generic [ref=e129]: 0,00 ₽
+        - generic [ref=e130] [cursor=pointer]:
+          - img [ref=e132]
+          - generic [ref=e134]:
+            - text: Добавить
+            - text: фонд
+  - generic:
+    - generic:
+      - generic:
+        - heading "Добавить фонд" [level=3]
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Название
+            - 'textbox "Например: Текущие расходы"'
+          - generic:
+            - generic: Описание
+            - textbox "Необязательно"
+          - generic:
+            - generic: Тип фонда
+            - generic:
+              - button "Бюджетный"
+              - button "Инвестиционный"
+              - button "Налоговый резерв"
+              - button "Долг"
+              - button "Займ"
+              - button "Размещение"
+          - generic:
+            - checkbox "Создать ещё"
+            - generic: Создать ещё
+        - generic:
+          - button "Отмена"
+          - button "Сохранить"
+  - generic:
+    - generic:
+      - generic:
+        - heading "Распределить доход" [level=3]:
+          - img
+          - text: Распределить доход
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Сумма дохода (руб.)
+            - textbox "100 000,00"
+          - generic:
+            - generic: Дата
+            - textbox
+        - generic:
+          - generic:
+            - checkbox "Доход от вкладов (НДФЛ)"
+            - generic: Доход от вкладов (НДФЛ)
+          - button "Рассчитать":
+            - img
+            - text: Рассчитать
+      - generic:
+        - button "Отмена"
+        - button "Подтвердить распределение" [disabled]
+  - generic:
+    - generic:
+      - heading "Удалить фонд?" [level=3]
+      - paragraph: Это действие нельзя отменить.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"

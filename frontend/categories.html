@@ -11,7 +11,7 @@
     <style>
 
         .page {
-            padding: 32px;
+            padding: 24px 32px;
             max-width: 1400px;
         }
 
@@ -19,38 +19,40 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .page-header h1 {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-primary);
         }
 
         /* Buttons */
         .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
+            height: 28px;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            border: none;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            color: var(--text-secondary);
         }
 
         .btn-primary {
             background: var(--primary);
             color: #fff;
+            border-color: var(--primary);
         }
 
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
         }
 
         .btn-secondary {
@@ -64,11 +66,11 @@
             color: var(--primary);
         }
 
-        .btn svg { width: 18px; height: 18px; }
+        .btn svg { width: 14px; height: 14px; }
 
         /* Section */
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
 
         .section-header {
@@ -79,12 +81,12 @@
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .section-title .help-btn {
@@ -118,11 +120,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         thead th {
-            padding: 16px 20px;
+            padding: 10px 12px;
             text-align: left;
             font-size: 12px;
             font-weight: 700;
@@ -143,7 +145,7 @@
         tbody tr:hover { background: var(--primary-light); }
 
         tbody td {
-            padding: 16px 20px;
+            padding: 8px 12px;
             color: var(--text-primary);
             vertical-align: middle;
         }
@@ -152,7 +154,7 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .td-name-icon {
@@ -232,8 +234,8 @@
         .tree-node {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
             transition: background 0.2s;
             margin-bottom: 4px;
         }
@@ -303,7 +305,7 @@
         }
 
         .tree-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
             white-space: nowrap;
@@ -373,119 +375,10 @@
             to { background-position: -200% 0; }
         }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 460px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            max-height: calc(100vh - 48px);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            width: 36px; height: 36px;
-            border: none; background: transparent;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover { background: var(--bg-body); color: var(--text-primary); }
-        .modal-close svg { width: 18px; height: 18px; }
-
-        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fafafa;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .form-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
         .form-error {
             font-size: 12px;
             color: var(--danger);
             min-height: 16px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-            flex-shrink: 0;
         }
 
         /* Confirm Modal */
@@ -532,7 +425,7 @@
 
         .confirm-footer {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             justify-content: center;
         }
 
@@ -546,12 +439,12 @@
         /* Info Panel */
         .info-panel {
             background: var(--primary-light);
-            border-radius: 16px;
-            padding: 20px 24px;
-            margin-bottom: 32px;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
             display: flex;
             align-items: flex-start;
-            gap: 16px;
+            gap: 8px;
         }
 
         .info-panel-icon {
@@ -611,7 +504,7 @@
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 4px;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
             width: fit-content;
         }
 
@@ -763,7 +656,7 @@
 
 
         /* ── Add-more checkbox ── */
-        .modal-footer { flex-wrap: wrap; }
+        .slide-panel-footer { flex-wrap: wrap; }
         .add-more-label {
             display: flex; align-items: center; gap: 8px;
             font-size: 13px; color: var(--text-secondary);
@@ -941,20 +834,17 @@
     </div>
 </main>
 
-<!-- Add/Edit Category Modal -->
-<div class="modal-overlay" id="category-modal">
-    <div class="modal" style="max-width:520px">
-        <div class="modal-header">
-            <h3 class="modal-title" id="modal-title">Добавить статью</h3>
-            <button class="modal-close" id="modal-close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+<!-- Add/Edit Category Panel -->
+<div class="slide-panel-overlay" id="category-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 class="slide-panel-title" id="modal-title">Добавить статью</h3>
+            <button class="slide-panel-close" id="modal-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <form id="category-form">
-            <div class="modal-body">
+            <div class="slide-panel-body">
                 <!-- Что добавляем -->
                 <div class="form-group" id="field-level-selector">
                     <label>Что добавляем</label>
@@ -994,16 +884,12 @@
                 </div>
 
                 <span class="form-error" id="err-global"></span>
-            </div>
-            <div class="modal-footer">
-                <label class="add-more-label" id="add-more-wrap">
+                <label class="checkbox-row" id="add-more-wrap" style="margin-top:8px">
                     <input type="checkbox" id="add-more-chk">
-                    <span>Добавить ещё</span>
+                    Добавить ещё
                 </label>
-                <div style="display:flex;gap:12px;margin-left:auto">
-                    <button type="button" class="btn btn-secondary" id="modal-cancel">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </div>
+                <button type="submit" class="btn-panel btn-panel-primary">Сохранить</button>
+                <button type="button" class="btn-panel btn-panel-secondary" id="modal-cancel">Отмена</button>
             </div>
         </form>
     </div>
@@ -1906,6 +1792,7 @@ if (infoPanelDismissed) document.getElementById('info-panel').style.display = 'n
 updateActivityUI();
 loadCategories();
 </script>
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 </body>
 </html>

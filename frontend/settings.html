@@ -13,12 +13,12 @@
         .page-header { margin-bottom: 32px; }
         .page-header h1 { font-size: 24px; font-weight: 700; }
 
-        .btn { padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn { padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: none; height: 28px; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-primary:hover { background: var(--primary-dark); }
         .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
         .btn-danger { background: var(--danger); color: #fff; }
-        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; }
 
         .settings-card { background: var(--bg-card-light); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; }
         .settings-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
@@ -45,21 +45,6 @@
         .tax-table tr[data-year]:hover { background: var(--bg-hover, #f5f5f5); }
         .tax-table .col-actions { text-align: right; width: 60px; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .modal-title { font-size: 18px; font-weight: 700; }
-        .modal-close { width: 36px; height: 36px; border: none; background: transparent; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
-        .modal-close svg { width: 18px; height: 18px; }
-        .modal-body { padding: 24px; overflow-y: auto; flex: 1 1 auto; }
-        .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
-
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
-        .form-group input { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text-primary); background: #fafafa; outline: none; font-family: inherit; }
-        .form-group input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-error { font-size: 12px; color: var(--danger); }
 
         .bracket-row { display: grid; grid-template-columns: 1fr 80px 36px; gap: 8px; align-items: end; margin-bottom: 10px; }
@@ -123,15 +108,15 @@
     </div>
 </main>
 
-<!-- Tax Modal -->
-<div class="modal-overlay" id="tax-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title">Настройка НДФЛ</h3>
-            <button class="modal-close" onclick="closeTaxModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+<!-- Tax Panel -->
+<div class="slide-panel-overlay" id="tax-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 class="slide-panel-title">Настройка НДФЛ</h3>
+            <button class="slide-panel-close" onclick="closeTaxModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <form id="tax-form">
-            <div class="modal-body">
+            <div class="slide-panel-body">
                 <div class="form-group">
                     <label>Год</label>
                     <input type="number" id="tax-year" min="2020" max="2050">
@@ -146,10 +131,8 @@
                 </div>
                 <div id="brackets-container"></div>
                 <span class="form-error" id="tax-error"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeTaxModal()">Отмена</button>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="submit" class="btn-panel btn-panel-primary" style="margin-top:12px">Сохранить</button>
+                <button type="button" class="btn-panel btn-panel-secondary" onclick="closeTaxModal()">Отмена</button>
             </div>
         </form>
     </div>
@@ -179,6 +162,7 @@
     </div>
 </div>
 
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
@@ -288,7 +272,7 @@ function openTaxModal(data) {
         modalBrackets = (data.brackets || [])
             .sort((a, b) => a.sort_order - b.sort_order)
             .map(b => ({ threshold_amount: b.threshold_amount, rate: b.rate }));
-        document.querySelector('#tax-modal .modal-title').textContent = `НДФЛ — ${data.year}`;
+        document.querySelector('#tax-modal .slide-panel-title').textContent = `НДФЛ — ${data.year}`;
     } else {
         yearInput.value = new Date().getFullYear();
         yearInput.readOnly = false;
@@ -296,7 +280,7 @@ function openTaxModal(data) {
         modalBrackets = [
             { threshold_amount: 0, rate: 0 },
         ];
-        document.querySelector('#tax-modal .modal-title').textContent = 'Настройка НДФЛ';
+        document.querySelector('#tax-modal .slide-panel-title').textContent = 'Настройка НДФЛ';
     }
     document.getElementById('tax-error').textContent = '';
     renderBrackets();

@@ -14,8 +14,8 @@
     --border: #e5e7eb;
     
     /* Layout */
-    --sidebar-w: 80px;
-    --sidebar-w-expanded: 260px;
+    --sidebar-w: 72px;
+    --sidebar-w-expanded: 200px;
 }
 
 /* ========== SIDEBAR ========== */
@@ -45,12 +45,12 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 16px 12px;
+    padding: 12px 10px;
     overflow: hidden;
 }
 
 .sidebar.expanded .sidebar-inner {
-    padding: 16px 20px;
+    padding: 12px 14px;
 }
 
 /* Wrapper for scrollable content (logo + nav) */
@@ -67,33 +67,30 @@
     overflow: hidden;
 }
 
-/* ========== BOTTOM SECTION ========== */
-/* Fixed at bottom of sidebar */
+/* ========== BOTTOM SECTION (only logout) ========== */
 .sidebar-bottom {
     display: flex;
     flex-direction: column;
-    gap: 12px;
     width: 100%;
-    padding-top: 16px;
+    padding-top: 12px;
     border-top: 1px solid var(--border);
     flex-shrink: 0;
 }
 
 /* ========== COLLAPSE ARROW ========== */
-/* Fixed position - aligned to LEFT edge under logo */
 .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    margin-bottom: 24px;
-    height: 40px;
+    margin-bottom: 16px;
+    height: 24px;
     flex-shrink: 0;
 }
 
 .sidebar-toggle {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border: none;
     background: transparent;
     border-radius: 8px;
@@ -130,17 +127,17 @@
 .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
-    padding: 0 4px;
-    margin-bottom: 24px;
-    height: 40px;
+    padding: 0 2px;
+    margin-bottom: 16px;
+    height: 36px;
     flex-shrink: 0;
 }
 
 .sidebar-logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
 }
 
@@ -166,24 +163,24 @@
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
     width: 100%;
 }
 
 .nav-item {
     width: 100%;
-    height: 52px;
+    height: 40px;
     border: none;
     background: transparent;
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text-secondary);
     position: relative;
-    gap: 12px;
-    padding: 0 14px;
+    gap: 10px;
+    padding: 0 10px;
     text-decoration: none;
 }
 
@@ -208,9 +205,9 @@
 }
 
 .nav-item-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -220,8 +217,8 @@
 
 .nav-item-icon svg,
 .nav-item-icon img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     transition: all 0.2s;
 }
 
@@ -260,7 +257,7 @@
 
 .nav-item-text {
     display: none;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     white-space: nowrap;
     color: var(--text-primary);
@@ -299,7 +296,7 @@
 .sidebar-divider {
     height: 1px;
     background: var(--border);
-    margin: 8px 0;
+    margin: 4px 0;
 }
 
 /* ========== MAIN CONTENT ========== */

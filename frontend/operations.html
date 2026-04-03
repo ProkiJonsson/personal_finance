@@ -11,89 +11,76 @@
     <style>
         /* ========== PAGE CONTENT ========== */
         .page {
-            padding: 32px;
+            padding: 24px 32px;
             max-width: 1400px;
         }
 
-        /* Accounts Row */
+        /* ========== ACCOUNTS ROW ========== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .accounts-row {
             display: flex;
-            gap: 16px;
+            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 24px;
+            padding-bottom: 4px;
+            margin-bottom: 20px;
         }
 
-        .accounts-row::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .accounts-row::-webkit-scrollbar-track {
-            background: var(--bg-body);
-            border-radius: 3px;
-        }
-
-        .accounts-row::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
+        .accounts-row::-webkit-scrollbar { height: 4px; }
+        .accounts-row::-webkit-scrollbar-track { background: transparent; }
+        .accounts-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
         .account-card {
             flex-shrink: 0;
-            min-width: 200px;
+            width: 190px;
+            height: 120px;
             background: var(--bg-card-light);
             border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s ease;
+            padding: 16px 20px;
+            transition: all 0.2s ease;
             cursor: pointer;
             border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .account-card:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
-
-        .account-card.selected {
-            border-color: var(--primary);
-        }
+        .account-card:hover { border-color: var(--primary); }
+        .account-card.selected { border-color: var(--primary); }
 
         .account-card-dark {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #fff;
         }
-
-        .account-card-dark .account-name {
-            color: var(--text-muted);
-        }
-
-        .account-card-dark .account-change {
-            color: var(--success);
-        }
-
-        .account-card-dark .account-balance {
-            color: #fff;
-        }
+        .account-card-dark .account-name { color: rgba(255,255,255,0.6); }
+        .account-card-dark .account-change { color: var(--success); }
+        .account-card-dark .account-balance { color: #fff; }
 
         .account-name {
             font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 8px;
         }
 
         .account-change {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--success);
-            margin-bottom: 4px;
         }
 
         .account-balance {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
 
         .account-card-add {
@@ -103,170 +90,160 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--text-secondary);
+            min-width: 90px;
+            width: 90px;
         }
-
-        .account-card-add:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: none;
-            box-shadow: none;
-        }
+        .account-card-add:hover { border-color: var(--primary); color: var(--primary); }
 
         .account-card-add .add-icon {
-            width: 40px;
-            height: 40px;
+            width: 30px; height: 30px;
             background: var(--primary-light);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
+        .account-card-add .add-icon svg { width: 16px; height: 16px; color: var(--primary); }
+        .account-card-add span { font-size: 11px; font-weight: 500; text-align: center; line-height: 1.2; }
 
-        .account-card-add .add-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-
-        .account-card-add span {
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Table Container */
-        .table-container {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .table-header {
+        /* ========== TOOLBAR ========== */
+        .toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
             flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
             gap: 16px;
         }
 
-        .table-title {
-            font-size: 18px;
+        .toolbar-title {
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
         }
 
-        .table-actions {
+        .toolbar-tabs {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        .toolbar-tab {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toolbar-tab:first-child { border-radius: 8px 0 0 8px; }
+        .toolbar-tab:last-child { border-radius: 0 8px 8px 0; }
+        .toolbar-tab:not(:first-child) { margin-left: -1px; }
+
+        .toolbar-tab:hover { color: var(--primary); border-color: var(--primary); z-index: 1; }
+        .toolbar-tab.active {
+            background: var(--text-primary);
+            color: #fff;
+            border-color: var(--text-primary);
+            z-index: 1;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            border: none;
+            gap: 6px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            color: var(--text-secondary);
+            height: 28px;
         }
+        .btn:hover { border-color: var(--primary); color: var(--primary); }
+        .btn svg { width: 12px; height: 12px; }
 
         .btn-primary {
             background: var(--primary);
             color: #fff;
+            border-color: var(--primary);
         }
-
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
+            border-color: var(--primary-dark);
+            color: #fff;
         }
 
-        .btn-secondary {
-            background: #fff;
-            color: var(--text-secondary);
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .pagination button {
+            min-width: 28px; height: 28px;
             border: 1.5px solid var(--border);
+            background: #fff;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0 6px;
         }
-
-        .btn-secondary:hover {
+        .pagination button:hover { border-color: var(--primary); color: var(--primary); }
+        .pagination button.active {
+            background: var(--primary);
+            color: #fff;
             border-color: var(--primary);
-            color: var(--primary);
         }
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Filter Bar */
+        /* ========== FILTER BAR ========== */
         .filter-bar {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 16px 24px;
-            background: var(--bg-body);
-            border-bottom: 1px solid var(--border);
+            gap: 8px;
+            padding: 10px 0;
             flex-wrap: wrap;
         }
 
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: #fff;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .filter-btn.active {
-            background: var(--text-primary);
-            color: #fff;
-            border-color: var(--text-primary);
-        }
-
-        .quick-dates {
-            display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .quick-date-btn {
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: transparent;
             border: none;
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .quick-date-btn:hover,
-        .quick-date-btn.active {
+        .quick-date-btn:hover, .quick-date-btn.active {
             background: var(--primary-light);
             color: var(--primary);
         }
@@ -274,124 +251,104 @@
         .date-range {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
+            gap: 4px;
+            padding: 4px 10px;
             background: #fff;
             border: 1.5px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
+            font-size: 12px;
         }
-
         .date-range input {
-            border: none;
-            outline: none;
-            font-size: 14px;
+            border: none; outline: none;
+            font-size: 12px;
             color: var(--text-primary);
             background: transparent;
+            width: 100px;
         }
 
         .search-filter {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
             position: relative;
         }
-
         .search-filter input {
             width: 100%;
-            padding: 10px 16px 10px 40px;
+            padding: 5px 12px 5px 32px;
             border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 12px;
             color: var(--text-primary);
             background: #fff;
             outline: none;
             transition: all 0.2s;
+            height: 28px;
         }
-
-        .search-filter input:focus {
-            border-color: var(--primary);
-        }
-
+        .search-filter input:focus { border-color: var(--primary); }
         .search-filter svg {
-            position: absolute;
-            left: 14px;
-            top: 50%;
+            position: absolute; left: 10px; top: 50%;
             transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
+            width: 14px; height: 14px;
             color: var(--text-secondary);
             pointer-events: none;
         }
 
-        .filter-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Extra Filters */
+        /* ========== EXTRA FILTERS ========== */
         .extra-filters {
             display: none;
-            padding: 16px 24px;
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-            gap: 16px;
+            padding: 10px 0;
+            gap: 12px;
             flex-wrap: wrap;
             align-items: flex-end;
         }
-
-        .extra-filters.open {
-            display: flex;
-        }
+        .extra-filters.open { display: flex; }
 
         .filter-field {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
-
         .filter-field label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-
         .filter-field input,
         .filter-field select {
-            padding: 8px 12px;
+            padding: 5px 10px;
             border: 1.5px solid var(--border);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-primary);
             background: #fff;
             outline: none;
             transition: all 0.2s;
-            min-width: 140px;
+            min-width: 120px;
+            height: 28px;
         }
-
         .filter-field input:focus,
-        .filter-field select:focus {
-            border-color: var(--primary);
-        }
+        .filter-field select:focus { border-color: var(--primary); }
 
-        /* Table */
+        /* ========== TABLE ========== */
         .table-wrapper {
             overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         thead th {
-            padding: 14px 20px;
+            padding: 10px 12px;
             text-align: left;
             font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-weight: 600;
             color: var(--text-secondary);
             background: #fafafa;
             border-bottom: 1px solid var(--border);
@@ -399,382 +356,85 @@
             cursor: pointer;
             user-select: none;
         }
-
-        thead th:hover {
-            color: var(--text-primary);
-        }
-
-        thead th .sort-icon {
-            display: inline-block;
-            margin-left: 4px;
-            opacity: 0.4;
-        }
-
-        thead th.sorted .sort-icon {
-            opacity: 1;
-            color: var(--primary);
-        }
+        thead th:hover { color: var(--text-primary); }
+        thead th .sort-icon { display: inline-block; margin-left: 3px; opacity: 0.4; }
+        thead th.sorted .sort-icon { opacity: 1; color: var(--primary); }
 
         tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
+            transition: background 0.15s;
         }
-
-        tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background: var(--primary-light);
-        }
-
-        tbody tr.selected-row {
-            background: var(--primary-light);
-        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--primary-light); }
+        tbody tr.selected-row { background: var(--primary-light); }
 
         tbody td {
-            padding: 16px 20px;
+            padding: 8px 12px;
             color: var(--text-primary);
             vertical-align: middle;
-        }
-
-        .td-check {
-            width: 40px;
-            text-align: center;
-        }
-
-        .td-check input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .td-num {
-            color: var(--text-muted);
             font-size: 13px;
-            width: 50px;
         }
 
-        .td-date {
-            color: var(--text-secondary);
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .td-desc {
-            font-weight: 500;
-            max-width: 250px;
-        }
-
-        .td-account {
-            color: var(--text-secondary);
-        }
-
-        .td-category span {
-            padding: 4px 12px;
-            background: var(--bg-body);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .td-type span {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .type-income {
-            background: #f0fdf4;
-            color: var(--success);
-        }
-
-        .type-expense {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .td-amount {
-            font-weight: 700;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .amount-income {
-            color: var(--success);
-        }
-
-        .amount-expense {
-            color: var(--danger);
-        }
-
+        .td-check { width: 32px; text-align: center; }
+        .td-check input { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); }
+        .td-num { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+        .td-date { color: var(--text-secondary); font-size: 12px; white-space: nowrap; }
+        .td-counterparty { font-size: 13px; }
+        .td-desc { font-weight: 500; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .td-account { color: var(--text-secondary); font-size: 13px; }
+        .td-amount { font-weight: 700; text-align: right; white-space: nowrap; }
+        .amount-income { color: var(--success); }
+        .amount-expense { color: var(--danger); }
         .td-comment {
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .td-actions {
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 4px;
-            justify-content: flex-end;
-        }
-
+        .td-actions { text-align: right; white-space: nowrap; }
+        .action-btns { display: flex; gap: 2px; justify-content: flex-end; }
         .action-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 28px; height: 28px;
+            border: none; background: transparent;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             transition: all 0.2s;
         }
+        .action-btn:hover { background: var(--bg-body); color: var(--primary); }
+        .action-btn.delete:hover { background: #fef2f2; color: var(--danger); }
+        .action-btn svg { width: 14px; height: 14px; }
 
-        .action-btn:hover {
-            background: var(--bg-body);
-            color: var(--primary);
-        }
-
-        .action-btn.delete:hover {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .action-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Table Footer */
-        .table-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: #fafafa;
-        }
-
-        .table-total {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .pagination button {
-            width: 36px;
-            height: 36px;
-            border: 1.5px solid var(--border);
-            background: #fff;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .pagination button:hover,
-        .pagination button.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .pagination button.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        .pagination button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 520px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            max-height: calc(100vh - 48px);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: transparent;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: var(--bg-body);
-            color: var(--text-primary);
-        }
-
-        .modal-close svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .modal-body {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
-            flex: 1 1 auto;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fafafa;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
+        /* Table total row */
+        .total-row td { background: #fafafa; font-weight: 700; border-top: 2px solid var(--border); }
 
         .type-segmented {
             display: flex;
-            background: var(--bg-body);
-            border-radius: 12px;
-            padding: 4px;
+            gap: 0;
         }
-
         .type-segmented button {
             flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .type-segmented button.active-income {
-            background: #f0fdf4;
-            color: var(--success);
-        }
-
+        .type-segmented button:first-child { border-radius: 8px 0 0 8px; }
+        .type-segmented button:last-child { border-radius: 0 8px 8px 0; margin-left: -1px; }
+        .type-segmented button.active-income,
         .type-segmented button.active-expense {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-            flex-shrink: 0;
+            background: var(--text-primary);
+            color: #fff;
+            border-color: var(--text-primary);
+            z-index: 1;
         }
 
         /* Skeleton */
@@ -782,259 +442,213 @@
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
-            border-radius: 6px;
+            border-radius: 4px;
+            display: inline-block;
         }
-
-        @keyframes shimmer {
-            to {
-                background-position: -200% 0;
-            }
-        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+            .form-row { grid-template-columns: 1fr; }
+            .toolbar { flex-wrap: wrap; }
         }
+
+        /* Button-select groups in mini-panel */
+        .cs-mini-panel .btn-select-group { display: flex; flex-wrap: wrap; gap: 6px; }
+        .cs-mini-panel .btn-select {
+            padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border);
+            background: #fafafa; color: var(--text-secondary); font-size: 12px;
+            font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: inherit;
+        }
+        .cs-mini-panel .btn-select:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .cs-mini-panel .btn-select.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* Input with icon (calculator) */
+        .input-with-icon { position: relative; }
+        .input-with-icon input { padding-right: 36px; width: 100%; }
+        .input-icon-btn {
+            position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+            width: 28px; height: 28px; border: none; background: transparent;
+            border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+        }
+        .input-icon-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .input-icon-btn svg { width: 16px; height: 16px; }
+
+        /* Calculator popup */
+        .calc-popup {
+            display: none; position: absolute; top: calc(100% + 4px); right: 0;
+            background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 8px;
+            z-index: 10; gap: 6px; align-items: center; width: 100%;
+        }
+        .calc-popup.open { display: flex; }
+        .calc-popup input {
+            flex: 1; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 13px; font-family: inherit; outline: none; min-width: 0;
+        }
+        .calc-popup input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .calc-popup button {
+            width: 34px; height: 34px; border: none; background: var(--primary);
+            color: #fff; border-radius: 8px; font-size: 16px; font-weight: 700;
+            cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+        }
+        .calc-popup button:hover { background: var(--primary-dark); }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                bottom: 0;
-                top: auto;
-                flex-direction: row;
-                padding: 12px;
-                border-right: none;
-                border-top: 1px solid var(--border);
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-bottom: 70px;
-            }
-
-            .header {
-                padding: 0 16px;
-            }
-
-            .header-nav {
-                display: none;
-            }
-
-            .page {
-                padding: 16px;
-            }
+            .main-content { margin-left: 0; margin-bottom: 70px; }
+            .page { padding: 16px; }
+            .slide-panel { width: 100%; }
         }
-
     </style>
 </head>
 <body>
 
-<!-- Main Content -->
 <main class="main-content">
-    <!-- Header и sidebar инъектируются через layout.js -->
-
-    <!-- Page Content -->
     <div class="page">
-        <!-- Accounts Row -->
+        <!-- Section: Мои счета -->
+        <div class="section-title">Мои счета</div>
         <div class="accounts-row" id="accounts-container">
-            <!-- Skeleton -->
-            <div class="account-card account-card-dark selected skeleton" style="height: 100px;"></div>
-            <div class="account-card skeleton" style="height: 100px;"></div>
-            <div class="account-card skeleton" style="height: 100px;"></div>
-            <div class="account-card account-card-add">
-                <div class="add-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
+            <div class="account-card account-card-dark selected skeleton" style="height:120px;"></div>
+            <div class="account-card skeleton" style="height:120px;"></div>
+            <div class="account-card skeleton" style="height:120px;"></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <span class="toolbar-title">Все счета</span>
+                <div class="toolbar-tabs">
+                    <button class="toolbar-tab active" data-type="all">Все</button>
+                    <button class="toolbar-tab" data-type="income">Приход</button>
+                    <button class="toolbar-tab" data-type="expense">Расход</button>
                 </div>
-                <span>Добавить счёт</span>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn" id="bulk-delete-btn" style="display:none;border-color:var(--danger);color:var(--danger)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Удалить выбранные
+                </button>
+                <button class="btn" id="export-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Экспорт
+                </button>
+                <button class="btn" id="toggle-filters-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+                    Фильтры
+                </button>
+                <button class="btn btn-primary" id="add-operation-btn">Добавить</button>
+                <div class="pagination" id="pagination-container"></div>
             </div>
         </div>
 
-        <!-- Table Container -->
-        <div class="table-container">
-            <div class="table-header">
-                <h3 class="table-title">Все операции</h3>
-                <div class="table-actions">
-                    <button class="btn btn-secondary" id="export-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Экспорт
-                    </button>
-                    <button class="btn btn-secondary" id="toggle-filters-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="4" y1="21" x2="4" y2="14"/>
-                            <line x1="4" y1="10" x2="4" y2="3"/>
-                            <line x1="12" y1="21" x2="12" y2="12"/>
-                            <line x1="12" y1="8" x2="12" y2="3"/>
-                            <line x1="20" y1="21" x2="20" y2="16"/>
-                            <line x1="20" y1="12" x2="20" y2="3"/>
-                            <line x1="1" y1="14" x2="7" y2="14"/>
-                            <line x1="9" y1="8" x2="15" y2="8"/>
-                            <line x1="17" y1="16" x2="23" y2="16"/>
-                        </svg>
-                        Фильтры
-                    </button>
-                    <button class="btn btn-primary" id="add-operation-btn">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        </svg>
-                        Добавить
-                    </button>
-                </div>
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <button class="quick-date-btn" data-q="yesterday">Вчера</button>
+                <button class="quick-date-btn" data-q="today">Сегодня</button>
+                <button class="quick-date-btn" data-q="week">Неделя</button>
+                <button class="quick-date-btn" data-q="month">Месяц</button>
             </div>
+            <div class="date-range">
+                <input type="date" id="date-from">
+                <span style="color: var(--text-muted);">—</span>
+                <input type="date" id="date-to">
+            </div>
+            <div class="search-filter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" id="search-input" placeholder="Поиск по операциям...">
+            </div>
+            <button class="btn" id="search-btn">Найти</button>
+        </div>
 
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <button class="filter-btn active" data-type="all">Все</button>
-                    <button class="filter-btn" data-type="income">Приход</button>
-                    <button class="filter-btn" data-type="expense">Расход</button>
-                </div>
-                <div class="quick-dates">
-                    <button class="quick-date-btn" data-q="yesterday">Вчера</button>
-                    <button class="quick-date-btn" data-q="today">Сегодня</button>
-                    <button class="quick-date-btn" data-q="week">Неделя</button>
-                    <button class="quick-date-btn" data-q="month">Месяц</button>
-                </div>
-                <div class="date-range">
-                    <input type="date" id="date-from">
-                    <span style="color: var(--text-muted);">—</span>
-                    <input type="date" id="date-to">
-                </div>
-                <div class="search-filter">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
-                    </svg>
-                    <input type="text" id="search-input" placeholder="Поиск по операциям...">
-                </div>
-                <div class="filter-actions">
-                    <button class="btn btn-secondary" id="search-btn">Найти</button>
-                    <button class="btn btn-secondary" id="reset-filters-btn">Сбросить</button>
-                </div>
+        <!-- Extra Filters -->
+        <div class="extra-filters" id="extra-filters">
+            <div class="filter-field">
+                <label>Сумма от</label>
+                <input type="number" id="amount-min" placeholder="0" min="0">
             </div>
+            <div class="filter-field">
+                <label>Сумма до</label>
+                <input type="number" id="amount-max" placeholder="∞" min="0">
+            </div>
+            <div class="filter-field">
+                <label>Фонд</label>
+                <select id="filter-fund"><option value="">Все фонды</option></select>
+            </div>
+            <div class="filter-field">
+                <label>Категория</label>
+                <select id="filter-category"><option value="">Все категории</option></select>
+            </div>
+            <button class="btn" id="clear-filters-btn">Сбросить</button>
+        </div>
 
-            <!-- Extra Filters -->
-            <div class="extra-filters" id="extra-filters">
-                <div class="filter-field">
-                    <label>Сумма от</label>
-                    <input type="number" id="amount-min" placeholder="0" min="0">
-                </div>
-                <div class="filter-field">
-                    <label>Сумма до</label>
-                    <input type="number" id="amount-max" placeholder="∞" min="0">
-                </div>
-                <div class="filter-field">
-                    <label>Фонд</label>
-                    <select id="filter-fund">
-                        <option value="">Все фонды</option>
-                    </select>
-                </div>
-                <div class="filter-field">
-                    <label>Категория</label>
-                    <select id="filter-category">
-                        <option value="">Все категории</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" id="clear-filters-btn" style="align-self: flex-end;">Сбросить</button>
-            </div>
-
-            <!-- Table -->
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="td-check"><input type="checkbox" id="select-all"></th>
-                            <th>№</th>
-                            <th>Дата</th>
-                            <th>Описание</th>
-                            <th>Счёт</th>
-                            <th>Категория</th>
-                            <th>Тип</th>
-                            <th style="text-align: right;">Сумма</th>
-                            <th>Комментарий</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactions-tbody">
-                        <!-- Skeleton rows -->
-                        <tr>
-                            <td class="td-check"><input type="checkbox"></td>
-                            <td class="td-num"><span class="skeleton" style="width: 40px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 90px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 200px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 120px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 100px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 100px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 150px; height: 14px;"></span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="td-check"><input type="checkbox"></td>
-                            <td class="td-num"><span class="skeleton" style="width: 40px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 90px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 180px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 100px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 90px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 90px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 120px; height: 14px;"></span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="td-check"><input type="checkbox"></td>
-                            <td class="td-num"><span class="skeleton" style="width: 40px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 90px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 220px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 110px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 110px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 70px; height: 24px;"></span></td>
-                            <td><span class="skeleton" style="width: 100px; height: 14px;"></span></td>
-                            <td><span class="skeleton" style="width: 140px; height: 14px;"></span></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Table Footer -->
-            <div class="table-footer">
-                <div class="table-total" id="table-total">0 ₽</div>
-                <div class="pagination">
-                    <button disabled>&lt;</button>
-                    <button class="active">1</button>
-                    <button>2</button>
-                    <button>3</button>
-                    <button>...</button>
-                    <button id="last-page">105</button>
-                    <button>&gt;</button>
-                </div>
-            </div>
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="td-check"><input type="checkbox" id="select-all"></th>
+                        <th>Номер <span class="sort-icon">▼</span></th>
+                        <th>Дата <span class="sort-icon">▼</span></th>
+                        <th>Контрагент</th>
+                        <th>Описание</th>
+                        <th>Счёт</th>
+                        <th style="text-align:right;">Сумма</th>
+                        <th>Комментарий</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-tbody">
+                    <tr>
+                        <td class="td-check"><input type="checkbox"></td>
+                        <td class="td-num"><span class="skeleton" style="width:40px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:70px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:90px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:200px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:80px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:80px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:120px;height:12px;"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="td-check"><input type="checkbox"></td>
+                        <td class="td-num"><span class="skeleton" style="width:40px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:70px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:100px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:180px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:90px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:70px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:100px;height:12px;"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="td-check"><input type="checkbox"></td>
+                        <td class="td-num"><span class="skeleton" style="width:40px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:70px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:80px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:220px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:85px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:90px;height:12px;"></span></td>
+                        <td><span class="skeleton" style="width:130px;height:12px;"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </main>
 
-<!-- Add/Edit Transaction Modal -->
-<div class="modal-overlay" id="transaction-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title" id="modal-title">Добавить операцию</h3>
-            <button class="modal-close" id="modal-close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+<!-- Slide Panel: Add/Edit Transaction -->
+<div class="slide-panel-overlay" id="transaction-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 class="slide-panel-title" id="modal-title">Добавить платёж</h3>
+            <button class="slide-panel-close" id="modal-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="slide-panel-body">
             <div class="type-segmented">
                 <button type="button" class="active-expense" data-type="expense">Расход</button>
                 <button type="button" data-type="income">Приход</button>
@@ -1045,42 +659,50 @@
                     <input type="date" id="tx-date" required>
                 </div>
                 <div class="form-group">
-                    <label>Сумма</label>
-                    <input type="text" inputmode="decimal" id="tx-amount" placeholder="0,00 ₽" data-money required>
+                    <label>Счёт</label>
+                    <select id="tx-account" required data-custom-select data-always-search data-add-new="Добавить счёт" data-add-api="/accounts" data-add-field="name" data-add-placeholder="Название счёта"><option value="">Выбрать</option></select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Счёт</label>
-                    <select id="tx-account" required>
-                        <option value="">Выбрать счёт</option>
-                    </select>
+                    <label>Контрагент</label>
+                    <select id="tx-counterparty" data-custom-select data-always-search data-add-new="Добавить контрагента" data-add-api="/counterparties" data-add-field="name" data-add-placeholder="Название контрагента"><option value="">Выбрать</option></select>
                 </div>
                 <div class="form-group">
-                    <label>Категория</label>
-                    <select id="tx-category" required>
-                        <option value="">Выбрать категорию</option>
-                    </select>
+                    <label>Сумма</label>
+                    <div class="input-with-icon">
+                        <input type="text" inputmode="decimal" id="tx-amount" placeholder="0,00 ₽" data-money required>
+                        <button type="button" class="input-icon-btn" id="calc-toggle" title="Калькулятор">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="16" y2="18"/></svg>
+                        </button>
+                        <div class="calc-popup" id="calc-popup">
+                            <input type="text" id="calc-expr" placeholder="" autofocus>
+                            <button type="button" id="calc-apply">=</button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>Статья учёта</label>
+                <select id="tx-category" required data-custom-select data-add-new="Добавить статью" data-add-handler="createCategoryFromSelect"><option value="">Выбрать статью</option></select>
             </div>
             <div class="form-group" id="tx-fund-group">
                 <label>Фонд</label>
-                <select id="tx-fund">
-                    <option value="">— Без фонда —</option>
-                </select>
+                <select id="tx-fund" data-custom-select data-always-search data-add-new="Добавить фонд" data-add-handler="createFundFromSelect"><option value="">— Без фонда —</option></select>
             </div>
             <div class="form-group">
-                <label>Описание</label>
+                <label>Описание операции</label>
                 <input type="text" id="tx-description" placeholder="Оплата...">
             </div>
             <div class="form-group">
                 <label>Комментарий</label>
                 <textarea id="tx-comment" placeholder="Учесть..."></textarea>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" id="modal-cancel">Отмена</button>
-            <button class="btn btn-primary" id="modal-save">Сохранить</button>
+            <label class="checkbox-row" style="margin-top:8px">
+                <input type="checkbox" id="add-another">
+                Добавить ещё один платёж
+            </label>
+            <button class="btn-panel btn-panel-primary" id="modal-save">Добавить</button>
         </div>
     </div>
 </div>
@@ -1088,18 +710,15 @@
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// Auth guard
 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (!token) { window.location.href = 'index.html'; }
 
-// Logout (используется в apiFetch при 401)
 function logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     window.location.href = 'index.html';
 }
 
-// API fetch
 async function apiFetch(path, options = {}) {
     const res = await fetch(API + path, {
         ...options,
@@ -1118,82 +737,90 @@ async function apiFetch(path, options = {}) {
     return res.json();
 }
 
-// Formatters
 function fmt(amount, currency = 'RUB') {
     return new Intl.NumberFormat('ru-RU', {
         style: 'currency', currency,
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
+        minimumFractionDigits: 0, maximumFractionDigits: 0,
     }).format(amount);
 }
 
-function fmtDate(iso) {
-    return new Date(iso).toLocaleString('ru-RU', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
-    });
+function fmtDateShort(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`;
 }
 
 function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// State
 let selectedAccount = 'all';
 let filterType = 'all';
 let transactions = [];
 let accounts = [];
 let funds = [];
+let counterparties = [];
+let accountMap = {};
+let counterpartyMap = {};
+let categoryMap = {};
+let allCategories = [];
+let currentTxType = 'expense';
+let currentPage = 1;
+const perPage = 20;
 
-// Load accounts
 async function loadAccounts() {
     const container = document.getElementById('accounts-container');
     try {
-        const [accs, fds] = await Promise.all([
+        const [accs, fds, cps, cats] = await Promise.all([
             apiFetch('/accounts'),
-            apiFetch('/funds')
+            apiFetch('/funds'),
+            apiFetch('/counterparties').catch(() => []),
+            apiFetch('/categories').catch(() => []),
         ]);
         accounts = accs;
         funds = fds;
+        counterparties = cps;
+
+        accountMap = {};
+        accs.forEach(a => accountMap[a.id] = a.name);
+
+        counterpartyMap = {};
+        cps.forEach(c => counterpartyMap[c.id] = c.name);
+
+        categoryMap = {};
+        cats.forEach(c => categoryMap[c.id] = c.name);
+
         container.innerHTML = '';
 
-        const totalBalance = (accs.reduce((s, a) => s + a.balance, 0) + 
-                             fds.reduce((s, f) => s + (f.balance || 0), 0));
+        const totalBalance = accs.reduce((s, a) => s + a.balance, 0) +
+                             fds.reduce((s, f) => s + (f.balance || 0), 0);
 
         // All accounts card
         const allCard = document.createElement('div');
         allCard.className = 'account-card account-card-dark selected';
         allCard.innerHTML = `
             <div class="account-name">Все счета</div>
+            <div class="account-change">&nbsp;</div>
             <div class="account-balance">${fmt(totalBalance)}</div>
         `;
         allCard.addEventListener('click', () => selectAccount('all', allCard));
         container.appendChild(allCard);
 
-        // Individual accounts
         accounts.forEach(acc => {
             const card = document.createElement('div');
             card.className = 'account-card';
             card.innerHTML = `
-                <div class="account-name">${escHtml(acc.name)}</div>
-                <div class="account-balance">${fmt(acc.balance)}</div>
+                <div style="display:flex;justify-content:space-between;align-items:start;">
+                    <div class="account-name">${escHtml(acc.name)}</div>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" style="cursor:pointer;flex-shrink:0;" onclick="window.location.href='accounts.html'"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <div>
+                    <div class="account-change">&nbsp;</div>
+                    <div class="account-balance">${fmt(acc.balance)}</div>
+                </div>
             `;
             card.addEventListener('click', () => selectAccount(acc.id, card));
-            container.appendChild(card);
-        });
-
-        // Fund cards
-        funds.forEach(fund => {
-            const card = document.createElement('div');
-            card.className = 'account-card';
-            card.innerHTML = `
-                <div class="account-name">${escHtml(fund.name)} (Фонд)</div>
-                <div class="account-balance">${fmt(fund.balance || 0)}</div>
-            `;
-            card.addEventListener('click', () => selectAccount(`fund-${fund.id}`, card));
             container.appendChild(card);
         });
 
@@ -1202,16 +829,14 @@ async function loadAccounts() {
         addCard.className = 'account-card account-card-add';
         addCard.innerHTML = `
             <div class="add-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </div>
-            <span>Добавить счёт</span>
+            <span>Добавить<br>счёт</span>
         `;
         addCard.addEventListener('click', () => window.location.href = 'accounts.html');
         container.appendChild(addCard);
 
-        // Populate fund filter and tx-fund select with optgroups
+        // Populate selects
         const TYPE_LABELS = { budget:'Бюджет', investment:'Инвестиции', tax_reserve:'Налоги', debt:'Долг', loan:'Займ', placement:'Размещение' };
         const grouped = {};
         funds.forEach(f => { (grouped[f.type] = grouped[f.type] || []).push(f); });
@@ -1229,6 +854,26 @@ async function loadAccounts() {
             }
         });
 
+        // Populate account select
+        const txAccount = document.getElementById('tx-account');
+        accounts.forEach(a => {
+            const o = document.createElement('option');
+            o.value = a.id; o.textContent = a.name;
+            txAccount.appendChild(o);
+        });
+
+        // Populate counterparty select
+        const txCp = document.getElementById('tx-counterparty');
+        counterparties.forEach(c => {
+            const o = document.createElement('option');
+            o.value = c.id; o.textContent = c.name;
+            txCp.appendChild(o);
+        });
+
+        // Store categories and populate filtered
+        allCategories = cats;
+        updateCategoryOptions(currentTxType);
+
         // Hide fund field if fund accounting disabled
         try {
             const settings = await apiFetch('/settings');
@@ -1236,7 +881,7 @@ async function loadAccounts() {
                 const fg = document.getElementById('tx-fund-group');
                 if (fg) fg.style.display = 'none';
             }
-        } catch (e) { /* settings may not exist yet */ }
+        } catch (e) {}
 
     } catch (err) {
         console.error('Error loading accounts:', err);
@@ -1250,87 +895,146 @@ function selectAccount(id, card) {
     loadTransactions();
 }
 
-// Load transactions
+function renderPagination(totalItems, itemsPerPage, page) {
+    const container = document.getElementById('pagination-container');
+    container.innerHTML = '';
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (totalItems <= itemsPerPage) { container.style.display = 'none'; return; }
+    container.style.display = 'flex';
+
+    function addBtn(label, pageNum, disabled, active) {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        if (disabled) btn.disabled = true;
+        if (active) btn.classList.add('active');
+        if (!disabled && !active) {
+            btn.addEventListener('click', () => { currentPage = pageNum; displayPage(); });
+        }
+        container.appendChild(btn);
+    }
+
+    addBtn('<', page - 1, page <= 1, false);
+
+    const maxVisible = 5;
+    let startPage = Math.max(1, page - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+    if (startPage > 1) { addBtn('1', 1, false, false); if (startPage > 2) { const dots = document.createElement('button'); dots.textContent = '...'; dots.disabled = true; container.appendChild(dots); } }
+    for (let p = startPage; p <= endPage; p++) { addBtn(String(p), p, false, p === page); }
+    if (endPage < totalPages) { if (endPage < totalPages - 1) { const dots = document.createElement('button'); dots.textContent = '...'; dots.disabled = true; container.appendChild(dots); } addBtn(String(totalPages), totalPages, false, false); }
+
+    addBtn('>', page + 1, page >= totalPages, false);
+}
+
+function displayPage() {
+    const tbody = document.getElementById('transactions-tbody');
+    tbody.innerHTML = '';
+
+    if (!transactions.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-secondary);">Операций не найдено</td></tr>`;
+        renderPagination(0, perPage, 1);
+        return;
+    }
+
+    const totalPages = Math.ceil(transactions.length / perPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const start = (currentPage - 1) * perPage;
+    const pageItems = transactions.slice(start, start + perPage);
+
+    let total = 0;
+    transactions.forEach(tx => { total += tx.type === 'income' ? tx.amount : -tx.amount; });
+
+    pageItems.forEach((tx, i) => {
+        const isIncome = tx.type === 'income';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="td-check"><input type="checkbox"></td>
+            <td class="td-num">#${String(start + i + 1).padStart(4, '0')}</td>
+            <td class="td-date">${fmtDateShort(tx.date || tx.created_at)}</td>
+            <td class="td-counterparty">${escHtml(counterpartyMap[tx.counterparty_id] || '—')}</td>
+            <td class="td-desc">${escHtml(tx.description || tx.comment || 'Без описания')}</td>
+            <td class="td-account">${escHtml(accountMap[tx.account_id] || '—')}</td>
+            <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${fmt(tx.amount)}</td>
+            <td class="td-comment">${escHtml(tx.comment || '—')}</td>
+            <td class="td-actions">
+                <div class="action-btns">
+                    <button class="action-btn" onclick="editTransaction(${tx.id})" title="Редактировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button class="action-btn delete" onclick="deleteTransaction(${tx.id})" title="Удалить">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                    <button class="action-btn" onclick="copyTransaction(${tx.id})" title="Копировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Total row
+    const totalTr = document.createElement('tr');
+    totalTr.className = 'total-row';
+    totalTr.innerHTML = `
+        <td colspan="6"></td>
+        <td class="td-amount" style="font-weight:700;">${fmt(total)}</td>
+        <td colspan="2"></td>
+    `;
+    tbody.appendChild(totalTr);
+
+    renderPagination(transactions.length, perPage, currentPage);
+}
+
 async function loadTransactions() {
     const tbody = document.getElementById('transactions-tbody');
     try {
         transactions = await apiFetch('/transactions');
-        
-        // Filter by account
+
         if (selectedAccount !== 'all') {
-            if (selectedAccount.startsWith('fund-')) {
-                const fundId = parseInt(selectedAccount.replace('fund-', ''));
+            if (String(selectedAccount).startsWith('fund-')) {
+                const fundId = parseInt(String(selectedAccount).replace('fund-', ''));
                 transactions = transactions.filter(t => t.fund_id === fundId);
             } else {
-                const accId = selectedAccount;
-                transactions = transactions.filter(t => t.account_id === accId);
+                transactions = transactions.filter(t => t.account_id === selectedAccount);
             }
         }
 
-        tbody.innerHTML = '';
-
-        if (!transactions.length) {
-            tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 40px; color: var(--text-secondary);">Операций не найдено</td></tr>`;
-            document.getElementById('table-total').textContent = '0 ₽';
-            return;
+        if (filterType !== 'all') {
+            transactions = transactions.filter(t => t.type === filterType);
         }
 
-        let total = 0;
-        transactions.forEach((tx, i) => {
-            const isIncome = tx.type === 'income';
-            total += isIncome ? tx.amount : -tx.amount;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="td-check"><input type="checkbox"></td>
-                <td class="td-num">#${String(i + 1).padStart(5, '0')}</td>
-                <td class="td-date">${fmtDate(tx.created_at)}</td>
-                <td class="td-desc">${escHtml(tx.comment || 'Без описания')}</td>
-                <td class="td-account">${tx.account_id ? 'Счёт' : '—'}</td>
-                <td class="td-category"><span>Категория</span></td>
-                <td><span class="${isIncome ? 'type-income' : 'type-expense'}">${isIncome ? 'Доход' : 'Расход'}</span></td>
-                <td class="td-amount ${isIncome ? 'amount-income' : 'amount-expense'}">${isIncome ? '+' : '-'}${fmt(tx.amount)}</td>
-                <td class="td-comment">${escHtml(tx.description || '—')}</td>
-                <td class="td-actions">
-                    <div class="action-btns">
-                        <button class="action-btn" onclick="editTransaction(${tx.id})" aria-label="Редактировать">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn delete" onclick="deleteTransaction(${tx.id})" aria-label="Удалить">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        document.getElementById('table-total').textContent = `Итого: ${fmt(total)}`;
+        currentPage = 1;
+        displayPage();
 
     } catch (err) {
         console.error('Error loading transactions:', err);
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 40px; color: var(--danger);">Ошибка загрузки</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--danger);">Ошибка загрузки</td></tr>`;
     }
 }
 
-// Modal handling
+// Panel handling
 const modal = document.getElementById('transaction-modal');
 let editingId = null;
 
 function openModal(edit = false) {
-    editingId = edit ? null : null;
-    document.getElementById('modal-title').textContent = edit ? 'Редактировать операцию' : 'Добавить операцию';
+    editingId = null;
+    document.getElementById('modal-title').textContent = edit ? 'Редактировать платёж' : 'Добавить платёж';
+    document.getElementById('modal-save').textContent = edit ? 'Сохранить' : 'Добавить';
     document.getElementById('tx-date').valueAsDate = new Date();
     document.getElementById('tx-amount').value = '';
     document.getElementById('tx-account').value = '';
     document.getElementById('tx-category').value = '';
+    document.getElementById('tx-counterparty').value = '';
     document.getElementById('tx-description').value = '';
     document.getElementById('tx-comment').value = '';
+    document.getElementById('add-another').checked = false;
+    // Reset type
+    document.querySelectorAll('.type-segmented button').forEach(b => b.classList.remove('active-income', 'active-expense'));
+    document.querySelector('.type-segmented button[data-type="expense"]').classList.add('active-expense');
     modal.classList.add('open');
 }
 
@@ -1341,15 +1045,19 @@ function closeModal() {
 
 document.getElementById('add-operation-btn').addEventListener('click', () => openModal(false));
 document.getElementById('modal-close').addEventListener('click', closeModal);
-document.getElementById('modal-cancel').addEventListener('click', closeModal);
 
-// Type segmented control
+// Close on overlay click
+document.getElementById('transaction-modal').addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+// Type segmented — also update category filter
 document.querySelectorAll('.type-segmented button').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.type-segmented button').forEach(b => {
-            b.classList.remove('active-income', 'active-expense');
-        });
+        document.querySelectorAll('.type-segmented button').forEach(b => b.classList.remove('active-income', 'active-expense'));
         btn.classList.add(btn.dataset.type === 'income' ? 'active-income' : 'active-expense');
+        currentTxType = btn.dataset.type;
+        updateCategoryOptions(currentTxType);
     });
 });
 
@@ -1363,41 +1071,29 @@ document.querySelectorAll('.quick-date-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.quick-date-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
         const now = new Date();
         const from = document.getElementById('date-from');
         const to = document.getElementById('date-to');
-        
         switch(btn.dataset.q) {
             case 'yesterday':
-                const y = new Date(now);
-                y.setDate(y.getDate() - 1);
-                from.valueAsDate = y;
-                to.valueAsDate = y;
-                break;
+                const y = new Date(now); y.setDate(y.getDate() - 1);
+                from.valueAsDate = y; to.valueAsDate = y; break;
             case 'today':
-                from.valueAsDate = now;
-                to.valueAsDate = now;
-                break;
+                from.valueAsDate = now; to.valueAsDate = now; break;
             case 'week':
-                const weekStart = new Date(now);
-                weekStart.setDate(weekStart.getDate() - 7);
-                from.valueAsDate = weekStart;
-                to.valueAsDate = now;
-                break;
+                const ws = new Date(now); ws.setDate(ws.getDate() - 7);
+                from.valueAsDate = ws; to.valueAsDate = now; break;
             case 'month':
-                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-                from.valueAsDate = monthStart;
-                to.valueAsDate = now;
-                break;
+                from.valueAsDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                to.valueAsDate = now; break;
         }
     });
 });
 
-// Filter buttons
-document.querySelectorAll('.filter-btn').forEach(btn => {
+// Toolbar tabs
+document.querySelectorAll('.toolbar-tab').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.toolbar-tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         filterType = btn.dataset.type;
         loadTransactions();
@@ -1409,7 +1105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     document.getElementById('date-from').valueAsDate = new Date(today.getFullYear(), today.getMonth(), 1);
     document.getElementById('date-to').valueAsDate = today;
-    
     loadAccounts();
     loadTransactions();
 });
@@ -1425,14 +1120,20 @@ document.getElementById('modal-save').addEventListener('click', async () => {
     const fundSel = document.getElementById('tx-fund');
     const fund_id = fundSel ? (parseInt(fundSel.value) || null) : null;
     const comment = document.getElementById('tx-comment').value.trim() || null;
+    const description = document.getElementById('tx-description').value.trim() || null;
 
-    if (!date || !amount) { alert('Укажите дату и сумму'); return; }
+    if (!date || !amount) {
+        const panel = document.querySelector('#transaction-modal .slide-panel');
+        if (!validatePanel(panel)) return;
+        return;
+    }
 
     const body = { date: date + 'T00:00:00', amount, type };
     if (fund_id) body.fund_id = fund_id;
     if (account_id) body.account_id = account_id;
     if (category_id) body.category_id = category_id;
     if (comment) body.comment = comment;
+    if (description) body.description = description;
 
     try {
         if (editingId) {
@@ -1440,8 +1141,17 @@ document.getElementById('modal-save').addEventListener('click', async () => {
         } else {
             await apiFetch('/transactions', { method: 'POST', body: JSON.stringify(body) });
         }
-        closeModal();
-        loadTransactions();
+
+        const addAnother = document.getElementById('add-another').checked;
+        if (addAnother && !editingId) {
+            document.getElementById('tx-amount').value = '';
+            document.getElementById('tx-description').value = '';
+            document.getElementById('tx-comment').value = '';
+            loadTransactions();
+        } else {
+            closeModal();
+            loadTransactions();
+        }
     } catch (err) { alert('Ошибка: ' + err.message); }
 });
 
@@ -1449,15 +1159,17 @@ function editTransaction(id) {
     const tx = transactions.find(t => t.id === id);
     if (!tx) return;
     editingId = id;
-    document.getElementById('modal-title').textContent = 'Редактировать операцию';
+    document.getElementById('modal-title').textContent = 'Редактировать платёж';
+    document.getElementById('modal-save').textContent = 'Сохранить';
     document.getElementById('tx-date').value = tx.date ? tx.date.split('T')[0] : '';
     document.getElementById('tx-amount').value = formatMoney(tx.amount);
     document.getElementById('tx-account').value = tx.account_id || '';
     document.getElementById('tx-category').value = tx.category_id || '';
+    document.getElementById('tx-counterparty').value = '';
+    document.getElementById('tx-description').value = tx.description || '';
+    document.getElementById('tx-comment').value = tx.comment || '';
     const fundSel = document.getElementById('tx-fund');
     if (fundSel) fundSel.value = tx.fund_id || '';
-    document.getElementById('tx-comment').value = tx.comment || '';
-    // Set type toggle
     document.querySelectorAll('.type-segmented button').forEach(b => b.classList.remove('active-income', 'active-expense'));
     const typeBtn = document.querySelector(`.type-segmented button[data-type="${tx.type}"]`);
     if (typeBtn) typeBtn.classList.add(tx.type === 'income' ? 'active-income' : 'active-expense');
@@ -1472,13 +1184,415 @@ async function deleteTransaction(id) {
     } catch (err) { alert('Ошибка: ' + err.message); }
 }
 
-// Select all checkbox
+function copyTransaction(id) {
+    const tx = transactions.find(t => t.id === id);
+    if (!tx) return;
+    openModal(false);
+    document.getElementById('tx-date').valueAsDate = new Date();
+    document.getElementById('tx-amount').value = formatMoney(tx.amount);
+    document.getElementById('tx-account').value = tx.account_id || '';
+    document.getElementById('tx-category').value = tx.category_id || '';
+    document.getElementById('tx-description').value = tx.description || '';
+    document.getElementById('tx-comment').value = tx.comment || '';
+    const fundSel = document.getElementById('tx-fund');
+    if (fundSel) fundSel.value = tx.fund_id || '';
+    document.querySelectorAll('.type-segmented button').forEach(b => b.classList.remove('active-income', 'active-expense'));
+    const typeBtn = document.querySelector(`.type-segmented button[data-type="${tx.type}"]`);
+    if (typeBtn) typeBtn.classList.add(tx.type === 'income' ? 'active-income' : 'active-expense');
+}
+
 document.getElementById('select-all').addEventListener('change', (e) => {
-    document.querySelectorAll('.td-check input[type="checkbox"]').forEach(cb => {
-        cb.checked = e.target.checked;
-    });
+    document.querySelectorAll('.td-check input[type="checkbox"]').forEach(cb => { cb.checked = e.target.checked; });
 });
+
+document.addEventListener('change', (e) => {
+    if (e.target.closest('.td-check')) {
+        const checked = document.querySelectorAll('#transactions-tbody .td-check input:checked').length;
+        document.getElementById('bulk-delete-btn').style.display = checked > 0 ? 'flex' : 'none';
+    }
+});
+
+// ── Filter categories by income/expense type ──
+function updateCategoryOptions(type) {
+    const sel = document.getElementById('tx-category');
+    const placeholder = sel.querySelector('option[value=""]') || sel.options[0];
+    sel.innerHTML = '';
+    if (placeholder) sel.appendChild(placeholder);
+
+    // Only show level 1 (leaf articles) matching the selected type
+    const leaves = allCategories.filter(c => c.level === 1 && (!c.type || c.type === type));
+
+    // Build parent name map for optgroup labels
+    const parentNames = {};
+    allCategories.forEach(c => { parentNames[c.id] = c.name; });
+
+    // Group by parent_id (level 2 groups)
+    const groups = {};
+    leaves.forEach(c => {
+        const key = c.parent_id || '_root';
+        (groups[key] = groups[key] || []).push(c);
+    });
+
+    for (const [parentId, items] of Object.entries(groups)) {
+        if (items.length === 0) continue;
+        if (parentId !== '_root' && parentNames[parentId]) {
+            const og = document.createElement('optgroup');
+            og.label = parentNames[parentId];
+            items.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; og.appendChild(o); });
+            sel.appendChild(og);
+        } else {
+            items.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+        }
+    }
+
+    // Refresh custom select if initialized
+    if (sel._customSelect) sel._customSelect.refresh();
+}
+
+// ── Create fund from custom select handler ──
+window.createFundFromSelect = function(onCreated) {
+    // Open a mini-panel with name + type fields
+    const overlay = document.createElement('div');
+    overlay.className = 'cs-mini-overlay';
+    overlay.innerHTML = `
+        <div class="cs-mini-panel">
+            <div class="cs-mini-header">
+                <h4>Добавить фонд</h4>
+                <button class="cs-mini-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="cs-mini-body">
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="cs-fund-name" placeholder="Например: Текущие расходы" autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Тип фонда</label>
+                    <select id="cs-fund-type">
+                        <option value="budget">Бюджетный</option>
+                        <option value="investment">Инвестиционный</option>
+                        <option value="tax_reserve">Налоговый резерв</option>
+                        <option value="debt">Долг</option>
+                        <option value="loan">Займ</option>
+                        <option value="placement">Размещение</option>
+                    </select>
+                </div>
+                <div class="cs-mini-error"></div>
+            </div>
+            <div class="cs-mini-footer">
+                <button class="cs-mini-save">Создать</button>
+                <button class="cs-mini-cancel">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('open'));
+
+    const nameInput = overlay.querySelector('#cs-fund-name');
+    const typeSelect = overlay.querySelector('#cs-fund-type');
+    const errEl = overlay.querySelector('.cs-mini-error');
+    const saveBtn = overlay.querySelector('.cs-mini-save');
+
+    setTimeout(() => nameInput.focus(), 100);
+
+    function closeMini() {
+        overlay.classList.remove('open');
+        setTimeout(() => overlay.remove(), 300);
+    }
+
+    overlay.querySelector('.cs-mini-close').addEventListener('click', closeMini);
+    overlay.querySelector('.cs-mini-cancel').addEventListener('click', closeMini);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMini(); });
+    nameInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMini(); });
+
+    saveBtn.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (!name) { errEl.textContent = 'Введите название'; errEl.style.display = 'block'; nameInput.focus(); return; }
+        saveBtn.disabled = true; saveBtn.textContent = '...';
+        try {
+            const res = await apiFetch('/funds', {
+                method: 'POST',
+                body: JSON.stringify({ name, type: typeSelect.value })
+            });
+            onCreated(res.id, res.name);
+            closeMini();
+        } catch (err) {
+            errEl.textContent = err.message; errEl.style.display = 'block';
+            saveBtn.disabled = false; saveBtn.textContent = 'Создать';
+        }
+    });
+};
+
+// ── Create group from custom select handler (3rd level panel) ──
+window.createGroupFromSelect = function(onCreated) {
+    const overlay = document.createElement('div');
+    overlay.className = 'cs-mini-overlay';
+    overlay.style.zIndex = '1200';
+
+    // Determine current type & activity from the parent panel's btn-select
+    const parentType = document.querySelector('#cs-cat-type-btns .btn-select.selected');
+    const parentAct = document.querySelector('#cs-cat-activity-btns .btn-select.selected');
+    const type = parentType ? parentType.dataset.value : (currentTxType || 'expense');
+    const typeLabel = type === 'income' ? 'Приход' : 'Расход';
+
+    overlay.innerHTML = `
+        <div class="cs-mini-panel" style="z-index:1201">
+            <div class="cs-mini-header">
+                <h4>Добавить группу</h4>
+                <button class="cs-mini-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="cs-mini-body">
+                <div class="form-group">
+                    <label>Тип: <strong>${typeLabel}</strong></label>
+                </div>
+                <div class="form-group">
+                    <label>Название группы</label>
+                    <input type="text" id="cs-grp-name" placeholder="Например: Питание" autofocus>
+                </div>
+                <div class="cs-mini-error"></div>
+            </div>
+            <div class="cs-mini-footer">
+                <button class="cs-mini-save">Создать</button>
+                <button class="cs-mini-cancel">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('open'));
+
+    const nameInput = overlay.querySelector('#cs-grp-name');
+    const errEl = overlay.querySelector('.cs-mini-error');
+    const saveBtn = overlay.querySelector('.cs-mini-save');
+
+    setTimeout(() => nameInput.focus(), 100);
+
+    function closeMini() {
+        overlay.classList.remove('open');
+        setTimeout(() => overlay.remove(), 300);
+    }
+
+    overlay.querySelector('.cs-mini-close').addEventListener('click', closeMini);
+    overlay.querySelector('.cs-mini-cancel').addEventListener('click', closeMini);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMini(); });
+    nameInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMini(); });
+
+    saveBtn.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (!name) { errEl.textContent = 'Введите название'; errEl.style.display = 'block'; nameInput.focus(); return; }
+        saveBtn.disabled = true; saveBtn.textContent = '...';
+
+        // Find parent_id: level-3 category matching type (and activity)
+        let parent_id = null;
+        const hasActivity = localStorage.getItem('activityMode') === 'true';
+        if (hasActivity && parentAct) {
+            const actId = parseInt(parentAct.dataset.value);
+            const level3 = allCategories.find(c => c.level === 3 && c.parent_id === actId && c.type === type);
+            if (level3) parent_id = level3.id;
+        } else {
+            const level3 = allCategories.find(c => c.level === 3 && c.type === type);
+            if (level3) parent_id = level3.id;
+        }
+
+        try {
+            const res = await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name, type, level: 2, parent_id })
+            });
+            allCategories.push(res);
+            onCreated(res.id, res.name);
+            closeMini();
+        } catch (err) {
+            errEl.textContent = err.message; errEl.style.display = 'block';
+            saveBtn.disabled = false; saveBtn.textContent = 'Создать';
+        }
+    });
+};
+
+window.createCategoryFromSelect = function(onCreated) {
+    const overlay = document.createElement('div');
+    overlay.className = 'cs-mini-overlay';
+    const preselectedType = currentTxType || 'expense';
+    const hasActivity = localStorage.getItem('activityMode') === 'true';
+
+    const activities = allCategories.filter(c => c.level === 4);
+    const groups = allCategories.filter(c => c.level === 2);
+
+    let activityHtml = '';
+    if (hasActivity && activities.length) {
+        activityHtml = `
+            <div class="form-group">
+                <label>Вид деятельности</label>
+                <div class="btn-select-group" id="cs-cat-activity-btns">
+                    ${activities.map((a, i) => `<button type="button" class="btn-select${i === 0 ? ' selected' : ''}" data-value="${a.id}">${a.name}</button>`).join('')}
+                </div>
+            </div>`;
+    }
+
+    overlay.innerHTML = `
+        <div class="cs-mini-panel">
+            <div class="cs-mini-header">
+                <h4>Добавить статью</h4>
+                <button class="cs-mini-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="cs-mini-body">
+                ${activityHtml}
+                <div class="form-group">
+                    <label>Тип</label>
+                    <div class="btn-select-group" id="cs-cat-type-btns">
+                        <button type="button" class="btn-select${preselectedType === 'expense' ? ' selected' : ''}" data-value="expense">Расход</button>
+                        <button type="button" class="btn-select${preselectedType === 'income' ? ' selected' : ''}" data-value="income">Приход</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Группа</label>
+                    <select id="cs-cat-group" data-custom-select data-always-search data-add-new="Добавить группу" data-add-handler="createGroupFromSelect">
+                        <option value="">— Без группы —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="cs-cat-name" placeholder="Например: Продукты" autofocus>
+                </div>
+                <div class="cs-mini-error"></div>
+            </div>
+            <div class="cs-mini-footer">
+                <button class="cs-mini-save">Создать</button>
+                <button class="cs-mini-cancel">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('open'));
+
+    const nameInput = overlay.querySelector('#cs-cat-name');
+    const groupSelect = overlay.querySelector('#cs-cat-group');
+    const errEl = overlay.querySelector('.cs-mini-error');
+    const saveBtn = overlay.querySelector('.cs-mini-save');
+
+    // Button select helpers
+    function getSelected(groupId) {
+        const s = overlay.querySelector(`#${groupId} .btn-select.selected`);
+        return s ? s.dataset.value : null;
+    }
+    function initBtnGroup(groupId, onChange) {
+        overlay.querySelectorAll(`#${groupId} .btn-select`).forEach(btn => {
+            btn.addEventListener('click', () => {
+                overlay.querySelectorAll(`#${groupId} .btn-select`).forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                if (onChange) onChange();
+            });
+        });
+    }
+
+    function rebuildGroups() {
+        const type = getSelected('cs-cat-type-btns');
+        groupSelect.innerHTML = '<option value="">— Без группы —</option>';
+        const currentGroups = allCategories.filter(c => c.level === 2);
+        let filtered = currentGroups.filter(g => g.type === type);
+        if (hasActivity) {
+            const actId = parseInt(getSelected('cs-cat-activity-btns'));
+            if (actId) {
+                const level3ids = allCategories.filter(c => c.level === 3 && c.parent_id === actId && c.type === type).map(c => c.id);
+                filtered = filtered.filter(g => level3ids.includes(g.parent_id));
+            }
+        }
+        filtered.forEach(g => {
+            const o = document.createElement('option');
+            o.value = g.id; o.textContent = g.name;
+            groupSelect.appendChild(o);
+        });
+        if (groupSelect._customSelect) groupSelect._customSelect.refresh();
+    }
+
+    initBtnGroup('cs-cat-type-btns', rebuildGroups);
+    if (hasActivity && activities.length) initBtnGroup('cs-cat-activity-btns', rebuildGroups);
+    rebuildGroups();
+
+    // Initialize CustomSelect on group dropdown
+    if (typeof initCustomSelects === 'function') initCustomSelects(overlay);
+
+    setTimeout(() => nameInput.focus(), 100);
+
+    function closeMini() {
+        overlay.classList.remove('open');
+        setTimeout(() => overlay.remove(), 300);
+    }
+
+    overlay.querySelector('.cs-mini-close').addEventListener('click', closeMini);
+    overlay.querySelector('.cs-mini-cancel').addEventListener('click', closeMini);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMini(); });
+    nameInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMini(); });
+
+    saveBtn.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (!name) { errEl.textContent = 'Введите название'; errEl.style.display = 'block'; nameInput.focus(); return; }
+        saveBtn.disabled = true; saveBtn.textContent = '...';
+        const type = getSelected('cs-cat-type-btns');
+        const parent_id = groupSelect.value ? parseInt(groupSelect.value) : null;
+        try {
+            const res = await apiFetch('/categories', {
+                method: 'POST',
+                body: JSON.stringify({ name, type, level: 1, parent_id })
+            });
+            allCategories.push(res);
+            updateCategoryOptions(currentTxType);
+            const filterCat = document.getElementById('filter-category');
+            if (filterCat) {
+                const o = document.createElement('option');
+                o.value = res.id; o.textContent = res.name;
+                filterCat.appendChild(o);
+            }
+            categoryMap[res.id] = res.name;
+            onCreated(res.id, res.name);
+            closeMini();
+        } catch (err) {
+            errEl.textContent = err.message; errEl.style.display = 'block';
+            saveBtn.disabled = false; saveBtn.textContent = 'Создать';
+        }
+    });
+};
+
+// ── Calculator popup ─────────────────────────────────────────────────────────
+(function() {
+    const toggle = document.getElementById('calc-toggle');
+    const popup = document.getElementById('calc-popup');
+    const expr = document.getElementById('calc-expr');
+    const apply = document.getElementById('calc-apply');
+    const amountInput = document.getElementById('tx-amount');
+
+    function safeCalc(s) {
+        const sanitized = s.replace(/,/g, '.').replace(/\s/g, '');
+        if (!/^[0-9+\-*/().]+$/.test(sanitized)) return null;
+        try { return new Function('return (' + sanitized + ')')(); } catch { return null; }
+    }
+
+    toggle.addEventListener('click', () => {
+        popup.classList.toggle('open');
+        if (popup.classList.contains('open')) { expr.value = ''; setTimeout(() => expr.focus(), 50); }
+    });
+
+    function applyCalc() {
+        const result = safeCalc(expr.value);
+        if (result === null || isNaN(result)) { expr.style.borderColor = 'var(--danger)'; return; }
+        expr.style.borderColor = '';
+        // Format via money formatter (from layout.js)
+        const formatted = typeof formatMoney === 'function' ? formatMoney(result) : result.toFixed(2).replace('.', ',');
+        amountInput.value = formatted;
+        amountInput.dispatchEvent(new Event('change', { bubbles: true }));
+        popup.classList.remove('open');
+        amountInput.focus();
+        amountInput.blur();
+    }
+
+    apply.addEventListener('click', applyCalc);
+    expr.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyCalc(); } if (e.key === 'Escape') popup.classList.remove('open'); });
+
+    // Close popup on outside click
+    document.addEventListener('click', (e) => {
+        if (!popup.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) popup.classList.remove('open');
+    });
+})();
 </script>
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 </body>
 </html>

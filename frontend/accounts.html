@@ -9,509 +9,103 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/common.css">
     <style>
-        /* ========== PAGE CONTENT ========== */
-        .page {
-            padding: 32px;
-            max-width: 1400px;
-        }
+        .page { padding: 24px 32px; max-width: 1400px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .page-header h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .header-actions { display: flex; gap: 8px; align-items: center; }
 
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
+        .btn { padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: #fff; color: var(--text-secondary); height: 28px; }
+        .btn:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); color: #fff; }
+        .btn-secondary { background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn svg { width: 14px; height: 14px; }
 
-        .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
+        /* View toggle */
+        .view-toggle { display: flex; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .view-toggle button { padding: 4px 8px; border: none; background: #fff; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; display: flex; align-items: center; }
+        .view-toggle button.active { background: var(--text-primary); color: #fff; }
+        .view-toggle button svg { width: 16px; height: 16px; }
 
-        .page-header-actions {
-            display: flex;
-            gap: 12px;
-        }
+        /* Cards row */
+        .accounts-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+        .accounts-row::-webkit-scrollbar { height: 4px; }
+        .accounts-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* Buttons */
-        .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-        }
+        .account-card { background: var(--bg-card-light); border-radius: 16px; padding: 16px 20px; border: 2px solid transparent; transition: all 0.2s ease; cursor: pointer; width: 190px; min-width: 190px; max-width: 190px; height: 120px; flex-shrink: 0; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+        .account-card:hover { border-color: var(--primary); }
+        .account-card-total { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; border: 2px solid transparent; }
+        .account-card-total:hover { border-color: var(--primary); }
+        .account-card-total .account-name, .account-card-total .account-balance { color: #fff; }
+        .account-card-total .account-sub { color: rgba(255,255,255,0.6); }
 
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-        }
+        .account-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+        .account-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.2s; }
+        .account-card:hover .account-actions { opacity: 1; }
+        .account-action-btn { width: 24px; height: 24px; border: none; background: rgba(0,0,0,0.05); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .account-action-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .account-action-btn.delete:hover { background: #fef2f2; color: var(--danger); }
+        .account-action-btn svg { width: 12px; height: 12px; }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3);
-        }
+        .account-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .account-balance { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
+        .account-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-        .btn-secondary {
-            background: #fff;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-        }
+        /* Add card */
+        .account-card-add { border: 2px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--text-secondary); width: 90px !important; min-width: 90px !important; max-width: 90px !important; }
+        .account-card-add:hover { border-color: var(--primary); color: var(--primary); box-shadow: none; }
+        .account-card-add .add-icon { width: 30px; height: 30px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .account-card-add .add-icon svg { width: 16px; height: 16px; color: var(--primary); }
+        .account-card-add span { font-size: 11px; }
 
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        /* Table view */
+        .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 700px; }
+        .accounts-table { width: 100%; border-collapse: collapse; }
+        .accounts-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); background: #fafafa; }
+        .accounts-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .accounts-table tr:hover { background: var(--primary-light); }
+        .accounts-table .col-balance { font-weight: 700; text-align: right; }
+        .accounts-table .col-date { color: var(--text-secondary); }
+        .accounts-table .col-actions { text-align: right; width: 80px; }
+        .accounts-table .col-actions .action-row { display: flex; gap: 2px; justify-content: flex-end; }
 
-        .btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        /* Table */
-        .table-container {
-            background: var(--bg-card-light);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        thead th {
-            padding: 16px 20px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            background: #fafafa;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
-
-        tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
-        }
-
-        tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background: var(--primary-light);
-        }
-
-        tbody td {
-            padding: 18px 20px;
-            color: var(--text-primary);
-            vertical-align: middle;
-        }
-
-        .td-name {
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .td-name-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .td-name-icon svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-
-        .td-balance {
-            font-weight: 700;
-            font-size: 16px;
-            white-space: nowrap;
-        }
-
-        .td-date {
-            color: var(--text-secondary);
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .td-actions {
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .td-actions-inner {
-            display: flex;
-            gap: 6px;
-            justify-content: flex-end;
-        }
-
-        .action-btn {
-            width: 34px;
-            height: 34px;
-            border: none;
-            background: var(--bg-body);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .action-btn.delete:hover {
-            background: #fef2f2;
-            color: var(--danger);
-        }
-
-        .action-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Empty State */
-        .empty-state {
-            padding: 80px 20px;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .empty-state svg {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
+        .empty-state { padding: 60px 20px; text-align: center; color: var(--text-secondary); }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
 
         /* Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.4s infinite;
-            border-radius: 6px;
-        }
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+        @keyframes shimmer { to { background-position: -200% 0; } }
 
-        @keyframes shimmer {
-            to {
-                background-position: -200% 0;
-            }
-        }
-
-        .sk-row td {
-            padding: 18px 20px;
-        }
-
-        .sk {
-            display: block;
-            height: 14px;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            max-height: calc(100vh - 48px);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: transparent;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: var(--bg-body);
-            color: var(--text-primary);
-        }
-
-        .modal-close svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-            flex: 1 1 auto;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-group input {
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fafafa;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .form-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .form-error {
-            font-size: 12px;
-            color: var(--danger);
-            min-height: 16px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            padding: 20px 24px;
-            flex-shrink: 0;
-            border-top: 1px solid var(--border);
-        }
+        .form-hint { font-size: 12px; color: var(--text-muted); }
+        .form-error { font-size: 12px; color: var(--danger); min-height: 16px; }
 
         /* Confirm Modal */
-        .confirm-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
+        .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .confirm-overlay.open { opacity: 1; pointer-events: all; }
+        .confirm-box { background: #fff; border-radius: 20px; max-width: 380px; width: 100%; padding: 32px; text-align: center; }
+        .confirm-box h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+        .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+        .confirm-footer { display: flex; gap: 12px; justify-content: center; }
 
-        .confirm-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
+        /* Initial Balances Panel */
+        #initial-balances-modal .slide-panel { width: 580px; }
 
-        .confirm-box {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            padding: 32px;
-            text-align: center;
-        }
-
-        .confirm-box h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .confirm-box p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        .confirm-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        /* Initial Balances Modal */
-        .modal-wide {
-            max-width: 720px;
-        }
-
-        .ib-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            margin-top: 16px;
-        }
-
-        .ib-table th {
-            background: #fafafa;
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .ib-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .ib-table input[type="number"] {
-            width: 140px;
-            padding: 8px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: #fff;
-            font-family: inherit;
-        }
-
-        .ib-table input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .ib-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 16px; }
+        .ib-table th { background: #fafafa; padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+        .ib-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+        .ib-table input[type="text"] { width: 140px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; color: var(--text-primary); background: #fff; font-family: inherit; }
+        .ib-table input[type="text"]:focus { outline: none; border-color: var(--primary); }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                bottom: 0;
-                top: auto;
-                flex-direction: row;
-                padding: 12px;
-                border-right: none;
-                border-top: 1px solid var(--border);
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-bottom: 70px;
-            }
-
-            .header {
-                padding: 0 16px;
-            }
-
-            .header-nav {
-                display: none;
-            }
-
-            .page {
-                padding: 16px;
-            }
-
-            .page-header {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-            }
-
-            .table-wrapper {
-                overflow-x: scroll;
-            }
+            .main-content { margin-left: 0; margin-bottom: 70px; }
+            .header-nav { display: none; }
+            .page { padding: 16px; }
+            .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -525,7 +119,7 @@
     <div class="page">
         <div class="page-header">
             <h1>Счета</h1>
-            <div class="page-header-actions">
+            <div class="header-actions">
                 <button class="btn btn-secondary" id="initial-balances-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23"/>
@@ -539,87 +133,60 @@
                     </svg>
                     Добавить счёт
                 </button>
+                <div class="view-toggle">
+                    <button id="view-cards" class="active" title="Карточки">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    </button>
+                    <button id="view-table" title="Таблица">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="table-container">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Название</th>
-                            <th>Баланс</th>
-                            <th>Дата открытия</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="accounts-tbody">
-                        <!-- Skeleton rows -->
-                        <tr class="sk-row">
-                            <td><span class="skeleton sk" style="width: 200px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 120px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 100px;"></span></td>
-                            <td></td>
-                        </tr>
-                        <tr class="sk-row">
-                            <td><span class="skeleton sk" style="width: 180px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 110px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 90px;"></span></td>
-                            <td></td>
-                        </tr>
-                        <tr class="sk-row">
-                            <td><span class="skeleton sk" style="width: 220px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 130px;"></span></td>
-                            <td><span class="skeleton sk" style="width: 100px;"></span></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div id="accounts-container">
+            <!-- Skeleton placeholder -->
+            <div class="accounts-row">
+                <div class="account-card" style="height:120px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:16px"></div>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Add Account Modal -->
-<div class="modal-overlay" id="account-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 class="modal-title">Новый счёт</h2>
-            <button class="modal-close" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+<!-- Add Account Panel -->
+<div class="slide-panel-overlay" id="account-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h2 class="slide-panel-title">Новый счёт</h2>
+            <button class="slide-panel-close" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="slide-panel-body">
             <div class="form-group">
                 <label for="account-name">Название счёта</label>
                 <input type="text" id="account-name" placeholder="Например: Тинькофф" autocomplete="off">
                 <div class="form-hint" data-content-key="form_hint_bank">Можете указать банк или тип счёта</div>
                 <div class="form-error" id="account-name-error"></div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" id="account-modal-cancel">Отмена</button>
-            <button class="btn btn-primary" id="account-modal-save">Сохранить</button>
+            <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn-panel btn-panel-primary" id="account-modal-save">Сохранить</button>
+                <button class="btn-panel btn-panel-secondary" id="account-modal-cancel">Отмена</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Initial Balances Modal -->
-<div class="modal-overlay" id="initial-balances-modal">
-    <div class="modal modal-wide">
-        <div class="modal-header">
-            <h2 class="modal-title">Начальные остатки</h2>
-            <button class="modal-close" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+<!-- Initial Balances Panel -->
+<div class="slide-panel-overlay" id="initial-balances-modal">
+    <div class="slide-panel">
+        <div class="slide-panel-header">
+            <h2 class="slide-panel-title">Начальные остатки</h2>
+            <button class="slide-panel-close" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="slide-panel-body">
             <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
                 Введите начальные балансы всех ваших счетов. Это поможет системе правильно рассчитывать общую сумму.
             </p>
@@ -632,10 +199,10 @@
                 </thead>
                 <tbody id="ib-table-body"></tbody>
             </table>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" id="ib-modal-cancel">Отмена</button>
-            <button class="btn btn-primary" id="ib-modal-save">Сохранить</button>
+            <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn-panel btn-panel-primary" id="ib-modal-save">Сохранить</button>
+                <button class="btn-panel btn-panel-secondary" id="ib-modal-cancel">Отмена</button>
+            </div>
         </div>
     </div>
 </div>
@@ -652,6 +219,7 @@
     </div>
 </div>
 
+<script src="js/custom-select.js"></script>
 <script src="js/layout.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
@@ -718,18 +286,33 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
+// View state
+let currentView = localStorage.getItem('accounts_view') || 'table';
+let accountsData = [];
+
 // Modal elements
 const accountModal = document.getElementById('account-modal');
 const initialBalancesModal = document.getElementById('initial-balances-modal');
 const confirmModal = document.getElementById('confirm-modal');
 
-// Open Add Account modal
-document.getElementById('add-account-btn').addEventListener('click', () => {
-    document.getElementById('account-name').value = '';
-    document.getElementById('account-name-error').textContent = '';
-    accountModal.classList.add('open');
-    document.getElementById('account-name').focus();
-});
+// View toggle
+const viewCardsBtn = document.getElementById('view-cards');
+const viewTableBtn = document.getElementById('view-table');
+
+function setView(view) {
+    currentView = view;
+    localStorage.setItem('accounts_view', view);
+    viewCardsBtn.classList.toggle('active', view === 'cards');
+    viewTableBtn.classList.toggle('active', view === 'table');
+    renderAccounts();
+}
+
+viewCardsBtn.addEventListener('click', () => setView('cards'));
+viewTableBtn.addEventListener('click', () => setView('table'));
+
+// Initialize view toggle buttons
+viewCardsBtn.classList.toggle('active', currentView === 'cards');
+viewTableBtn.classList.toggle('active', currentView === 'table');
 
 // Close modals
 function closeAllModals() {
@@ -742,64 +325,162 @@ document.getElementById('account-modal-cancel').addEventListener('click', closeA
 document.getElementById('ib-modal-cancel').addEventListener('click', closeAllModals);
 document.getElementById('confirm-cancel').addEventListener('click', closeAllModals);
 
-
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAllModals();
 });
 
-// Modal close buttons
-document.querySelectorAll('.modal-close').forEach(btn => {
+// Panel close buttons
+document.querySelectorAll('.slide-panel-close').forEach(btn => {
     btn.addEventListener('click', closeAllModals);
 });
 
-// Load accounts
-async function loadAccounts() {
-    const tbody = document.getElementById('accounts-tbody');
-    try {
-        const accounts = await apiFetch('/accounts');
-        tbody.innerHTML = '';
+// Render card view
+function renderCardView(accounts) {
+    const container = document.getElementById('accounts-container');
+    if (!accounts.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="M2 8h20"/>
+                </svg>
+                <h3>Нет счетов</h3>
+                <p>Добавьте первый счёт, чтобы начать учёт</p>
+            </div>
+        `;
+        return;
+    }
 
-        if (!accounts.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <rect x="2" y="4" width="20" height="16" rx="2"/>
-                            <path d="M2 8h20"/>
-                        </svg>
-                        <h3>Нет счетов</h3>
-                        <p>Добавьте первый счёт, чтобы начать учёт</p>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
+    const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
 
-        accounts.forEach(acc => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>
-                    <div class="td-name">
-                        <div class="td-name-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="4" width="20" height="16" rx="2"/>
-                                <path d="M2 8h20"/>
-                            </svg>
-                        </div>
-                        <span>${escHtml(acc.name)}</span>
-                    </div>
-                </td>
-                <td class="td-balance">${fmt(acc.balance)}</td>
-                <td class="td-date">${fmtDate(acc.created_at)}</td>
-                <td class="td-actions">
-                    <div class="td-actions-inner">
-                        <button class="action-btn" title="Редактировать" data-id="${acc.id}">
+    let html = '<div class="accounts-row">';
+
+    // Total card
+    html += `
+        <div class="account-card account-card-total">
+            <div>
+                <div class="account-sub">Всего</div>
+                <div class="account-name">Все счета</div>
+            </div>
+            <div class="account-balance">${fmt(totalBalance)}</div>
+        </div>
+    `;
+
+    // Individual cards
+    accounts.forEach(acc => {
+        html += `
+            <div class="account-card" data-id="${acc.id}">
+                <div class="account-card-header">
+                    <div class="account-name">${escHtml(acc.name)}</div>
+                    <div class="account-actions">
+                        <button class="account-action-btn edit-card-btn" title="Редактировать" data-id="${acc.id}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                             </svg>
                         </button>
-                        <button class="action-btn delete" title="Удалить" data-id="${acc.id}">
+                        <button class="account-action-btn delete delete-card-btn" title="Удалить" data-id="${acc.id}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div class="account-balance">${fmt(acc.balance)}</div>
+                    <div class="account-sub">${fmtDate(acc.created_at)}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Add card
+    html += `
+        <div class="account-card account-card-add" id="add-card-btn">
+            <div class="add-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </div>
+            <span>Добавить</span>
+        </div>
+    `;
+
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Add card click
+    document.getElementById('add-card-btn').addEventListener('click', () => {
+        document.getElementById('add-account-btn').click();
+    });
+
+    // Edit handlers on cards
+    container.querySelectorAll('.edit-card-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            editAccount(this.dataset.id);
+        });
+    });
+
+    // Delete handlers on cards
+    container.querySelectorAll('.delete-card-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const id = this.dataset.id;
+            confirmModal.classList.add('open');
+            document.getElementById('confirm-delete').onclick = async () => {
+                await apiFetch('/accounts/' + id, { method: 'DELETE' });
+                closeAllModals();
+                loadAccounts();
+            };
+        });
+    });
+}
+
+// Render table view
+function renderTableView(accounts) {
+    const container = document.getElementById('accounts-container');
+    if (!accounts.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="M2 8h20"/>
+                </svg>
+                <h3>Нет счетов</h3>
+                <p>Добавьте первый счёт, чтобы начать учёт</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <table class="accounts-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th style="text-align:right">Баланс</th>
+                    <th>Дата открытия</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    accounts.forEach(acc => {
+        html += `
+            <tr>
+                <td style="font-weight:600">${escHtml(acc.name)}</td>
+                <td class="col-balance">${fmt(acc.balance)}</td>
+                <td class="col-date">${fmtDate(acc.created_at)}</td>
+                <td class="col-actions">
+                    <div class="action-row">
+                        <button class="account-action-btn edit-table-btn" title="Редактировать" data-id="${acc.id}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                        <button class="account-action-btn delete delete-table-btn" title="Удалить" data-id="${acc.id}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="3 6 5 6 21 6"/>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -807,31 +488,79 @@ async function loadAccounts() {
                         </button>
                     </div>
                 </td>
-            `;
-            tbody.appendChild(tr);
-        });
+            </tr>
+        `;
+    });
 
-        // Delete handlers
-        tbody.querySelectorAll('.action-btn.delete').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.dataset.id;
-                // Show confirm modal
-                confirmModal.classList.add('open');
-                document.getElementById('confirm-delete').onclick = async () => {
-                    await apiFetch('/accounts/' + id, { method: 'DELETE' });
-                    closeAllModals();
-                    loadAccounts();
-                };
-            });
-        });
+    html += '</tbody></table>';
+    container.innerHTML = `<div class="table-wrap">${html}</div>`;
 
-    } catch (err) {
-        console.error('Error loading accounts:', err);
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--danger);">Ошибка загрузки счетов</td></tr>`;
+    // Edit handlers on table
+    container.querySelectorAll('.edit-table-btn').forEach(btn => {
+        btn.addEventListener('click', function() { editAccount(this.dataset.id); });
+    });
+
+    // Delete handlers on table
+    container.querySelectorAll('.delete-table-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            confirmModal.classList.add('open');
+            document.getElementById('confirm-delete').onclick = async () => {
+                await apiFetch('/accounts/' + id, { method: 'DELETE' });
+                closeAllModals();
+                loadAccounts();
+            };
+        });
+    });
+}
+
+// Render based on current view
+function renderAccounts() {
+    if (currentView === 'cards') {
+        renderCardView(accountsData);
+    } else {
+        renderTableView(accountsData);
     }
 }
 
-// Save account
+// Load accounts
+async function loadAccounts() {
+    try {
+        accountsData = await apiFetch('/accounts');
+        renderAccounts();
+    } catch (err) {
+        console.error('Error loading accounts:', err);
+        document.getElementById('accounts-container').innerHTML = `<div style="text-align: center; padding: 40px; color: var(--danger);">Ошибка загрузки счетов</div>`;
+    }
+}
+
+// Edit account — open modal with prefilled name
+let editingAccountId = null;
+
+function editAccount(id) {
+    const acc = accountsData.find(a => String(a.id) === String(id));
+    if (!acc) return;
+    editingAccountId = id;
+    document.getElementById('account-name').value = acc.name;
+    document.getElementById('account-name-error').textContent = '';
+    document.querySelector('#account-modal .slide-panel-title').textContent = 'Редактировать счёт';
+    document.getElementById('account-modal-save').textContent = 'Сохранить';
+    accountModal.classList.add('open');
+    document.getElementById('account-name').focus();
+}
+
+// Open Add Account modal (reset)
+document.getElementById('add-account-btn').addEventListener('click', () => {
+    editingAccountId = null;
+    document.getElementById('account-name').value = '';
+    document.getElementById('account-name-error').textContent = '';
+    document.querySelector('#account-modal .slide-panel-title').textContent = 'Новый счёт';
+    document.getElementById('account-modal-save').textContent = 'Сохранить';
+    accountModal.classList.add('open');
+    document.getElementById('account-name').focus();
+});
+
+// Save account (create or update)
 document.getElementById('account-modal-save').addEventListener('click', async function() {
     const name = document.getElementById('account-name').value.trim();
     const errorEl = document.getElementById('account-name-error');
@@ -842,10 +571,18 @@ document.getElementById('account-modal-save').addEventListener('click', async fu
     }
 
     try {
-        await apiFetch('/accounts', {
-            method: 'POST',
-            body: JSON.stringify({ name: name }),
-        });
+        if (editingAccountId) {
+            await apiFetch('/accounts/' + editingAccountId, {
+                method: 'PUT',
+                body: JSON.stringify({ name: name }),
+            });
+        } else {
+            await apiFetch('/accounts', {
+                method: 'POST',
+                body: JSON.stringify({ name: name }),
+            });
+        }
+        editingAccountId = null;
         closeAllModals();
         loadAccounts();
     } catch (err) {

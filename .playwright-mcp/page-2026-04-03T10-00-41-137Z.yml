@@ -1,0 +1,179 @@
+- generic [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+        - button "Развернуть/свернуть" [ref=e9] [cursor=pointer]
+        - navigation [ref=e10]:
+          - link "Главная" [ref=e11] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic: Главная
+          - link "Операции" [ref=e13] [cursor=pointer]:
+            - /url: operations.html
+            - generic: Операции
+          - link "Фонды" [ref=e15] [cursor=pointer]:
+            - /url: funds.html
+            - generic: Фонды
+          - link "Счета" [ref=e17] [cursor=pointer]:
+            - /url: accounts.html
+            - generic: Счета
+      - generic [ref=e19]:
+        - link "Каскад Фондов" [ref=e20] [cursor=pointer]:
+          - /url: cascade.html
+          - generic: Каскад Фондов
+        - link "Контрагенты" [ref=e22] [cursor=pointer]:
+          - /url: counterparties.html
+          - generic: Контрагенты
+        - link "Статьи учёта" [ref=e24] [cursor=pointer]:
+          - /url: categories.html
+          - generic: Статьи учёта
+        - link "Админ-панель" [ref=e26] [cursor=pointer]:
+          - /url: admin.html
+          - generic: Админ-панель
+        - link "Настройки" [ref=e28] [cursor=pointer]:
+          - /url: settings.html
+          - generic: Настройки
+        - button "Выйти" [ref=e30] [cursor=pointer]:
+          - generic: Выйти
+  - main [ref=e32]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - heading "Личные финансы" [level=1] [ref=e35]
+        - navigation [ref=e36]:
+          - link "Главная" [ref=e37] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e38] [cursor=pointer]:
+            - /url: operations.html
+          - link "Фонды" [ref=e39] [cursor=pointer]:
+            - /url: funds.html
+          - link "Счета" [ref=e40] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e41]:
+        - button "Поиск" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]
+        - button "Уведомления" [ref=e46] [cursor=pointer]:
+          - img [ref=e47]
+        - generic [ref=e50] [cursor=pointer]:
+          - generic [ref=e51]: A
+          - generic [ref=e52]: Admin
+    - generic [ref=e53]:
+      - generic [ref=e54]: Мои счета
+      - generic [ref=e55]:
+        - generic [ref=e199] [cursor=pointer]:
+          - generic [ref=e200]: Все счета
+          - generic [ref=e202]: 0 ₽
+        - generic [ref=e203] [cursor=pointer]:
+          - img [ref=e205]
+          - generic [ref=e207]:
+            - text: Добавить
+            - text: счёт
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]: Все счета
+          - generic [ref=e62]:
+            - button "Все" [ref=e63] [cursor=pointer]
+            - button "Приход" [ref=e64] [cursor=pointer]
+            - button "Расход" [ref=e65] [cursor=pointer]
+        - generic [ref=e66]:
+          - button "Экспорт" [ref=e67] [cursor=pointer]:
+            - img [ref=e68]
+            - text: Экспорт
+          - button "Фильтры" [ref=e71] [cursor=pointer]:
+            - img [ref=e72]
+            - text: Фильтры
+          - button "Добавить" [ref=e73] [cursor=pointer]
+          - generic [ref=e74]:
+            - button "<" [disabled] [ref=e75]
+            - button "1" [ref=e76] [cursor=pointer]
+            - button "2" [ref=e77] [cursor=pointer]
+            - button "3" [ref=e78] [cursor=pointer]
+            - button "..." [active] [ref=e79] [cursor=pointer]
+            - button "105" [ref=e80] [cursor=pointer]
+            - button ">" [ref=e81] [cursor=pointer]
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - button "Вчера" [ref=e84] [cursor=pointer]
+          - button "Сегодня" [ref=e85] [cursor=pointer]
+          - button "Неделя" [ref=e86] [cursor=pointer]
+          - button "Месяц" [ref=e87] [cursor=pointer]
+        - generic [ref=e88]:
+          - textbox [ref=e89]: 2026-03-31
+          - generic [ref=e90]: —
+          - textbox [ref=e91]: 2026-04-03
+        - generic [ref=e92]:
+          - img
+          - textbox "Поиск по операциям..." [ref=e93]
+        - button "Найти" [ref=e94] [cursor=pointer]
+      - table [ref=e96]:
+        - rowgroup [ref=e97]:
+          - row "Номер ▼ Дата ▼ Контрагент Описание Счёт Сумма Комментарий" [ref=e98]:
+            - columnheader [ref=e99] [cursor=pointer]:
+              - checkbox [ref=e100]
+            - columnheader "Номер ▼" [ref=e101] [cursor=pointer]:
+              - text: Номер
+              - generic [ref=e102]: ▼
+            - columnheader "Дата ▼" [ref=e103] [cursor=pointer]:
+              - text: Дата
+              - generic [ref=e104]: ▼
+            - columnheader "Контрагент" [ref=e105] [cursor=pointer]
+            - columnheader "Описание" [ref=e106] [cursor=pointer]
+            - columnheader "Счёт" [ref=e107] [cursor=pointer]
+            - columnheader "Сумма" [ref=e108] [cursor=pointer]
+            - columnheader "Комментарий" [ref=e109] [cursor=pointer]
+            - columnheader [ref=e110] [cursor=pointer]
+        - rowgroup [ref=e111]:
+          - row "Операций не найдено" [ref=e208]:
+            - cell "Операций не найдено" [ref=e209]
+  - generic [ref=e167]:
+    - generic [ref=e168]:
+      - heading "Добавить платёж" [level=3] [ref=e169]
+      - button [ref=e170]:
+        - img
+    - generic [ref=e173]:
+      - generic [ref=e174]:
+        - button "Расход" [ref=e175] [cursor=pointer]
+        - button "Приход" [ref=e176] [cursor=pointer]
+      - generic [ref=e177]:
+        - generic [ref=e178]:
+          - text: Дата
+          - textbox [ref=e179]
+        - generic [ref=e180]:
+          - text: Счёт
+          - combobox [ref=e181]:
+            - option "Выбрать" [selected]
+      - generic [ref=e182]:
+        - generic [ref=e183]:
+          - text: Контрагент
+          - combobox [ref=e184]:
+            - option "Выбрать" [selected]
+        - generic [ref=e185]:
+          - text: Сумма
+          - textbox "0,00 ₽" [ref=e186]
+      - generic [ref=e187]:
+        - text: Категория
+        - combobox [ref=e188]:
+          - option "Выбрать категорию" [selected]
+          - option "Доходы"
+          - option "Доходы"
+          - option "Доходы"
+          - option "Расходы"
+          - option "Расходы"
+          - option "Расходы"
+          - option "Операционная деятельность"
+          - option "Инвестиционная деятельность"
+          - option "Финансовая деятельность"
+      - generic [ref=e189]:
+        - text: Фонд
+        - combobox [ref=e190]:
+          - option "— Без фонда —" [selected]
+      - generic [ref=e191]:
+        - text: Описание операции
+        - textbox "Оплата..." [ref=e192]
+      - generic [ref=e193]:
+        - text: Комментарий
+        - textbox "Учесть..." [ref=e194]
+    - generic [ref=e195]:
+      - button "Добавить" [ref=e196]
+      - generic [ref=e197]:
+        - checkbox "Добавить ещё один платёж" [ref=e198]
+        - text: Добавить ещё один платёж

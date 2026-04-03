@@ -1,0 +1,140 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Фонды" [ref=e18] [cursor=pointer]:
+            - /url: funds.html
+            - generic [ref=e20]: Фонды
+          - link "Счета" [ref=e21] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e23]: Счета
+          - link "Каскад Фондов" [ref=e24] [cursor=pointer]:
+            - /url: cascade.html
+            - generic [ref=e26]: Каскад Фондов
+          - link "Контрагенты" [ref=e27] [cursor=pointer]:
+            - /url: counterparties.html
+            - generic [ref=e29]: Контрагенты
+          - link "Статьи учёта" [ref=e30] [cursor=pointer]:
+            - /url: categories.html
+            - generic [ref=e32]: Статьи учёта
+          - link "Админ-панель" [ref=e33] [cursor=pointer]:
+            - /url: admin.html
+            - generic [ref=e35]: Админ-панель
+          - link "Настройки" [ref=e36] [cursor=pointer]:
+            - /url: settings.html
+            - generic [ref=e38]: Настройки
+      - button "Выйти" [ref=e40] [cursor=pointer]:
+        - generic [ref=e42]: Выйти
+  - main [ref=e43]:
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading "Личные финансы" [level=1] [ref=e46]
+        - navigation [ref=e47]:
+          - link "Главная" [ref=e48] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e49] [cursor=pointer]:
+            - /url: operations.html
+          - link "Фонды" [ref=e50] [cursor=pointer]:
+            - /url: funds.html
+          - link "Счета" [ref=e51] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e52]:
+        - button "Поиск" [ref=e53] [cursor=pointer]:
+          - img [ref=e54]
+        - button "Уведомления" [ref=e57] [cursor=pointer]:
+          - img [ref=e58]
+        - generic [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: A
+          - generic [ref=e63]: Admin
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]: "?"
+        - generic [ref=e67]:
+          - strong [ref=e68]: Контрагенты
+          - text: "— это банки, люди или организации, с которыми вы имеете финансовые отношения: вклады, долги, займы. У каждого контрагента может быть несколько"
+          - strong [ref=e69]: договоров
+          - text: (например, два вклада в одном банке). К договорам можно прикреплять документы.
+        - button [ref=e70] [cursor=pointer]:
+          - img [ref=e71]
+      - generic [ref=e74]:
+        - heading "Контрагенты" [level=1] [ref=e75]
+        - button "Добавить" [ref=e76] [cursor=pointer]:
+          - img [ref=e77]
+          - text: Добавить
+      - table [ref=e80]:
+        - rowgroup [ref=e81]:
+          - row "Название Описание Договоров Баланс" [ref=e82]:
+            - columnheader "Название" [ref=e83]
+            - columnheader "Описание" [ref=e84]
+            - columnheader "Договоров" [ref=e85]
+            - columnheader "Баланс" [ref=e86]
+            - columnheader [ref=e87]
+        - rowgroup [ref=e88]:
+          - row "вава — 1 0,00 ₽ ✎ ✕" [ref=e89]:
+            - cell "вава" [ref=e90]:
+              - strong [ref=e91]: вава
+            - cell "—" [ref=e92]
+            - cell "1" [ref=e93]
+            - cell "0,00 ₽" [ref=e94]
+            - cell "✎ ✕" [ref=e95]:
+              - button "✎" [ref=e96] [cursor=pointer]
+              - button "✕" [ref=e97] [cursor=pointer]
+          - row "вава — 1 0,00 ₽ ✎ ✕" [ref=e98]:
+            - cell "вава" [ref=e99]:
+              - strong [ref=e100]: вава
+            - cell "—" [ref=e101]
+            - cell "1" [ref=e102]
+            - cell "0,00 ₽" [ref=e103]
+            - cell "✎ ✕" [ref=e104]:
+              - button "✎" [ref=e105] [cursor=pointer]
+              - button "✕" [ref=e106] [cursor=pointer]
+  - generic:
+    - generic:
+      - generic:
+        - heading "Добавить контрагента" [level=3]
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Название
+            - 'textbox "Например: ВТБ"'
+          - generic:
+            - generic: Описание
+            - textbox "Необязательно"
+          - button "Сохранить"
+          - button "Отмена"
+  - generic:
+    - generic:
+      - generic:
+        - heading "Добавить договор" [level=3]
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: Название
+            - 'textbox "Например: Вклад 12 мес"'
+          - generic:
+            - generic: Описание
+            - textbox "Необязательно"
+          - button "Сохранить"
+          - button "Отмена"
+  - generic:
+    - generic:
+      - heading "Удалить?" [level=3]
+      - paragraph: Это действие нельзя отменить.
+      - generic:
+        - button "Отмена"
+        - button "Удалить"

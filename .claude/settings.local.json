@@ -56,7 +56,14 @@
       "Bash(taskkill //PID 21704 //F)",
       "Bash(taskkill //PID 4352 //F)",
       "Bash(echo \"exit: $?\")",
-      "Bash(taskkill //IM python.exe //F)"
+      "Bash(taskkill //IM python.exe //F)",
+      "Bash(PYTHONUTF8=1 python:*)",
+      "mcp__playwright__browser_wait_for",
+      "Bash(pkill -f \"python -m http.server 8080\")",
+      "Bash(python -m http.server 8080 --directory frontend)",
+      "Bash(curl -s http://127.0.0.1:8080/dashboard.html)",
+      "Bash(python -c \"import uvicorn; print\\('ok'\\)\")",
+      "mcp__playwright__browser_type"
     ]
   }
 }

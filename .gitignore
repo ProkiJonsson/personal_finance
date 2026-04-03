@@ -13,6 +13,7 @@ dist/
 build/
 mockup/
 
+
 # Backend
 backend/finance.db
 backend/.env

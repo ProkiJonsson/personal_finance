@@ -1,0 +1,5 @@
+[  851531ms] [ERROR] Error loading transactions: TypeError: Failed to fetch
+    at apiFetch (http://127.0.0.1:8080/operations.html:723:23)
+    at loadTransactions (http://127.0.0.1:8080/operations.html:995:30)
+    at selectAccount (http://127.0.0.1:8080/operations.html:895:5)
+    at HTMLDivElement.<anonymous> (http://127.0.0.1:8080/operations.html:823:50) @ http://127.0.0.1:8080/operations.html:1013

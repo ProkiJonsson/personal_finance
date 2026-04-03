@@ -199,3 +199,207 @@ body.sidebar-expanded .main-content {
 .help-tip-content[data-content-key] p {
     margin: 0 0 4px 0;
 }
+
+/* ========== SLIDE PANEL (боковая панель добавления) ========== */
+.slide-panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+.slide-panel-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.slide-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    z-index: 1001;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+}
+.slide-panel-overlay.open .slide-panel {
+    transform: translateX(0);
+}
+
+.slide-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.slide-panel-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.slide-panel-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.slide-panel-close:hover {
+    background: var(--bg-body);
+    color: var(--text-primary);
+}
+.slide-panel-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.slide-panel-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.slide-panel-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Формы внутри slide-panel */
+.slide-panel .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+.slide-panel .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.slide-panel .form-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.slide-panel .form-group input,
+.slide-panel .form-group select,
+.slide-panel .form-group textarea {
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: #fafafa;
+    outline: none;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.slide-panel .form-group input:focus,
+.slide-panel .form-group select:focus,
+.slide-panel .form-group textarea:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+.slide-panel .form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Кнопки в slide-panel (body или footer) */
+.slide-panel .btn-panel,
+.slide-panel-footer .btn-panel {
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-align: center;
+}
+.slide-panel .btn-panel-primary,
+.slide-panel-footer .btn-panel-primary {
+    background: var(--primary);
+    color: #fff;
+}
+.slide-panel .btn-panel-primary:hover,
+.slide-panel-footer .btn-panel-primary:hover {
+    background: var(--primary-dark);
+}
+.slide-panel .btn-panel-secondary,
+.slide-panel-footer .btn-panel-secondary {
+    background: #fff;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+}
+.slide-panel .btn-panel-secondary:hover,
+.slide-panel-footer .btn-panel-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.slide-panel .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.slide-panel .checkbox-row input {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* ── Center variant (for large forms like cascade) ── */
+.slide-panel-overlay.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.slide-panel-overlay.center .slide-panel {
+    position: static;
+    width: 680px;
+    height: auto;
+    max-height: calc(100vh - 48px);
+    margin: auto;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+.slide-panel-overlay.center.open .slide-panel {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .slide-panel { width: 100%; }
+    .slide-panel-overlay.center .slide-panel { width: 95%; }
+}
