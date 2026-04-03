@@ -10,17 +10,19 @@ PRAGMA foreign_keys = ON;
 -- ── Таблицы ──────────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS users (
-    id            INTEGER      NOT NULL,
+    id            VARCHAR(36)  NOT NULL,
     name          VARCHAR(255) NOT NULL,
     email         VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    is_admin      BOOLEAN      NOT NULL DEFAULT 0,
+    is_active     BOOLEAN      NOT NULL DEFAULT 0,
     created_at    DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS counterparties (
     id          INTEGER      NOT NULL,
-    user_id     INTEGER      NOT NULL,
+    user_id     VARCHAR(36)  NOT NULL,
     name        VARCHAR(255) NOT NULL,
     description TEXT,
     created_at  DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -40,7 +42,7 @@ CREATE TABLE IF NOT EXISTS contracts (
 
 CREATE TABLE IF NOT EXISTS funds (
     id          INTEGER      NOT NULL,
-    user_id     INTEGER      NOT NULL,
+    user_id     VARCHAR(36)  NOT NULL,
     name        VARCHAR(255) NOT NULL,
     description TEXT,
     type        VARCHAR(20)  NOT NULL,
@@ -55,7 +57,7 @@ CREATE TABLE IF NOT EXISTS funds (
 
 CREATE TABLE IF NOT EXISTS accounts (
     id         INTEGER      NOT NULL,
-    user_id    INTEGER      NOT NULL,
+    user_id    VARCHAR(36)  NOT NULL,
     name       VARCHAR(255) NOT NULL,
     balance    FLOAT        NOT NULL DEFAULT 0.0,
     created_at DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -65,7 +67,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 CREATE TABLE IF NOT EXISTS categories (
     id         INTEGER      NOT NULL,
-    user_id    INTEGER      NOT NULL,
+    user_id    VARCHAR(36)  NOT NULL,
     name       VARCHAR(255) NOT NULL,
     type       VARCHAR(7),
     level      INTEGER      NOT NULL,
@@ -79,17 +81,17 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
-    id          INTEGER  NOT NULL,
-    user_id     INTEGER  NOT NULL,
-    date        DATETIME NOT NULL,
-    amount      FLOAT    NOT NULL,
-    type        VARCHAR(7) NOT NULL,
+    id          INTEGER      NOT NULL,
+    user_id     VARCHAR(36)  NOT NULL,
+    date        DATETIME     NOT NULL,
+    amount      FLOAT        NOT NULL,
+    type        VARCHAR(7)   NOT NULL,
     fund_id     INTEGER,
     account_id  INTEGER,
     category_id INTEGER,
     comment     TEXT,
-    is_initial  BOOLEAN  NOT NULL DEFAULT 0,
-    created_at  DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    is_initial  BOOLEAN      NOT NULL DEFAULT 0,
+    created_at  DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     PRIMARY KEY (id),
     CONSTRAINT ck_transactions_amount_positive CHECK (amount > 0),
     FOREIGN KEY (user_id)     REFERENCES users (id)       ON DELETE CASCADE,
@@ -99,10 +101,10 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 CREATE TABLE IF NOT EXISTS cascades (
-    id             INTEGER  NOT NULL,
-    user_id        INTEGER  NOT NULL,
-    effective_from DATE     NOT NULL,
-    created_at     DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    id             INTEGER      NOT NULL,
+    user_id        VARCHAR(36)  NOT NULL,
+    effective_from DATE         NOT NULL,
+    created_at     DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -130,33 +132,80 @@ CREATE TABLE IF NOT EXISTS split_rules (
     FOREIGN KEY (target_fund_id) REFERENCES funds (id)    ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS distribution_logs (
+    id                INTEGER      NOT NULL,
+    user_id           VARCHAR(36)  NOT NULL,
+    amount            FLOAT        NOT NULL,
+    is_deposit_income BOOLEAN      NOT NULL DEFAULT 0,
+    month             VARCHAR(7)   NOT NULL,
+    created_at        DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS distribution_log_items (
+    id        INTEGER      NOT NULL,
+    log_id    INTEGER      NOT NULL,
+    fund_id   INTEGER,
+    fund_name VARCHAR(255) NOT NULL,
+    allocated FLOAT        NOT NULL,
+    source    VARCHAR(100) NOT NULL DEFAULT 'cascade',
+    PRIMARY KEY (id),
+    FOREIGN KEY (log_id)  REFERENCES distribution_logs (id) ON DELETE CASCADE,
+    FOREIGN KEY (fund_id) REFERENCES funds (id)             ON DELETE SET NULL
+);
+
 CREATE TABLE IF NOT EXISTS tax_settings (
-    id                  INTEGER  NOT NULL,
-    user_id             INTEGER  NOT NULL,
-    year                INTEGER  NOT NULL,
-    tax_free_threshold  FLOAT    NOT NULL,
-    rate_standard       FLOAT    NOT NULL DEFAULT 0.13,
-    rate_elevated       FLOAT    NOT NULL DEFAULT 0.15,
-    elevated_threshold  FLOAT    NOT NULL DEFAULT 2000000.0,
-    created_at          DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    id                 INTEGER      NOT NULL,
+    user_id            VARCHAR(36)  NOT NULL,
+    year               INTEGER      NOT NULL,
+    tax_free_threshold FLOAT        NOT NULL,
+    created_at         DATETIME     NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     PRIMARY KEY (id),
     UNIQUE (user_id, year),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS tax_brackets (
+    id               INTEGER NOT NULL,
+    tax_setting_id   INTEGER NOT NULL,
+    threshold_amount FLOAT   NOT NULL,
+    rate             FLOAT   NOT NULL,
+    sort_order       INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    CONSTRAINT ck_tax_brackets_rate CHECK (rate >= 0 AND rate <= 1),
+    FOREIGN KEY (tax_setting_id) REFERENCES tax_settings (id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS app_settings (
-    id                       INTEGER NOT NULL,
-    user_id                  INTEGER NOT NULL,
-    fund_accounting_enabled  BOOLEAN NOT NULL DEFAULT 0,
-    max_attachment_size_mb   INTEGER NOT NULL DEFAULT 10,
+    id                       INTEGER      NOT NULL,
+    user_id                  VARCHAR(36)  NOT NULL,
+    fund_accounting_enabled  BOOLEAN      NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (user_id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS admin_settings (
+    id    INTEGER      NOT NULL,
+    key   VARCHAR(100) NOT NULL,
+    value TEXT         NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (key)
+);
+
+CREATE TABLE IF NOT EXISTS page_content (
+    id          INTEGER     NOT NULL,
+    page_key    VARCHAR(50) NOT NULL,
+    element_key VARCHAR(50) NOT NULL,
+    content     TEXT        NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (page_key, element_key)
+);
+
 CREATE TABLE IF NOT EXISTS attachments (
     id          INTEGER      NOT NULL,
-    user_id     INTEGER      NOT NULL,
+    user_id     VARCHAR(36)  NOT NULL,
     entity_type VARCHAR(20)  NOT NULL,
     entity_id   INTEGER      NOT NULL,
     filename    VARCHAR(255) NOT NULL,
@@ -167,6 +216,10 @@ CREATE TABLE IF NOT EXISTS attachments (
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+-- ── Начальные данные ─────────────────────────────────────────
+
+INSERT OR IGNORE INTO admin_settings (id, key, value) VALUES (1, 'max_attachment_size_mb', '10');
 
 -- ── Индексы ───────────────────────────────────────────────────
 
@@ -207,11 +260,26 @@ CREATE INDEX IF NOT EXISTS        ix_cascade_slots_fund_id    ON cascade_slots (
 CREATE INDEX IF NOT EXISTS        ix_split_rules_id          ON split_rules (id);
 CREATE INDEX IF NOT EXISTS        ix_split_rules_cascade_id  ON split_rules (cascade_id);
 
+CREATE INDEX IF NOT EXISTS        ix_distribution_logs_id      ON distribution_logs (id);
+CREATE INDEX IF NOT EXISTS        ix_distribution_logs_user_id ON distribution_logs (user_id);
+
+CREATE INDEX IF NOT EXISTS        ix_distribution_log_items_id     ON distribution_log_items (id);
+CREATE INDEX IF NOT EXISTS        ix_distribution_log_items_log_id ON distribution_log_items (log_id);
+
 CREATE INDEX IF NOT EXISTS        ix_tax_settings_id       ON tax_settings (id);
 CREATE INDEX IF NOT EXISTS        ix_tax_settings_user_id  ON tax_settings (user_id);
 
+CREATE INDEX IF NOT EXISTS        ix_tax_brackets_id             ON tax_brackets (id);
+CREATE INDEX IF NOT EXISTS        ix_tax_brackets_tax_setting_id ON tax_brackets (tax_setting_id);
+
 CREATE INDEX IF NOT EXISTS        ix_app_settings_id       ON app_settings (id);
 CREATE INDEX IF NOT EXISTS        ix_app_settings_user_id  ON app_settings (user_id);
+
+CREATE INDEX IF NOT EXISTS        ix_admin_settings_id     ON admin_settings (id);
+CREATE INDEX IF NOT EXISTS        ix_admin_settings_key    ON admin_settings (key);
+
+CREATE INDEX IF NOT EXISTS        ix_page_content_id       ON page_content (id);
+CREATE INDEX IF NOT EXISTS        ix_page_content_page_key ON page_content (page_key);
 
 CREATE INDEX IF NOT EXISTS        ix_attachments_id          ON attachments (id);
 CREATE INDEX IF NOT EXISTS        ix_attachments_user_id     ON attachments (user_id);

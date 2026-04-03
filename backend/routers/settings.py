@@ -18,14 +18,12 @@ router = APIRouter(prefix="/settings", tags=["settings"])
 
 class AppSettingResponse(BaseModel):
     fund_accounting_enabled: bool
-    max_attachment_size_mb: int
 
     model_config = {"from_attributes": True}
 
 
 class AppSettingUpdate(BaseModel):
     fund_accounting_enabled: Optional[bool] = None
-    max_attachment_size_mb: Optional[int] = None
 
 
 class TaxBracketSchema(BaseModel):

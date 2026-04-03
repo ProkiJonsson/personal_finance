@@ -72,6 +72,7 @@ def user(db) -> models.User:
         name="Тест",
         email="test@example.com",
         password_hash=hash_password("password123"),
+        is_active=True,
     )
     db.add(u)
     db.commit()
@@ -82,7 +83,7 @@ def user(db) -> models.User:
 @pytest.fixture
 def token(user) -> str:
     """JWT-токен тестового пользователя."""
-    return create_access_token(user.id, user.name)
+    return create_access_token(user.id, user.name, is_active=True)
 
 
 @pytest.fixture

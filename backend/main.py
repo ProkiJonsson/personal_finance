@@ -16,6 +16,7 @@ from routers import counterparties as counterparties_router
 from routers import cascades as cascades_router
 from routers import settings as settings_router
 from routers import attachments as attachments_router
+from routers import admin as admin_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -24,6 +25,15 @@ logging.basicConfig(
 logger = logging.getLogger("finance")
 
 Base.metadata.create_all(bind=engine)
+
+# Seed глобальных данных
+from database import SessionLocal
+_seed_db = SessionLocal()
+try:
+    admin_router.seed_admin_settings(_seed_db)
+    admin_router.seed_page_content(_seed_db)
+finally:
+    _seed_db.close()
 
 app = FastAPI(title="Personal Finance API")
 
@@ -59,6 +69,7 @@ app.include_router(counterparties_router.router)
 app.include_router(cascades_router.router)
 app.include_router(settings_router.router)
 app.include_router(attachments_router.router)
+app.include_router(admin_router.router)
 
 
 @app.get("/")

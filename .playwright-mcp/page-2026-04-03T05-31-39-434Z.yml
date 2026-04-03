@@ -1,0 +1,73 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Счета" [ref=e18] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e20]: Счета
+      - generic [ref=e21]:
+        - link "Статьи учёта" [ref=e22] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e24]: Статьи учёта
+        - link "Админ-панель" [ref=e25] [cursor=pointer]:
+          - /url: admin.html
+          - generic [ref=e27]: Админ-панель
+        - link "Настройки" [ref=e28] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e30]: Настройки
+        - button "Выйти" [ref=e31] [cursor=pointer]:
+          - generic [ref=e33]: Выйти
+  - main [ref=e34]:
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - heading "Личные финансы" [level=1] [ref=e37]
+        - navigation [ref=e38]:
+          - link "Главная" [ref=e39] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e40] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e41] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e42]:
+        - button "Поиск" [ref=e43] [cursor=pointer]:
+          - img [ref=e44]
+        - button "Уведомления" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+        - generic [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: A
+          - generic [ref=e53]: Admin
+    - generic [ref=e54]:
+      - heading "Админ-панель" [level=1] [ref=e56]
+      - generic [ref=e57]:
+        - heading "Глобальные настройки" [level=2] [ref=e58]
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: Макс. размер вложений
+            - generic [ref=e62]: Лимит для загружаемых файлов (МБ)
+          - spinbutton [ref=e63]: "10"
+        - generic [ref=e64]:
+          - button "Сохранить" [ref=e65] [cursor=pointer]
+          - generic [ref=e66]: Сохранено
+      - generic [ref=e67]:
+        - heading "Контент страниц" [level=2] [ref=e68]
+        - combobox [ref=e69] [cursor=pointer]:
+          - option "Выберите страницу..." [selected]
+          - option "Главная"
+          - option "Операции"
+          - option "Фонды"
+          - option "Счета"
+          - option "Каскад Фондов"
+          - option "Контрагенты"
+          - option "Статьи учёта"
+          - option "Настройки"

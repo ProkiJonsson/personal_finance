@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личные финансы — Админ-панель</title>
+    <style id="sidebar-init-style">.main-content{opacity:0!important;transition:none!important}.sidebar{transition:none!important}</style>
+    <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <style>
+        .page { padding: 32px; max-width: 900px; }
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 24px; font-weight: 700; }
+
+        .btn-primary { padding: 10px 24px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26, 109, 255, 0.3); }
+        .btn-secondary { padding: 10px 24px; background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; }
+        .btn-secondary:hover { background: var(--bg-body); }
+        .btn-danger { padding: 10px 24px; background: var(--danger); color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; }
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* Confirm modal */
+        .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .confirm-overlay.open { opacity: 1; pointer-events: all; }
+        .confirm-box { background: #fff; border-radius: 20px; width: 100%; max-width: 380px; padding: 32px; text-align: center; }
+        .confirm-box h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+        .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+        .confirm-footer { display: flex; gap: 12px; justify-content: center; }
+
+        .admin-card { background: var(--bg-card-light); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; }
+        .admin-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-label { font-size: 14px; color: var(--text-primary); }
+        .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .setting-input { width: 80px; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; text-align: center; }
+        .setting-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+
+        .page-select { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; background: #fafafa; cursor: pointer; font-family: inherit; }
+        .page-select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+
+        .field-group { margin-top: 20px; }
+        .field-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
+        .field-group input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; background: #fafafa; font-family: inherit; box-sizing: border-box; }
+        .field-group input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+
+        .quill-wrapper { margin-top: 20px; }
+        .quill-wrapper label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
+        .quill-wrapper .ql-container { border-radius: 0 0 12px 12px; min-height: 120px; font-size: 14px; font-family: inherit; }
+        .quill-wrapper .ql-toolbar { border-radius: 12px 12px 0 0; }
+        .quill-wrapper .ql-editor { font-size: 14px; line-height: 1.6; font-family: inherit; }
+        .quill-wrapper .ql-editor p { margin-bottom: 0; }
+        .quill-wrapper .ql-editor a { font-size: inherit; }
+        /* Size picker labels */
+        .ql-snow .ql-picker.ql-size .ql-picker-label::before, .ql-snow .ql-picker.ql-size .ql-picker-item::before { content: '14px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: '14px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18px'; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24px'; }
+        /* Size picker items render at their actual size */
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { font-size: 10px; }
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { font-size: 12px; }
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { font-size: 16px; }
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { font-size: 18px; }
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { font-size: 24px; }
+
+        /* Quill link tooltip — не обрезать и позволить редактировать */
+        .ql-snow .ql-tooltip { z-index: 10; left: 0 !important; }
+        .ql-snow .ql-tooltip.ql-editing { z-index: 10; }
+        .quill-wrapper .ql-container { overflow: visible; }
+        .quill-wrapper { position: relative; overflow: visible; }
+
+        /* Users table */
+        .users-search { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; background: #fafafa; font-family: inherit; box-sizing: border-box; margin-bottom: 16px; }
+        .users-search:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 3px var(--primary-light); }
+        .users-table { width: 100%; border-collapse: collapse; }
+        .users-table th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .users-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+        .users-table tr:last-child td { border-bottom: none; }
+        .users-table .col-actions { text-align: center; width: 120px; }
+        .users-count { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+        .toggle-sm { position: relative; width: 40px; height: 22px; display: inline-block; }
+        .toggle-sm input { opacity: 0; width: 0; height: 0; }
+        .toggle-sm .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: background 0.2s; }
+        .toggle-sm .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+        .toggle-sm input:checked + .toggle-slider { background: var(--primary); }
+        .toggle-sm input:checked + .toggle-slider::before { transform: translateX(18px); }
+        .user-email { font-size: 12px; color: var(--text-muted); }
+
+        #content-fields { display: none; }
+        .save-status { display: inline-block; margin-left: 12px; font-size: 13px; color: var(--primary); opacity: 0; transition: opacity 0.3s; }
+        .save-status.show { opacity: 1; }
+
+        @media (max-width: 768px) { .main-content { margin-left: 0; margin-bottom: 70px; } .page { padding: 16px; } }
+    </style>
+</head>
+<body>
+<main class="main-content">
+    <div class="page">
+        <div class="page-header"><h1>Админ-панель</h1></div>
+
+        <!-- Global Settings -->
+        <div class="admin-card">
+            <h2>Глобальные настройки</h2>
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Макс. размер вложений</div>
+                    <div class="setting-desc">Лимит для загружаемых файлов (МБ)</div>
+                </div>
+                <input type="number" class="setting-input" id="max-size" min="1" max="100" value="10">
+            </div>
+            <div style="margin-top:16px;text-align:right">
+                <button class="btn-primary" id="save-settings">Сохранить</button>
+                <span class="save-status" id="settings-status">Сохранено</span>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div class="admin-card">
+            <h2>Пользователи</h2>
+            <input type="text" class="users-search" id="users-search" placeholder="Поиск по имени или email...">
+            <div class="users-count" id="users-count"></div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Регистрация</th>
+                        <th class="col-actions">Активен</th>
+                        <th class="col-actions">Админ</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Page Content Editor -->
+        <div class="admin-card">
+            <h2>Контент страниц</h2>
+            <select class="page-select" id="page-select">
+                <option value="">Выберите страницу...</option>
+                <option value="dashboard">Главная</option>
+                <option value="operations">Операции</option>
+                <option value="funds">Фонды</option>
+                <option value="accounts">Счета</option>
+                <option value="cascade">Каскад Фондов</option>
+                <option value="counterparties">Контрагенты</option>
+                <option value="categories">Статьи учёта</option>
+                <option value="settings">Настройки</option>
+            </select>
+
+            <div id="content-fields">
+                <div class="field-group">
+                    <label>Заголовок вкладки (title)</label>
+                    <input type="text" id="field-tab_title">
+                </div>
+                <div class="field-group">
+                    <label>Заголовок страницы</label>
+                    <input type="text" id="field-header">
+                </div>
+
+                <!-- Dynamic Quill editors will be added here -->
+                <div id="dynamic-editors"></div>
+
+                <div style="margin-top:20px;text-align:right">
+                    <button class="btn-primary" id="save-content">Сохранить</button>
+                    <span class="save-status" id="content-status">Сохранено</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Confirm Modal -->
+<div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+        <h3 id="confirm-title">Подтверждение</h3>
+        <p id="confirm-message">Вы уверены?</p>
+        <div class="confirm-footer">
+            <button class="btn-secondary" id="confirm-cancel">Отмена</button>
+            <button class="btn-primary" id="confirm-ok">Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+// Регистрируем размеры шрифтов для Quill
+var SizeStyle = Quill.import('attributors/style/size');
+SizeStyle.whitelist = [null, '10px', '12px', '16px', '18px', '24px'];
+Quill.register(SizeStyle, true);
+
+
+const API = 'http://127.0.0.1:8000';
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+if (!token) window.location.href = 'index.html';
+
+// Проверка прав админа
+function parseJwt(t) {
+    try {
+        var b64 = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        b64 += '=='.slice(0, (4 - b64.length % 4) % 4);
+        return JSON.parse(atob(b64));
+    } catch (e) { return {}; }
+}
+var jwtPayload = parseJwt(token);
+if (!jwtPayload.is_admin) {
+    window.location.replace('dashboard.html');
+}
+
+function logout() { localStorage.removeItem('token'); sessionStorage.removeItem('token'); window.location.href = 'index.html'; }
+async function apiFetch(path, opts = {}) {
+    const res = await fetch(API + path, { ...opts, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+    if (res.status === 401) logout();
+    if (res.status === 403) { alert('Требуются права администратора'); throw new Error('Forbidden'); }
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail || 'HTTP ' + res.status); }
+    if (res.status === 204) return null;
+    return res.json();
+}
+
+// ── Реестр полей по страницам ──
+const PAGE_FIELDS = {
+    dashboard:       { label: 'Главная',        editors: [] },
+    operations:      { label: 'Операции',       editors: [] },
+    funds:           { label: 'Фонды',          editors: ['help_tip', 'form_hint_contract'] },
+    accounts:        { label: 'Счета',          editors: ['form_hint_bank'] },
+    cascade:         { label: 'Каскад Фондов',  editors: ['help_tip'] },
+    counterparties:  { label: 'Контрагенты',    editors: ['help_tip'] },
+    categories:      { label: 'Статьи учёта',   editors: ['activity_hint'] },
+    settings:        { label: 'Настройки',      editors: [] },
+};
+
+const EDITOR_LABELS = {
+    help_tip: 'Справочный блок (HTML)',
+    form_hint_contract: 'Подсказка: Договор',
+    form_hint_bank: 'Подсказка: Тип счёта',
+    activity_hint: 'Подсказка: Виды деятельности',
+};
+
+let allPageContent = {};
+let activeQuillEditors = {};
+
+// ── Глобальные настройки ──
+async function loadAdminSettings() {
+    const s = await apiFetch('/admin/settings');
+    document.getElementById('max-size').value = s.max_attachment_size_mb;
+}
+
+document.getElementById('save-settings').addEventListener('click', async () => {
+    try {
+        await apiFetch('/admin/settings', {
+            method: 'PUT',
+            body: JSON.stringify({ max_attachment_size_mb: parseInt(document.getElementById('max-size').value) }),
+        });
+        showStatus('settings-status');
+    } catch (e) { alert('Ошибка: ' + e.message); }
+});
+
+function showStatus(id) {
+    const el = document.getElementById(id);
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ── Пользователи ──
+let usersData = [];
+
+async function loadUsers(search) {
+    var url = '/admin/users';
+    if (search) url += '?search=' + encodeURIComponent(search);
+    usersData = await apiFetch(url);
+    renderUsers();
+}
+
+function renderUsers() {
+    var tbody = document.getElementById('users-tbody');
+    var countEl = document.getElementById('users-count');
+    countEl.textContent = 'Всего: ' + usersData.length;
+    if (!usersData.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Пользователи не найдены</td></tr>';
+        return;
+    }
+    tbody.innerHTML = usersData.map(function (u) {
+        var date = new Date(u.created_at).toLocaleDateString('ru-RU');
+        var adminChecked = u.is_admin ? 'checked' : '';
+        var activeChecked = u.is_active ? 'checked' : '';
+        var isSelf = u.id === jwtPayload.sub ? 'disabled' : '';
+        return '<tr>' +
+            '<td>' + escHtml(u.name) + '</td>' +
+            '<td><span class="user-email">' + escHtml(u.email) + '</span></td>' +
+            '<td>' + date + '</td>' +
+            '<td class="col-actions"><label class="toggle-sm"><input type="checkbox" ' + activeChecked + ' ' + isSelf + ' onchange="toggleActive(\'' + u.id + '\', this.checked, this)"><span class="toggle-slider"></span></label></td>' +
+            '<td class="col-actions"><label class="toggle-sm"><input type="checkbox" ' + adminChecked + ' ' + isSelf + ' onchange="toggleAdmin(\'' + u.id + '\', this.checked, this)"><span class="toggle-slider"></span></label></td>' +
+            '</tr>';
+    }).join('');
+}
+
+function escHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+// ── Модалка подтверждения ──
+var confirmCallback = null;
+var confirmRevertCb = null;
+
+function showConfirm(title, message, onOk, onCancel) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = message;
+    confirmCallback = onOk;
+    confirmRevertCb = onCancel;
+    document.getElementById('confirm-overlay').classList.add('open');
+}
+
+document.getElementById('confirm-ok').addEventListener('click', function () {
+    document.getElementById('confirm-overlay').classList.remove('open');
+    if (confirmCallback) confirmCallback();
+    confirmCallback = null;
+    confirmRevertCb = null;
+});
+
+document.getElementById('confirm-cancel').addEventListener('click', function () {
+    document.getElementById('confirm-overlay').classList.remove('open');
+    if (confirmRevertCb) confirmRevertCb();
+    confirmCallback = null;
+    confirmRevertCb = null;
+});
+
+function toggleActive(userId, isActive, checkbox) {
+    var actionText = isActive ? 'активировать' : 'деактивировать';
+    var user = usersData.find(function (u) { return u.id === userId; });
+    var userName = user ? user.name : '';
+    showConfirm(
+        (isActive ? 'Активировать' : 'Деактивировать') + ' пользователя?',
+        (isActive ? 'Активировать' : 'Деактивировать') + ' пользователя ' + userName + '?',
+        async function () {
+            try {
+                await apiFetch('/admin/users/' + userId, {
+                    method: 'PUT',
+                    body: JSON.stringify({ is_active: isActive }),
+                });
+                loadUsers(document.getElementById('users-search').value);
+            } catch (e) {
+                alert('Ошибка: ' + e.message);
+                loadUsers(document.getElementById('users-search').value);
+            }
+        },
+        function () { checkbox.checked = !isActive; }
+    );
+}
+
+function toggleAdmin(userId, isAdmin, checkbox) {
+    var actionText = isAdmin ? 'назначить админом' : 'снять права админа у';
+    var user = usersData.find(function (u) { return u.id === userId; });
+    var userName = user ? user.name : '';
+    showConfirm(
+        isAdmin ? 'Назначить админом?' : 'Снять права админа?',
+        (isAdmin ? 'Назначить админом' : 'Снять права админа у') + ' пользователя ' + userName + '?',
+        async function () {
+            try {
+                await apiFetch('/admin/users/' + userId, {
+                    method: 'PUT',
+                    body: JSON.stringify({ is_admin: isAdmin }),
+                });
+                loadUsers(document.getElementById('users-search').value);
+            } catch (e) {
+                alert('Ошибка: ' + e.message);
+                loadUsers(document.getElementById('users-search').value);
+            }
+        },
+        function () { checkbox.checked = !isAdmin; }
+    );
+}
+
+var searchTimeout;
+document.getElementById('users-search').addEventListener('input', function () {
+    clearTimeout(searchTimeout);
+    var val = this.value.trim();
+    searchTimeout = setTimeout(function () { loadUsers(val); }, 300);
+});
+
+// ── Контент страниц ──
+async function loadPageContent() {
+    allPageContent = await fetch(API + '/admin/page-content').then(r => r.json());
+}
+
+function createQuillEditor(containerId, initialHtml) {
+    var quill = new Quill('#' + containerId, {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ color: [] }, { background: [] }],
+                    ['link', 'image'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ size: ['10px', '12px', '14px', '16px', '18px', '24px'] }],
+                    [{ header: [1, 2, 3, false] }],
+                    ['clean'],
+                ],
+                handlers: {
+                    image: function () { imageUploadHandler(quill); }
+                }
+            }
+        }
+    });
+
+    // Quill при выборе чёрного цвета удаляет атрибут color (считает дефолтом).
+    // Перехватываем клик по палитре: если выбран чёрный — явно ставим #000000.
+    var colorBtn = quill.container.parentNode.querySelector('.ql-color .ql-picker-options');
+    if (colorBtn) {
+        colorBtn.addEventListener('click', function () {
+            setTimeout(function () {
+                var sel = quill.getSelection();
+                if (sel && sel.length > 0) {
+                    var fmt = quill.getFormat(sel);
+                    if (!fmt.color) {
+                        quill.formatText(sel.index, sel.length, 'color', '#000000');
+                    }
+                }
+            }, 10);
+        });
+    }
+
+    if (initialHtml) {
+        quill.root.innerHTML = initialHtml;
+    }
+    return quill;
+}
+
+function imageUploadHandler(quill) {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/jpeg,image/png,image/gif,image/webp');
+    input.click();
+    input.onchange = async function () {
+        var file = input.files[0];
+        if (!file) return;
+        var formData = new FormData();
+        formData.append('file', file);
+        try {
+            var res = await fetch(API + '/admin/upload-image', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData,
+            });
+            if (!res.ok) {
+                var err = await res.json().catch(() => ({}));
+                alert('Ошибка загрузки: ' + (err.detail || res.status));
+                return;
+            }
+            var data = await res.json();
+            var range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', API + data.url);
+            quill.setSelection(range.index + 1);
+        } catch (e) {
+            alert('Ошибка загрузки картинки: ' + e.message);
+        }
+    };
+}
+
+document.getElementById('page-select').addEventListener('change', function () {
+    var pageKey = this.value;
+    var fieldsDiv = document.getElementById('content-fields');
+    var dynamicDiv = document.getElementById('dynamic-editors');
+
+    if (!pageKey) {
+        fieldsDiv.style.display = 'none';
+        return;
+    }
+
+    fieldsDiv.style.display = 'block';
+    var pageData = allPageContent[pageKey] || {};
+
+    // Заполняем простые поля
+    document.getElementById('field-tab_title').value = pageData.tab_title || '';
+    document.getElementById('field-header').value = pageData.header || '';
+
+    // Очищаем и пересоздаём Quill-редакторы
+    dynamicDiv.innerHTML = '';
+    activeQuillEditors = {};
+
+    var editorKeys = (PAGE_FIELDS[pageKey] || {}).editors || [];
+    editorKeys.forEach(function (key) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'quill-wrapper';
+
+        var label = document.createElement('label');
+        label.textContent = EDITOR_LABELS[key] || key;
+        wrapper.appendChild(label);
+
+        var editorDiv = document.createElement('div');
+        editorDiv.id = 'editor-' + key;
+        wrapper.appendChild(editorDiv);
+
+        dynamicDiv.appendChild(wrapper);
+
+        activeQuillEditors[key] = createQuillEditor('editor-' + key, pageData[key] || '');
+    });
+});
+
+document.getElementById('save-content').addEventListener('click', async () => {
+    var pageKey = document.getElementById('page-select').value;
+    if (!pageKey) return;
+
+    var items = [
+        { element_key: 'tab_title', content: document.getElementById('field-tab_title').value },
+        { element_key: 'header', content: document.getElementById('field-header').value },
+    ];
+
+    // Собираем данные из Quill-редакторов
+    Object.keys(activeQuillEditors).forEach(function (key) {
+        items.push({
+            element_key: key,
+            content: activeQuillEditors[key].root.innerHTML,
+        });
+    });
+
+    try {
+        await apiFetch('/admin/page-content', {
+            method: 'PUT',
+            body: JSON.stringify({ page_key: pageKey, items: items }),
+        });
+        // Обновляем локальный кеш
+        allPageContent[pageKey] = allPageContent[pageKey] || {};
+        items.forEach(function (item) {
+            allPageContent[pageKey][item.element_key] = item.content;
+        });
+        // Сбрасываем sessionStorage чтобы другие страницы подхватили изменения
+        sessionStorage.removeItem('pageContent');
+        showStatus('content-status');
+    } catch (e) { alert('Ошибка: ' + e.message); }
+});
+
+// ── Init ──
+loadAdminSettings();
+loadUsers();
+loadPageContent();
+</script>
+</body>
+</html>

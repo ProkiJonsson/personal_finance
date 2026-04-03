@@ -96,16 +96,6 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div class="setting-row">
-                <div>
-                    <div class="setting-label">Макс. размер вложений</div>
-                    <div class="setting-desc">Лимит для загружаемых файлов (МБ)</div>
-                </div>
-                <input type="number" class="setting-input" id="max-size" min="1" max="100" value="10">
-            </div>
-            <div style="margin-top:16px;text-align:right">
-                <button class="btn btn-primary btn-sm" id="save-general">Сохранить</button>
-            </div>
         </div>
 
         <!-- Categories Settings -->
@@ -208,7 +198,6 @@ function fmt(a) { return new Intl.NumberFormat('ru-RU',{style:'currency',currenc
 async function loadSettings() {
     const s = await apiFetch('/settings');
     document.getElementById('fund-toggle').checked = s.fund_accounting_enabled;
-    document.getElementById('max-size').value = s.max_attachment_size_mb;
 }
 
 // Автосохранение toggle "Учёт по фондам" при переключении
@@ -223,22 +212,6 @@ document.getElementById('fund-toggle').addEventListener('change', async () => {
         document.querySelectorAll('[data-fund-feature]').forEach(el => {
             el.style.display = enabled ? '' : 'none';
         });
-    } catch (e) { alert('Ошибка: ' + e.message); }
-});
-
-// Сохранение остальных настроек по кнопке
-document.getElementById('save-general').addEventListener('click', async () => {
-    try {
-        await apiFetch('/settings', {
-            method: 'PUT',
-            body: JSON.stringify({
-                fund_accounting_enabled: document.getElementById('fund-toggle').checked,
-                max_attachment_size_mb: parseInt(document.getElementById('max-size').value),
-            }),
-        });
-        const btn = document.getElementById('save-general');
-        btn.textContent = 'Сохранено ✓';
-        setTimeout(() => { btn.textContent = 'Сохранить'; }, 2000);
     } catch (e) { alert('Ошибка: ' + e.message); }
 });
 

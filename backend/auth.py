@@ -46,14 +46,15 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # JWT токены
 # ──────────────────────────────────────────────
 
-def create_access_token(user_id: str, name: str = "", expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(user_id: str, name: str = "", is_admin: bool = False, is_active: bool = False, expires_delta: Optional[timedelta] = None) -> str:
     """
     Создаёт подписанный JWT access-токен.
 
     Payload содержит:
-      sub  — идентификатор пользователя (строка, стандартное поле JWT)
-      name — отображаемое имя пользователя
-      exp  — время истечения токена
+      sub      — идентификатор пользователя (строка, стандартное поле JWT)
+      name     — отображаемое имя пользователя
+      is_admin — флаг администратора
+      exp      — время истечения токена
     """
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -61,6 +62,8 @@ def create_access_token(user_id: str, name: str = "", expires_delta: Optional[ti
     payload = {
         "sub": str(user_id),
         "name": name,
+        "is_admin": is_admin,
+        "is_active": is_active,
         "exp": expire,
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -112,4 +115,41 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Аккаунт ожидает активации администратором",
+        )
+
     return user
+
+
+def get_current_user_any(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+) -> models.User:
+    """Как get_current_user, но без проверки is_active. Для /auth/me."""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Не удалось подтвердить учётные данные",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    user_id = _decode_token(token)
+    if user_id is None:
+        raise credentials_exception
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+def get_admin_user(
+    current_user: models.User = Depends(get_current_user),
+) -> models.User:
+    """Dependency для админских роутеров. Возвращает 403 если пользователь не админ."""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Требуются права администратора",
+        )
+    return current_user

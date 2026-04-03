@@ -200,7 +200,7 @@
         <!-- Help tip -->
         <div class="help-tip" id="help-tip">
             <div class="help-tip-icon">?</div>
-            <div class="help-tip-content">
+            <div class="help-tip-content" data-content-key="help_tip">
                 <strong>Что такое фонд?</strong> Фонд — это виртуальный кошелёк. Каждый рубль дохода попадает в конкретный фонд и тратится только на его цели. Настройте <a href="cascade.html">Каскад Фондов</a> чтобы автоматически распределять доход.<br><br><strong>Предопределённые типы:</strong> <strong>Бюджетные</strong> — для текущих расходов с каскадным наполнением. <strong>Инвестиционные</strong> — накопления. <strong>Налоговые резервы</strong> — откладывание на налоги. <strong>Долги</strong> — учёт кому я должен. <strong>Займы</strong> — кто должен мне. <strong>Размещения</strong> — где физически лежат инвестиции (вклады, брокер).
             </div>
             <button class="help-tip-close" onclick="hideHelpTip()">
@@ -277,7 +277,7 @@
                 <div class="form-group hidden" id="contract-group">
                     <label>Договор контрагента</label>
                     <select id="fund-contract"><option value="">— Без привязки —</option></select>
-                    <span class="form-hint">Привяжите к контрагенту через договор</span>
+                    <span class="form-hint" data-content-key="form_hint_contract">Привяжите к контрагенту через договор</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
                     <input type="checkbox" id="create-another" style="width:18px;height:18px;accent-color:var(--primary)">

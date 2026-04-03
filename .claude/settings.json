@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ':*)",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"r@r.ru\",\"password\":\"123456\"}')",
+      "Bash(curl -s http://127.0.0.1:8000/admin/page-content)",
+      "Bash(python -m http.server 3000)",
+      "Bash(echo \"PID: $!\" sleep 1 curl -s http://127.0.0.1:3000/index.html)",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_evaluate",
+      "WebFetch(domain:www.figma.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebSearch",
+      "WebFetch(domain:developers.figma.com)",
+      "Bash(python -m pytest tests/test_admin.py -v)",
+      "Bash(curl -s http://127.0.0.1:3000/index.html)"
+    ]
+  }
+}

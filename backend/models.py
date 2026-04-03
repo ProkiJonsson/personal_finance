@@ -53,6 +53,8 @@ class User(Base):
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True, index=True)
     password_hash = Column(String(255), nullable=False)
+    is_admin = Column(Boolean, nullable=False, default=False)
+    is_active = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     # Связи
@@ -340,15 +342,37 @@ class TaxBracket(Base):
 # ──── Настройки приложения ───────────────────
 
 class AppSetting(Base):
-    """Настройки пользователя (учёт по фондам, лимит вложений)."""
+    """Настройки пользователя (учёт по фондам)."""
     __tablename__ = "app_settings"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     fund_accounting_enabled = Column(Boolean, nullable=False, default=False)
-    max_attachment_size_mb = Column(Integer, nullable=False, default=10)
 
     user = relationship("User", back_populates="app_setting")
+
+
+class AdminSetting(Base):
+    """Глобальные настройки приложения (key-value)."""
+    __tablename__ = "admin_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), nullable=False, unique=True, index=True)
+    value = Column(Text, nullable=False)
+
+
+class PageContent(Base):
+    """Редактируемый контент страниц (заголовки, подсказки)."""
+    __tablename__ = "page_content"
+
+    id = Column(Integer, primary_key=True, index=True)
+    page_key = Column(String(50), nullable=False, index=True)
+    element_key = Column(String(50), nullable=False)
+    content = Column(Text, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("page_key", "element_key", name="uq_page_content"),
+    )
 
 
 # ──── Вложения (файлы) ──────────────────────

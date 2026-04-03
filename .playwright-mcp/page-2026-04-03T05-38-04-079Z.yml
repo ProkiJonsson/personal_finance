@@ -1,0 +1,193 @@
+- generic [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img "МОЯ ПРИБЫЛЬ" [ref=e7]
+          - img "МОЯ ПРИБЫЛЬ" [ref=e8]
+        - button "Развернуть/свернуть" [ref=e10] [cursor=pointer]
+        - navigation [ref=e11]:
+          - link "Главная" [ref=e12] [cursor=pointer]:
+            - /url: dashboard.html
+            - generic [ref=e14]: Главная
+          - link "Операции" [ref=e15] [cursor=pointer]:
+            - /url: operations.html
+            - generic [ref=e17]: Операции
+          - link "Счета" [ref=e18] [cursor=pointer]:
+            - /url: accounts.html
+            - generic [ref=e20]: Счета
+      - generic [ref=e21]:
+        - link "Статьи учёта" [ref=e22] [cursor=pointer]:
+          - /url: categories.html
+          - generic [ref=e24]: Статьи учёта
+        - link "Админ-панель" [ref=e25] [cursor=pointer]:
+          - /url: admin.html
+          - generic [ref=e27]: Админ-панель
+        - link "Настройки" [ref=e28] [cursor=pointer]:
+          - /url: settings.html
+          - generic [ref=e30]: Настройки
+        - button "Выйти" [ref=e31] [cursor=pointer]:
+          - generic [ref=e33]: Выйти
+  - main [ref=e34]:
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - heading "Личные финансы" [level=1] [ref=e37]
+        - navigation [ref=e38]:
+          - link "Главная" [ref=e39] [cursor=pointer]:
+            - /url: dashboard.html
+          - link "Операции" [ref=e40] [cursor=pointer]:
+            - /url: operations.html
+          - link "Счета" [ref=e41] [cursor=pointer]:
+            - /url: accounts.html
+      - generic [ref=e42]:
+        - button "Поиск" [ref=e43] [cursor=pointer]:
+          - img [ref=e44]
+        - button "Уведомления" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+        - generic [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: A
+          - generic [ref=e53]: Admin
+    - generic [ref=e54]:
+      - heading "Админ-панель" [level=1] [ref=e56]
+      - generic [ref=e57]:
+        - heading "Глобальные настройки" [level=2] [ref=e58]
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: Макс. размер вложений
+            - generic [ref=e62]: Лимит для загружаемых файлов (МБ)
+          - spinbutton [ref=e63]: "10"
+        - generic [ref=e64]:
+          - button "Сохранить" [ref=e65] [cursor=pointer]
+          - generic [ref=e66]: Сохранено
+      - generic [ref=e67]:
+        - heading "Контент страниц" [level=2] [ref=e68]
+        - combobox [ref=e69] [cursor=pointer]:
+          - option "Выберите страницу..."
+          - option "Главная"
+          - option "Операции"
+          - option "Фонды" [selected]
+          - option "Счета"
+          - option "Каскад Фондов"
+          - option "Контрагенты"
+          - option "Статьи учёта"
+          - option "Настройки"
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - generic [ref=e72]: Заголовок вкладки (title)
+            - textbox [ref=e73]: Личные финансы — Фонды
+          - generic [ref=e74]:
+            - generic [ref=e75]: Заголовок страницы
+            - textbox [ref=e76]: Фонды
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e79]: Справочный блок (HTML)
+              - generic [ref=e80]:
+                - generic [ref=e81]:
+                  - button [ref=e82] [cursor=pointer]:
+                    - img [ref=e83]
+                  - button [ref=e86] [cursor=pointer]:
+                    - img [ref=e87]
+                  - button [ref=e89] [cursor=pointer]:
+                    - img [ref=e90]
+                  - button [ref=e93] [cursor=pointer]:
+                    - img [ref=e94]
+                - generic [ref=e98]:
+                  - button [ref=e99] [cursor=pointer]:
+                    - img [ref=e100]
+                  - button [ref=e104] [cursor=pointer]:
+                    - img [ref=e105]
+                - generic [ref=e109]:
+                  - button [ref=e110] [cursor=pointer]:
+                    - img [ref=e111]
+                  - button [ref=e115] [cursor=pointer]:
+                    - img [ref=e116]
+                - generic [ref=e118]:
+                  - button "10px" [ref=e119] [cursor=pointer]:
+                    - text: 10px
+                    - img [ref=e120]
+                  - text: 10px 12px 14px 16px 18px 24px
+                - generic [ref=e124]:
+                  - button "Normal" [ref=e125] [cursor=pointer]:
+                    - text: Normal
+                    - img [ref=e126]
+                  - text: Heading 1 Heading 2 Heading 3 Normal
+                - button [ref=e130] [cursor=pointer]:
+                  - img [ref=e131]
+              - generic [ref=e136]:
+                - generic [active] [ref=e137]:
+                  - paragraph [ref=e138]:
+                    - strong [ref=e139]: Что такое фонд?
+                  - paragraph [ref=e140]: Фонд — это виртуальный кошелёк. Каждый рубль дохода попадает в конкретный фонд и тратится только на его цели. Настройте
+                  - paragraph [ref=e141]:
+                    - link "Каскад Фондов" [ref=e142]:
+                      - /url: cascade.html
+                  - paragraph [ref=e143]: чтобы автоматически распределять доход.
+                  - paragraph [ref=e144]
+                  - paragraph [ref=e145]
+                  - paragraph [ref=e146]:
+                    - strong [ref=e147]: "Предопределённые типы:"
+                  - paragraph [ref=e148]
+                  - paragraph [ref=e149]:
+                    - strong [ref=e150]: Бюджетные
+                  - paragraph [ref=e151]: — для текущих расходов с каскадным наполнением.
+                  - paragraph [ref=e152]:
+                    - strong [ref=e153]: Инвестиционные
+                  - paragraph [ref=e154]: — накопления.
+                  - paragraph [ref=e155]:
+                    - strong [ref=e156]: Налоговые резервы
+                  - paragraph [ref=e157]: — откладывание на налоги.
+                  - paragraph [ref=e158]:
+                    - strong [ref=e159]: Долги
+                  - paragraph [ref=e160]: — учёт кому я должен.
+                  - paragraph [ref=e161]:
+                    - strong [ref=e162]: Займы
+                  - paragraph [ref=e163]: — кто должен мне.
+                  - paragraph [ref=e164]:
+                    - strong [ref=e165]: Размещения
+                  - paragraph [ref=e166]: — где физически лежат инвестиции (вклады, брокер).
+                - generic [ref=e231]:
+                  - text: "Visit URL:"
+                  - link "cascade.html" [ref=e232] [cursor=pointer]:
+                    - /url: cascade.html
+                  - generic [ref=e233] [cursor=pointer]: Edit
+                  - generic [ref=e234] [cursor=pointer]: Remove
+            - generic [ref=e167]:
+              - generic [ref=e168]: "Подсказка: Договор"
+              - generic [ref=e169]:
+                - generic [ref=e170]:
+                  - button [ref=e171] [cursor=pointer]:
+                    - img [ref=e172]
+                  - button [ref=e175] [cursor=pointer]:
+                    - img [ref=e176]
+                  - button [ref=e178] [cursor=pointer]:
+                    - img [ref=e179]
+                  - button [ref=e182] [cursor=pointer]:
+                    - img [ref=e183]
+                - generic [ref=e187]:
+                  - button [ref=e188] [cursor=pointer]:
+                    - img [ref=e189]
+                  - button [ref=e193] [cursor=pointer]:
+                    - img [ref=e194]
+                - generic [ref=e198]:
+                  - button [ref=e199] [cursor=pointer]:
+                    - img [ref=e200]
+                  - button [ref=e204] [cursor=pointer]:
+                    - img [ref=e205]
+                - generic [ref=e207]:
+                  - button "10px" [ref=e208] [cursor=pointer]:
+                    - text: 10px
+                    - img [ref=e209]
+                  - text: 10px 12px 14px 16px 18px 24px
+                - generic [ref=e213]:
+                  - button "Normal" [ref=e214] [cursor=pointer]:
+                    - text: Normal
+                    - img [ref=e215]
+                  - text: Heading 1 Heading 2 Heading 3 Normal
+                - button [ref=e219] [cursor=pointer]:
+                  - img [ref=e220]
+              - generic [ref=e225]:
+                - paragraph [ref=e227]: Привяжите к контрагенту через договор
+                - text: "Visit URL: EditRemove"
+          - generic [ref=e228]:
+            - button "Сохранить" [ref=e229] [cursor=pointer]
+            - generic [ref=e230]: Сохранено

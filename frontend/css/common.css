@@ -169,3 +169,33 @@ body.sidebar-expanded .main-content {
     font-weight: 600;
     color: var(--text-primary);
 }
+
+/* ========== QUILL CONTENT ON LIVE PAGES ========== */
+/* Базовые стили для динамического контента */
+[data-content-key] {
+    font-size: 14px;
+    line-height: 1.6;
+}
+[data-content-key] a {
+    color: var(--primary);
+}
+/* Подсказки по умолчанию серые, но админ может переопределить через color picker */
+.form-hint[data-content-key],
+#info-activity-hint {
+    color: var(--text-secondary);
+}
+.help-tip-content[data-content-key] {
+    color: var(--text-secondary);
+}
+
+/* Короткие подсказки: <p> от Quill должны быть inline */
+.form-hint[data-content-key] p,
+#info-activity-hint p {
+    display: inline;
+    margin: 0;
+}
+
+/* Help-tip блоки: блочные, но без лишних отступов */
+.help-tip-content[data-content-key] p {
+    margin: 0 0 4px 0;
+}

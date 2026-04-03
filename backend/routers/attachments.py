@@ -39,9 +39,9 @@ class AttachmentResponse(BaseModel):
 # Helpers
 # ──────────────────────────────────────────────
 
-def _get_max_size(user_id: str, db: Session) -> int:
-    setting = db.query(models.AppSetting).filter(models.AppSetting.user_id == user_id).first()
-    max_mb = setting.max_attachment_size_mb if setting else 10
+def _get_max_size(db: Session) -> int:
+    setting = db.query(models.AdminSetting).filter(models.AdminSetting.key == "max_attachment_size_mb").first()
+    max_mb = int(setting.value) if setting else 10
     return max_mb * 1024 * 1024
 
 
@@ -61,7 +61,7 @@ async def upload_attachment(
     if file.content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(status_code=400, detail="Допустимые форматы: PDF, JPEG, PNG")
 
-    max_size = _get_max_size(current_user.id, db)
+    max_size = _get_max_size(db)
     contents = await file.read()
     if len(contents) > max_size:
         raise HTTPException(status_code=400, detail=f"Файл превышает лимит {max_size // (1024*1024)} МБ")

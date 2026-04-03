@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
 
 from database import get_db
-from auth import hash_password, verify_password, create_access_token
+from auth import hash_password, verify_password, create_access_token, get_current_user_any
 import models
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -65,7 +65,6 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
     Создаёт нового пользователя и возвращает JWT-токен.
     Возвращает 409 если пользователь с таким email уже существует.
     """
-    # Проверка уникальности email
     existing = db.query(models.User).filter(models.User.email == data.email).first()
     if existing:
         raise HTTPException(
@@ -82,7 +81,7 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
     db.commit()
     db.refresh(user)
 
-    token = create_access_token(user_id=user.id, name=user.name)
+    token = create_access_token(user_id=user.id, name=user.name, is_admin=user.is_admin, is_active=user.is_active)
 
     return TokenResponse(
         access_token=token,
@@ -104,8 +103,6 @@ def login(data: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     """
     user = db.query(models.User).filter(models.User.email == data.email).first()
 
-    # Проверяем пользователя и пароль единым условием,
-    # чтобы не раскрывать информацию о существовании email
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -113,11 +110,32 @@ def login(data: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    token = create_access_token(user_id=user.id, name=user.name)
+    token = create_access_token(user_id=user.id, name=user.name, is_admin=user.is_admin, is_active=user.is_active)
 
     return TokenResponse(
         access_token=token,
         user_id=user.id,
         name=user.name,
         email=user.email,
+    )
+
+
+@router.get(
+    "/me",
+    response_model=TokenResponse,
+    summary="Обновить токен по текущей сессии",
+)
+def me(current_user: models.User = Depends(get_current_user_any)) -> TokenResponse:
+    """Возвращает свежий токен с актуальными is_admin/is_active из БД."""
+    token = create_access_token(
+        user_id=current_user.id,
+        name=current_user.name,
+        is_admin=current_user.is_admin,
+        is_active=current_user.is_active,
+    )
+    return TokenResponse(
+        access_token=token,
+        user_id=current_user.id,
+        name=current_user.name,
+        email=current_user.email,
     )

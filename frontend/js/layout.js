@@ -41,6 +41,7 @@
         'counterparties.html':  { nav: 'counterparties' },
         'categories.html':      { nav: 'categories' },
         'settings.html':        { nav: 'settings' },
+        'admin.html':           { nav: 'admin' },
         '':                     { nav: 'dashboard' },
     };
 
@@ -101,6 +102,11 @@
         '        <div class="nav-item-icon"><img src="assets/icons/categories.svg" alt=""></div>',
         '        <span class="nav-item-text">Статьи учёта</span>',
         '        <span class="nav-tooltip">Статьи учёта</span>',
+        '      </a>',
+        '      <a href="admin.html" class="nav-item" data-nav="admin" id="admin-nav-item" style="display:none">',
+        '        <div class="nav-item-icon"><img src="assets/icons/settings.svg" alt=""></div>',
+        '        <span class="nav-item-text">Админ-панель</span>',
+        '        <span class="nav-tooltip">Админ-панель</span>',
         '      </a>',
         '      <a href="settings.html" class="nav-item" data-nav="settings">',
         '        <div class="nav-item-icon"><img src="assets/icons/settings.svg" alt=""></div>',
@@ -209,6 +215,83 @@
         if (avatarEl) { avatarEl.textContent = name.charAt(0).toUpperCase(); }
     }
 
+    // ── 9a. Блокировка неактивных пользователей ─────────────────────────────
+    if (payload.is_active === false) {
+        var mc = document.querySelector('.main-content');
+        if (mc) {
+            var logoBlock = '<div style="display:inline-flex;align-items:center;gap:12px;margin-bottom:32px">' +
+                '<div style="width:40px;height:40px;flex-shrink:0"><img src="assets/icons/logo.svg" alt="" style="width:100%;height:100%"></div>' +
+                '<img src="assets/icons/logo-text.svg" alt="МОЯ ПРИБЫЛЬ" style="width:84px;height:33px;flex-shrink:0">' +
+                '</div>';
+            var btnStyle = 'width:100%;max-width:320px;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.01em';
+            mc.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:80vh;padding:32px">' +
+                '<div style="text-align:center;max-width:400px" id="activation-block">' +
+                logoBlock +
+                '<h2 style="font-size:20px;font-weight:700;margin-bottom:12px">Ожидание активации</h2>' +
+                '<p style="color:var(--text-secondary);font-size:14px;line-height:1.6">Ваш аккаунт ещё не активирован администратором. Пожалуйста, дождитесь подтверждения.</p>' +
+                '</div></div>';
+
+            // Периодическая проверка активации (каждые 5 сек)
+            var checkInterval = setInterval(function () {
+                var apiBase = 'http://127.0.0.1:8000';
+                fetch(apiBase + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: '', password: '' }),
+                }).catch(function () {});
+                // Проще: попробуем запросить /settings — если 200, значит активирован
+                fetch(apiBase + '/settings', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                }).then(function (res) {
+                    if (res.ok) {
+                        clearInterval(checkInterval);
+                        var block = document.getElementById('activation-block');
+                        if (block) {
+                            block.innerHTML = logoBlock +
+                                '<h2 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--success)">Аккаунт активирован!</h2>' +
+                                '<p style="color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:24px">Поздравляем! Администратор активировал ваш аккаунт. Войдите заново, чтобы начать работу.</p>' +
+                                '<button onclick="localStorage.removeItem(\'token\');sessionStorage.removeItem(\'token\');window.location.href=\'index.html\'" style="' + btnStyle + '">Войти в приложение</button>';
+                        }
+                    }
+                }).catch(function () {});
+            }, 5000);
+            mc.style.opacity = '1';
+        }
+        // Скрыть sidebar
+        var sidebarEl = document.getElementById('sidebar');
+        if (sidebarEl) { sidebarEl.style.display = 'none'; }
+        if (mc) { mc.style.marginLeft = '0'; }
+        // Убрать init-style чтобы контент стал видимым
+        var initSt = document.getElementById('sidebar-init-style');
+        if (initSt) { initSt.remove(); }
+        return;
+    }
+
+    // ── 9b. Показать админ-пункт если is_admin ──────────────────────────────
+    if (payload.is_admin) {
+        var adminNavItem = document.getElementById('admin-nav-item');
+        if (adminNavItem) { adminNavItem.style.display = ''; }
+    }
+
+    // ── 9c. Фоновое обновление токена (актуализация is_admin/is_active) ─────
+    var apiBase = 'http://127.0.0.1:8000';
+    fetch(apiBase + '/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    }).then(function (res) {
+        if (res.ok) return res.json();
+        return null;
+    }).then(function (data) {
+        if (!data) return;
+        var storage = localStorage.getItem('token') ? localStorage : sessionStorage;
+        storage.setItem('token', data.access_token);
+        var newPayload = parseJwtPayload(data.access_token);
+        // Обновить видимость админ-пункта
+        var adminNav = document.getElementById('admin-nav-item');
+        if (adminNav) {
+            adminNav.style.display = newPayload.is_admin ? '' : 'none';
+        }
+    }).catch(function () {});
+
     // ── 10. Logout ────────────────────────────────────────────────────────────
     window.handleLogout = function () {
         localStorage.removeItem('token');
@@ -293,7 +376,67 @@
         });
     });
 
-    // ── 13. Money input formatting (1 600 000,00) ─────────────────────────────
+    // ── 13. Динамический контент страниц ────────────────────────────────────
+    var PAGE_KEY_MAP = {
+        'dashboard.html': 'dashboard',
+        'operations.html': 'operations',
+        'funds.html': 'funds',
+        'accounts.html': 'accounts',
+        'cascade.html': 'cascade',
+        'counterparties.html': 'counterparties',
+        'categories.html': 'categories',
+        'settings.html': 'settings',
+        'admin.html': 'admin',
+    };
+
+    function applyPageContent(pageKey, allData) {
+        var data = allData[pageKey];
+        if (!data) return;
+        if (data.tab_title) { document.title = data.tab_title; }
+        if (data.header) {
+            var h1 = document.querySelector('.page-header h1, .page-header-row h1');
+            if (h1) { h1.textContent = data.header; }
+            // Обновляем текст в sidebar
+            var navItem = document.querySelector('[data-nav="' + pageKey + '"] .nav-item-text');
+            if (navItem) { navItem.textContent = data.header; }
+            var navTooltip = document.querySelector('[data-nav="' + pageKey + '"] .nav-tooltip');
+            if (navTooltip) { navTooltip.textContent = data.header; }
+        }
+        // data-content-key элементы
+        document.querySelectorAll('[data-content-key]').forEach(function (el) {
+            var key = el.getAttribute('data-content-key');
+            if (data[key] != null) { el.innerHTML = data[key]; }
+        });
+    }
+
+    window.loadPageContent = function (pageKeyOverride) {
+        var pageKey = pageKeyOverride || PAGE_KEY_MAP[currentPage];
+        if (!pageKey) return;
+
+        var cached = sessionStorage.getItem('pageContent');
+        if (cached) {
+            try { applyPageContent(pageKey, JSON.parse(cached)); } catch (e) {}
+        }
+
+        var apiBase = 'http://127.0.0.1:8000';
+        fetch(apiBase + '/admin/page-content')
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (data) {
+                if (data) {
+                    sessionStorage.setItem('pageContent', JSON.stringify(data));
+                    applyPageContent(pageKey, data);
+                }
+            })
+            .catch(function () {});
+    };
+
+    // Автозагрузка контента для текущей страницы
+    var autoPageKey = PAGE_KEY_MAP[currentPage];
+    if (autoPageKey) {
+        window.loadPageContent(autoPageKey);
+    }
+
+    // ── 14. Money input formatting (1 600 000,00) ─────────────────────────────
     function formatMoney(value) {
         if (value === '' || value == null) return '';
         var num = parseFloat(String(value).replace(/\s/g, '').replace(',', '.'));
